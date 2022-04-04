@@ -131,18 +131,20 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row"><?= $buku->id_buku ?></th>
-                                                <td><?php if ($buku->status_buku == 0) {
-                                                        echo "Tersedia";
-                                                    } else {
-                                                        echo "Tidak";
-                                                    }
-                                                    ?></td>
+                                            <?php foreach ($isbn as $kd) : ?>
+                                                <tr>
+                                                    <th scope="row"><?= $kd['id_buku'] ?></th>
+                                                    <td><?php if ($kd['id_buku'] == 0) {
+                                                            echo "Tersedia";
+                                                        } else {
+                                                            echo "Tidak";
+                                                        }
+                                                        ?></td>
 
-                                                <td><a onclick="Modaltes('<?= $buku->id_buku ?>')" class="btn btn-success w-100 ">Booking Buku</a></td>
+                                                    <td><a onclick="Modaltes('<?= $kd['id_buku'] ?>')" class="btn btn-success w-100 ">Booking Buku</a></td>
 
-                                            </tr>
+                                                </tr>
+                                            <?php endforeach; ?>
                                         </tbody>
                                     </table>
                                     <!-- <p class="fst-italic">Qui laudantium consequatur laborum sit qui ad sapiente dila parde sonata raqer a videna mareta paulona marka</p> -->
@@ -204,12 +206,12 @@
 <script>
     function Modaltes(id) {
         $('#idbooking').val(id);
-        $('#ModalPromo4').appendTo("body").modal('show');
+        $('#ModalPinjam').appendTo("body").modal('show');
 
 
     }
 </script>
-<div class="modal fade" id="ModalPromo4" tabindex="-1" aria-labelledby="exampleModalPromoLabel4" aria-hidden="true">
+<div class="modal fade" id="ModalPinjam" tabindex="-1" aria-labelledby="exampleModalPromoLabel4" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered no-transform">
         <div class="modal-content">
             <div class="modal-header">

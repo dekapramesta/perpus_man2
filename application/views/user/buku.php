@@ -26,19 +26,23 @@
                                      <div class="course-content">
                                          <div class="d-flex  align-items-start mb-3">
                                              <?php $kategori = explode(",", $gbook['kategori']); ?>
-                                             <?php foreach ($kategori as $ktg) : ?>
-                                                 <div class="d-flex flex-wrap">
-                                                     <h4 class="ms-2 mt-1"><?= $ktg ?></h4>
-
-                                                 </div>
-                                             <?php endforeach; ?>
-
+                                             <div class="dropdown w-100">
+                                                 <button class="btn btn-success btn-sm w-100 dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                     Kategori
+                                                 </button>
+                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                     <?php foreach ($kategori as $ktg) : ?>
+                                                         <li><a class="dropdown-item" href="#"><?= $ktg ?></a></li>
+                                                     <?php endforeach; ?>
+                                                 </ul>
+                                             </div>
 
                                              <!-- <h4>asuajshkajsh</h4> -->
 
                                          </div>
-
-                                         <h3><a href="<?= base_url('Buku/DetailBuku') ?>"><?= $gbook['judul_buku'] ?></a></h3>
+                                         <div class="tittle-book col-12">
+                                             <h3><a href="<?= base_url('Buku/DetailBuku/' . $gbook['kode_buku']) ?>"><?= $gbook['judul_buku'] ?></a></h3>
+                                         </div>
                                          <p><?= substr($gbook['sinopsis'], 0, 300) ?></p>
                                          <div class="trainer d-flex justify-content-between align-items-center">
                                              <div class="trainer-profile d-flex align-items-center">

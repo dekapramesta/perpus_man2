@@ -27,7 +27,7 @@ class Buku extends CI_Controller
      */
     public function index()
     {
-        $data['getAllBook'] = $this->db->get('t_buku')->result_array();
+        $data['getAllBook'] = $this->Model_user->get_data_home('t_buku')->result_array();
         $data['kategori'] = $this->db->get('t_kategori')->result_array();
         $this->load->view('templates/header');
         $this->load->view('user/buku', $data);
@@ -35,7 +35,8 @@ class Buku extends CI_Controller
     }
     public function DetailBuku($id)
     {
-        $data['buku'] = $this->db->get_where('t_buku', array('id_buku' => $id))->row();
+        $data['buku'] = $this->db->get_where('t_buku', array('kode_buku' => $id))->row();
+        $data['isbn'] = $this->Model_user->get_data_home('t_buku')->result_array();
         $this->load->view('templates/header');
         $this->load->view('user/detail_buku', $data);
         $this->load->view('templates/footer');
@@ -43,6 +44,7 @@ class Buku extends CI_Controller
     public function BookingBuku()
     {
         $idbuku = $this->input->post("id_buku");
+        $isbn =  $this->db->get_where('t_buku', array('id_buku' => $idbuku))->row()->kode_buku;
         $data = array(
 
             'id_user' => $this->session->userdata('id_user'),
@@ -59,6 +61,6 @@ class Buku extends CI_Controller
             'id_buku' => $idbuku
         );
         $this->Model_user->edit_data($whereid, $data_update, 't_buku');
-        redirect('Buku/DetailBuku/' . $idbuku);
+        redirect('Buku/DetailBuku/' . $isbn);
     }
 }

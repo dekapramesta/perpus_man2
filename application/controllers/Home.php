@@ -21,7 +21,7 @@ class Home extends CI_Controller
      */
     public function index()
     {
-        $data['getAllBook'] = $this->db->get('t_buku')->result_array();
+        $data['getAllBook'] = $this->Model_user->get_data_home('t_buku')->result_array();
         $data['kategori'] = $this->db->get('t_kategori')->result_array();
         $this->load->view('templates/header');
         $this->load->view('user/home', $data);
