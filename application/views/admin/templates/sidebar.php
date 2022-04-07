@@ -5,6 +5,7 @@
             </a>
         </div>
         <ul class="sidebar-menu">
+            <li class="menu-header">Inventory</li>
             <li class="dropdown">
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="briefcase"></i><span>Inventory</span></a>
                 <ul class="dropdown-menu">

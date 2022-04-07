@@ -38,4 +38,24 @@ class Model_admin extends CI_Model
         $this->db->where('status_pengembalian=0');
         return $this->db->get();
     }
+    public function DataBooking()
+    {
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->from('t_booking');
+        $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
+        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        return $this->db->get();
+    }
+    public function getBooking($idsiswa)
+    {
+        $this->db->where('t_booking.id_user', $idsiswa);
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->from('t_booking');
+        $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
+        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->where('status_pesan=0');
+        return $this->db->get();
+    }
 }

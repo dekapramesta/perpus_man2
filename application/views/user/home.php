@@ -13,7 +13,7 @@
 	text-align: left;
 	border: 1px solid #e0e5e2;"><input id="search-book" type="text" style="border: 0;
 	padding: 4px 20px;
-	width: calc(100% - 100px);"><button onclick="searchbuku()" class="btn-Cari" type="text" style="">Cari</button></form>
+	width: calc(100% - 100px);"><button onclick="searchbuku()" class="btn-Cari" type="text">Cari</button></form>
           </div>
       </div>
   </section>

@@ -345,6 +345,16 @@ class InventoryBuku extends CI_Controller
         } else {
             echo "error";
         }
+        $status = $this->input->post('booking');
+        if ($status == 1) {
+            $booking_update = array(
+                'status_pesan' => 1,
+            );
+            $wherebooking = array(
+                'id_booking' => $this->input->post('id_booking')
+            );
+            $this->Model_admin->edit_data($wherebooking, $booking_update, 't_booking');
+        }
 
         $data = array(
             'id_user' => $id_user,
@@ -366,6 +376,7 @@ class InventoryBuku extends CI_Controller
         // var_dump($data);
         // die;
     }
+
     public function KembaliBuku()
     {
         // $id_buku = $this->input->post('barcode_return');

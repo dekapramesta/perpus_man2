@@ -35,8 +35,8 @@ class Buku extends CI_Controller
     }
     public function DetailBuku($id)
     {
-        $data['buku'] = $this->db->get_where('t_buku', array('kode_buku' => $id))->row();
-        $data['isbn'] = $this->Model_user->get_data_home('t_buku')->result_array();
+        $data['buku'] = $this->Model_user->get_data_detail($id)->row();
+        $data['isbn'] = $this->db->get_where('t_buku', array('kode_buku' => $id))->result_array();
         $this->load->view('templates/header');
         $this->load->view('user/detail_buku', $data);
         $this->load->view('templates/footer');

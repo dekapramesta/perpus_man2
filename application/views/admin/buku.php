@@ -46,6 +46,8 @@
                                                  <td><?= $book['tanggal_masuk'] ?></td>
                                                  <td><?php if ($book['status_buku'] == 0) {
                                                             echo "Tersedia";
+                                                        } elseif ($book['status_buku'] == 7) {
+                                                            echo "Dipesan";
                                                         } else {
                                                             echo "Dipinjam";
                                                         }  ?></td>

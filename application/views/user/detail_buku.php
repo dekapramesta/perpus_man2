@@ -134,7 +134,7 @@
                                             <?php foreach ($isbn as $kd) : ?>
                                                 <tr>
                                                     <th scope="row"><?= $kd['id_buku'] ?></th>
-                                                    <td><?php if ($kd['id_buku'] == 0) {
+                                                    <td><?php if ($kd['status_buku'] == 0) {
                                                             echo "Tersedia";
                                                         } else {
                                                             echo "Tidak";
