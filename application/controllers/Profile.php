@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Ebook extends CI_Controller
+class Profile extends CI_Controller
 {
 
     /**
@@ -19,18 +19,15 @@ class Ebook extends CI_Controller
      * map to /index.php/welcome/<method_name>
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
-    public function index()
+    public function DataDiri($id)
     {
-        $data['getAllPdf'] = $this->db->get('t_ebook')->result_array();
-        $this->load->view('templates/header');
-        $this->load->view('user/ebook', $data);
-        $this->load->view('templates/footer');
-    }
-    public function DetailEbook($id)
-    {
-        $data['ebook'] = $this->db->get_where('t_ebook', array('id_ebook' => $id))->row();
-        $this->load->view('templates/header');
-        $this->load->view('user/detail_ebook', $data);
-        $this->load->view('templates/footer');
+        if ($this->session->userdata('id_user') == $id) {
+            $data['profile'] = $this->Model_user->Profile($id)->row();
+            $this->load->view('templates/header');
+            $this->load->view('user/profile', $data);
+            $this->load->view('templates/footer');
+        } else {
+            redirect("");
+        }
     }
 }

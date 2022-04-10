@@ -85,25 +85,30 @@
 
                                         <tbody>
                                             <tr>
-                                                <th scope="row" width="150">Penerbit</th>
-                                                <td>Mark</td>
+                                                <th scope="row" width="150">Penulis</th>
+                                                <td><?= $buku->penulis ?></td>
                                                 <!-- <td>Otto</td>
                                                 <td>@mdo</td> -->
                                             </tr>
                                             <tr>
-                                                <th scope="row" width="150">ISBN</th>
-                                                <td>Jacob</td>
+                                                <th scope="row" width="150">Kategori</th>
+                                                <td><?= $buku->kategori ?></td>
                                                 <!-- <td>Thornton</td>
                                                 <td>@fat</td> -->
                                             </tr>
                                             <tr>
-                                                <th scope="row" width="150">Bahasa</th>
-                                                <td colspan="2">Larry the Bird</td>
+                                                <th scope="row" width="150">ISBN</th>
+                                                <td colspan="2"><?= $buku->kode_buku ?></td>
                                                 <!-- <td>@twitter</td> -->
                                             </tr>
                                             <tr>
-                                                <th scope="row" width="150">Kategori</th>
-                                                <td colspan="2">Fiksi</td>
+                                                <th scope="row" width="150">Tahun Terbit</th>
+                                                <td colspan="2"><?= $buku->tahun_terbit ?></td>
+                                                <!-- <td>@twitter</td> -->
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" width="150">Lokasi Buku</th>
+                                                <td colspan="2"><?= $buku->lokasi_buku ?></td>
                                                 <!-- <td>@twitter</td> -->
                                             </tr>
                                         </tbody>

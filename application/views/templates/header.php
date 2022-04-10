@@ -62,16 +62,29 @@
                     <li><a href="#">Events</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#" onclick="modalcari()">Cari</a></li>
+                    <?php if ($this->session->userdata('id_user') == null) : ?>
 
-                    <li class="dropdown"><a href="#"><span>Masuk</span> <i class="bi bi-chevron-down"></i></a>
-                        <ul>
-                            <li><a href="#">Login</a></li>
+                        <li class="dropdown"><a href="#"><span>Masuk</span> <i class="bi bi-chevron-down"></i></a>
+                            <ul>
+                                <li><a href="<?= base_url('Login') ?>">Login</a></li>
 
-                            <li><a href="#">Register</a></li>
-                            <!-- <li><a href="#">Drop Down 3</a></li>
+                                <li><a href="<?= base_url('Register') ?>">Register</a></li>
+                                <!-- <li><a href="#">Drop Down 3</a></li>
                             <li><a href="#">Drop Down 4</a></li> -->
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    <?php else : ?>
+                        <li class="dropdown"><a href="#"><span>Akun</span> <i class="bi bi-chevron-down"></i></a>
+                            <ul>
+                                <li><a href="<?= base_url("Profile/DataDiri/" . $this->session->userdata('id_user')) ?>">Profile</a></li>
+
+                                <li><a href="<?= base_url('Home/Logout') ?>">Log Out</a></li>
+                                <!-- <li><a href="#">Drop Down 3</a></li>
+                            <li><a href="#">Drop Down 4</a></li> -->
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
 
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>

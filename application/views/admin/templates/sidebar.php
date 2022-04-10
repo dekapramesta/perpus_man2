@@ -25,7 +25,7 @@
             </li>
 
             <li class="dropdown ">
-                <a href="index.html" class="nav-link "><i data-feather="feather"></i><span>Booking</span></a>
+                <a href="<?= base_url('Admin/Booking') ?>" class="nav-link "><i data-feather="feather"></i><span>Booking</span></a>
                 <!-- <a href="<?= base_url('Admin/Registrasi') ?>" class="nav-link "><i data-feather="monitor"></i><span>Registrasi Siswa</span></a> -->
             </li>
 
