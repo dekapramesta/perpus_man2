@@ -74,7 +74,22 @@
                                                                         echo "Dipinjam";
                                                                     } ?></p>
                                          </div>
-                                         <div class="col-md-3 col-6 mt-3">
+                                         <?php if ($buku->status_buku == 0) : ?>
+                                         <?php elseif ($buku->status_buku == 1) : ?>
+                                             <div class="col-md-3 col-6 mt-3">
+                                                 <strong>Dipinjam Oleh</strong>
+                                                 <br>
+                                                 <p class="text-muted"><?php echo $buku->username; ?></p>
+                                             </div>
+                                         <?php elseif ($buku->status_buku == 7) : ?>
+                                             <div class="col-md-3 col-6 mt-3">
+                                                 <strong>Dipesan Oleh</strong>
+                                                 <br>
+                                                 <p class="text-muted"><?php check_booking($buku->id_buku) ?></p>
+                                             </div>
+                                         <?php endif; ?>
+
+                                         <!-- <div class="col-md-3 col-6 mt-3">
                                              <strong>Dipinjam Oleh</strong>
                                              <br>
                                              <p class="text-muted"><?php if ($buku->status_buku == 0) {
@@ -82,7 +97,7 @@
                                                                     } else {
                                                                         echo $buku->username;
                                                                     } ?></p>
-                                         </div>
+                                         </div> -->
                                      </div>
                                      <div class="section-title">Barcode</div>
                                      <img alt="image" src="<?= base_url('Admin/InventoryBuku/Barcode/' . $buku->id_buku) ?>" class=" author-box-picture" height="100" style="width: 200px;">

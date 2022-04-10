@@ -33,4 +33,21 @@ class Model_user extends CI_Model
     {
         return $this->db->insert($table, $data);
     }
+    public function SearchBuku($keyword)
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->like('judul_buku', $keyword);
+        $this->db->or_like('kategori', $keyword);
+        $this->db->group_by('judul_buku');
+        return $this->db->get();
+    }
+    public function SearchKategori($keyword)
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->like('kategori', $keyword);
+        $this->db->group_by('judul_buku');
+        return $this->db->get();
+    }
 }

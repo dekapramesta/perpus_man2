@@ -5,15 +5,19 @@
           <h1>Perpustakaan,<br />Man 2 Ngawi</h1>
           <!-- <h2>We are team of talented designers making websites with Bootstrap</h2> -->
           <div class="col-lg-3 col-10 col-md-7">
-              <form action="#" style="margin-top: 30px;
+              <form action="<?= base_url('Buku/SearchBuku') ?>" style="margin-top: 30px;
 	background: #fff;
 	padding: 6px 10px;
 	position: relative;
 	border-radius: 50px;
 	text-align: left;
-	border: 1px solid #e0e5e2;"><input id="search-book" type="text" style="border: 0;
+	border: 1px solid #e0e5e2;" method="post" enctype="multipart/form-data"><input name="buku" id="search-book" type="text" style="border: 0;
 	padding: 4px 20px;
-	width: calc(100% - 100px);"><button onclick="searchbuku()" class="btn-Cari" type="text">Cari</button></form>
+	width: calc(100% - 100px);">
+                  <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+                  <button class="btn-Cari" type="text">Cari</button>
+              </form>
           </div>
       </div>
   </section>
@@ -167,7 +171,7 @@
                                       <h4>Fiksi</h4>
                                   </div>
 
-                                  <h3><a href="course-details.html"><?= $gbook['judul_buku'] ?></a></h3>
+                                  <h3><a href="<?= base_url('Buku/DetailBuku/' . $gbook['kode_buku']) ?>"><?= $gbook['judul_buku'] ?></a></h3>
                                   <p><?= substr($gbook['sinopsis'], 0, 300) ?></p>
                                   <div class="trainer d-flex justify-content-between align-items-center">
                                       <div class="trainer-profile d-flex align-items-center">

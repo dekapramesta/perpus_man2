@@ -50,4 +50,9 @@ class Booking extends CI_Controller
         }
         echo json_encode($data);
     }
+    public function TrackingBooking($id)
+    {
+        $data['booking'] =  $this->Model_admin->TrackingBooking($id)->result_array();
+        return $data;
+    }
 }

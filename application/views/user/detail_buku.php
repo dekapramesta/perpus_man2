@@ -141,7 +141,11 @@
                                                         }
                                                         ?></td>
 
-                                                    <td><a onclick="Modaltes('<?= $kd['id_buku'] ?>')" class="btn btn-success w-100 ">Booking Buku</a></td>
+                                                    <td><a onclick="Modaltes('<?= $kd['id_buku'] ?>')" class="btn btn-success w-100 <?php if ($kd['status_buku'] == 0) {
+                                                                                                                                    } else {
+                                                                                                                                        echo "disabled";
+                                                                                                                                    }
+                                                                                                                                    ?>">Booking Buku</a></td>
 
                                                 </tr>
                                             <?php endforeach; ?>
