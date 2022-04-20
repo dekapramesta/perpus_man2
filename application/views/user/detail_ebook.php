@@ -20,7 +20,7 @@
                                  <div class="course-content">
 
 
-                                     <h3><a href="course-details.html"><?= $ebook->judul_ebook ?></a></h3>
+                                     <h3><a href="#"><?= $ebook->judul_ebook ?></a></h3>
                                      <p><?= $ebook->deskripsi ?></p>
                                      <div class="trainer d-flex justify-content-between align-items-center">
                                          <div class="trainer-profile d-flex align-items-center">
@@ -88,7 +88,7 @@
  <script type="text/javascript">
      document.addEventListener("adobe_dc_view_sdk.ready", function() {
          var adobeDCView = new AdobeDC.View({
-             clientId: "e66f04ef460b4e18a90b5b30b8b26adb",
+             clientId: "be08d0e54da34f3fb7fb78936b84f60b",
              divId: "adobe-dc-view"
          });
          const url = $('#adobe-dc-view').data("file");

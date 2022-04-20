@@ -49,6 +49,9 @@ class Login extends CI_Controller
                     case 1:
                         redirect('Home');
                         break;
+                    case 2:
+                        redirect('Home');
+                        break;
                     case 70:
                         redirect('SuperAdmin/Home');
                         break;

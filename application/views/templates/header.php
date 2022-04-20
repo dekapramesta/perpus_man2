@@ -110,9 +110,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="">
-                        <input type="text" class="form-control" />
-                        <button type="button" class="btn btn-success mt-2 w-100 ">Cari</button>
+                    <form action="<?= base_url('Buku/SearchBuku') ?>" method="post" enctype="multipart/form-data">
+                        <input name="buku" type="text" class="form-control" />
+                        <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+                        <button type="submit" class="btn btn-success mt-2 w-100 ">Cari</button>
                     </form>
                 </div>
                 <div class="modal-footer">

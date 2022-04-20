@@ -333,44 +333,87 @@ class InventoryBuku extends CI_Controller
     }
     public function PinjamBuku()
     {
+        $id_guru = $this->input->post('id_guru');
         $id_user = $this->input->post('barcode_siswa');
-        $id_buku = $this->input->post('barcode_buku');
-        $lama_pinjam = $this->input->post('lama_pinjam');
-        if ($lama_pinjam == 3) {
-            $tgl_pengembalian = date('Y-m-d', strtotime('+3 days'));
-        } elseif ($lama_pinjam == 5) {
-            $tgl_pengembalian = date('Y-m-d', strtotime('+5 days'));
-        } elseif ($lama_pinjam == 7) {
-            $tgl_pengembalian = date('Y-m-d', strtotime('+7 days'));
-        } else {
-            echo "error";
-        }
-        $status = $this->input->post('booking');
-        if ($status == 1) {
-            $booking_update = array(
-                'status_pesan' => 1,
+        if ($id_guru != null) {
+            $id_buku = $this->input->post('barcode_buku');
+            $lama_pinjam = $this->input->post('lama_pinjam');
+            if ($lama_pinjam == 3) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+3 days'));
+            } elseif ($lama_pinjam == 5) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+5 days'));
+            } elseif ($lama_pinjam == 7) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+7 days'));
+            } else {
+                echo "error";
+            }
+            $status = $this->input->post('booking');
+            if ($status == 1) {
+                $booking_update = array(
+                    'status_pesan' => 1,
+                );
+                $wherebooking = array(
+                    'id_booking' => $this->input->post('id_booking')
+                );
+                $this->Model_admin->edit_data($wherebooking, $booking_update, 't_booking');
+            }
+
+            $data = array(
+                'id_user' => $id_guru,
+                'id_buku' => $id_buku,
+                'tanggal_pinjam' => date('Y-m-d'),
+                'tanggal_pengembalian' => $tgl_pengembalian
             );
-            $wherebooking = array(
-                'id_booking' => $this->input->post('id_booking')
+            $this->Model_admin->Tambah_data($data, 't_peminjaman');
+
+            $data_update = array(
+                'status_buku' => 1,
             );
-            $this->Model_admin->edit_data($wherebooking, $booking_update, 't_booking');
+            $whereid = array(
+                'id_buku' => $id_buku
+            );
+            $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
+        } elseif ($id_user != null) {
+            $id_buku = $this->input->post('barcode_buku');
+            $lama_pinjam = $this->input->post('lama_pinjam');
+            if ($lama_pinjam == 3) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+3 days'));
+            } elseif ($lama_pinjam == 5) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+5 days'));
+            } elseif ($lama_pinjam == 7) {
+                $tgl_pengembalian = date('Y-m-d', strtotime('+7 days'));
+            } else {
+                echo "error";
+            }
+            $status = $this->input->post('booking');
+            if ($status == 1) {
+                $booking_update = array(
+                    'status_pesan' => 1,
+                );
+                $wherebooking = array(
+                    'id_booking' => $this->input->post('id_booking')
+                );
+                $this->Model_admin->edit_data($wherebooking, $booking_update, 't_booking');
+            }
+
+            $data = array(
+                'id_user' => $id_user,
+                'id_buku' => $id_buku,
+                'tanggal_pinjam' => date('Y-m-d'),
+                'tanggal_pengembalian' => $tgl_pengembalian
+            );
+            $this->Model_admin->Tambah_data($data, 't_peminjaman');
+
+            $data_update = array(
+                'status_buku' => 1,
+            );
+            $whereid = array(
+                'id_buku' => $id_buku
+            );
+            $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
         }
 
-        $data = array(
-            'id_user' => $id_user,
-            'id_buku' => $id_buku,
-            'tanggal_pinjam' => date('Y-m-d'),
-            'tanggal_pengembalian' => $tgl_pengembalian
-        );
-        $this->Model_admin->Tambah_data($data, 't_peminjaman');
 
-        $data_update = array(
-            'status_buku' => 1,
-        );
-        $whereid = array(
-            'id_buku' => $id_buku
-        );
-        $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
         redirect('Admin/InventoryBuku');
 
         // var_dump($data);
@@ -401,5 +444,11 @@ class InventoryBuku extends CI_Controller
         );
         $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
         redirect('Admin/InventoryBuku');
+    }
+    public function getGuru()
+    {
+        $data['token'] = $this->security->get_csrf_hash();
+        $data['guru'] = $this->Model_admin->getGuru()->result_array();
+        echo json_encode($data);
     }
 }

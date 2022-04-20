@@ -21,11 +21,46 @@ class Profile extends CI_Controller
      */
     public function DataDiri($id)
     {
+        $user_role = $this->db->get_where('t_user', array('id_user' => $this->session->userdata('id_user')))->row()->role_id;
+        if ($user_role == 1) {
+            if ($this->session->userdata('id_user') == $id) {
+                $data['role'] = 1;
+                $data['profile'] = $this->Model_user->Profile($id)->row();
+                $this->load->view('templates/header');
+                $this->load->view('user/profile', $data);
+                $this->load->view('templates/footer');
+            } else {
+                redirect("");
+            }
+        } elseif ($user_role == 2) {
+            if ($this->session->userdata('id_user') == $id) {
+                $data['role'] = 2;
+                $data['profile'] = $this->Model_user->ProfileGuru($id)->row();
+                $this->load->view('templates/header');
+                $this->load->view('user/profile', $data);
+                $this->load->view('templates/footer');
+            } else {
+                redirect("");
+            }
+        } else {
+            redirect("");
+        }
+    }
+    public function EditProfile($id)
+    {
         if ($this->session->userdata('id_user') == $id) {
-            $data['profile'] = $this->Model_user->Profile($id)->row();
-            $this->load->view('templates/header');
-            $this->load->view('user/profile', $data);
-            $this->load->view('templates/footer');
+            $data_edit = array(
+                'nama' => $this->input->post('nama'),
+                'email' => $this->input->post('email'),
+                'no_hp' => $this->input->post('no_hp'),
+                'angkatan' => $this->input->post('angkatan'),
+                'nisn' => $this->input->post('nisn'),
+            );
+            $data_where = array(
+                'id_profile' => $id
+            );
+            $this->Model_user->edit_data($data_where, $data_edit, 't_profile');
+            redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
         } else {
             redirect("");
         }

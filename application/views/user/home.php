@@ -135,7 +135,7 @@
               </div>
               <div class="row" data-aos="zoom-in" data-aos-delay="100">
                   <?php foreach ($kategori as $ktg) : ?>
-                      <div class="col-lg-3 col-md-4 mt-2">
+                      <div onclick="window.location='<?= base_url('Buku/ByKategori/' . $ktg['nama_kategori']) ?>'" class="col-lg-3 col-md-4 mt-2">
                           <div class="icon-box">
                               <i class="ri-gradienter-line" style="color:#<?= kodecolor() ?>"></i>
                               <h3><a href=""><?= $ktg['nama_kategori'] ?></a></h3>

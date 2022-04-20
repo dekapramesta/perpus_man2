@@ -59,4 +59,13 @@ class Model_user extends CI_Model
         // $this->db->where('status_pengembalian=0');
         return $this->db->get();
     }
+    public function ProfileGuru($id)
+    {
+        $this->db->where('t_user.id_user', $id);
+        $this->db->select('t_user.id_user , t_user.username, t_guru.*');
+        $this->db->from('t_user');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        // $this->db->where('status_pengembalian=0');
+        return $this->db->get();
+    }
 }

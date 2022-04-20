@@ -9,6 +9,13 @@ class Model_auth extends CI_Model
         $this->db->where('code', $hashcode);
         return $this->db->get();
     }
+    public function Checkingcode_guru($hashcode)
+    {
+        $this->db->select('*');
+        $this->db->from('t_registerguru');
+        $this->db->where('code', $hashcode);
+        return $this->db->get();
+    }
     public function daftar_user($data, $table)
     {
         $this->db->insert($table, $data);

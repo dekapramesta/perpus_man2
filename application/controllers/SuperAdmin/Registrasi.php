@@ -27,6 +27,14 @@ class Registrasi extends CI_Controller
         $this->load->view('Admin/registrasi', $data);
         $this->load->view('Admin/templates/footer');
     }
+    public function RegisterGuru()
+    {
+        $data['guru'] = $this->Model_admin->get_data_all('t_registerguru')->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar_su');
+        $this->load->view('Admin/registrasi_guru', $data);
+        $this->load->view('Admin/templates/footer');
+    }
     public function tambah_regist()
     {
 
@@ -53,6 +61,31 @@ class Registrasi extends CI_Controller
 
             $this->Model_auth->Tambah_data($data_add, 't_register');
             redirect('SuperAdmin/Registrasi');
+        }
+    }
+    public function tambah_regist_guru()
+    {
+
+        $this->form_validation->set_rules('email', 'Email', 'required|is_unique[t_registerguru.email]');
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
+        $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_registerguru.no_hp]');
+
+        if ($this->form_validation->run()) {
+            $email = $this->input->post('email');
+            $nama = $this->input->post('nama');
+            $no_wa = $this->input->post('no_wa');
+            $kode    = rand(100000, 999999);
+
+            $data_add = array(
+                'email' => $email,
+                'nama_guru' => $nama,
+                'no_hp' => $no_wa,
+                'code' => $kode,
+                'status_daftar' => 0
+            );
+
+            $this->Model_auth->Tambah_data($data_add, 't_registerguru');
+            redirect('SuperAdmin/Registrasi/RegisterGuru');
         }
     }
     public function edit_regist()

@@ -40,11 +40,12 @@ class Model_admin extends CI_Model
     }
     public function DataBooking()
     {
-        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*,t_guru.*');
         $this->db->from('t_booking');
         $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
         $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
         return $this->db->get();
     }
     public function TrackingBooking($idbuku)
@@ -67,6 +68,34 @@ class Model_admin extends CI_Model
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
         $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
         $this->db->where('status_pesan=0');
+        return $this->db->get();
+    }
+    public function getBookingGuru($idsiswa)
+    {
+        $this->db->where('t_booking.id_user', $idsiswa);
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_guru.*');
+        $this->db->from('t_booking');
+        $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->where('status_pesan=0');
+        return $this->db->get();
+    }
+    public function getBookingAll()
+    {
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->from('t_booking');
+        $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
+        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->where('status_pesan=0');
+        return $this->db->get();
+    }
+    public function getGuru()
+    {
+        $this->db->select('t_guru.*,t_user.id_user , t_user.username');
+        $this->db->from('t_guru');
+        $this->db->join('t_user', 't_user.id_user=t_guru.id_user', 'left');
         return $this->db->get();
     }
 }

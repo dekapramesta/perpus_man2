@@ -163,7 +163,7 @@
                          </button>
                      </div>
                      <div id="container_search" class="modal-body">
-                         <form action="#" method="post" id="form_pinjam">
+                         <form id="form_pinjam">
                              <div class="form-group">
                                  <input id="barcode_pinjam" placeholder="Barcode Buku" type="text" name="barcode" class="form-control " required="">
                              </div>
@@ -179,6 +179,14 @@
                      </div>
                      <div id="container_pinjam" class="modal-body" style="display: none;">
                          <form action="<?= base_url('Admin/InventoryBuku/PinjamBuku') ?>" method="post" enctype="multipart/form-data">
+                             <div id="container_dup" class="form-group">
+                                 <div class="pretty p-switch">
+                                     <input id="togBtn" onchange="ModeGuru(event)" type="checkbox" value="0" />
+                                     <div class="state p-primary">
+                                         <label>Peminjamn Guru</label>
+                                     </div>
+                                 </div>
+                             </div>
                              <div class="form-group">
                                  <label for="">Kode Bar</label>
                                  <input readonly id="barcode_buku" placeholder="Barcode Buku" type="text" name="barcode_buku" class="form-control " required="">
@@ -187,7 +195,7 @@
                                  <label for="">Judul Buku</label>
                                  <input readonly id="judul_buku" placeholder="Judul Buku" type="text" name="judul_buku" class="form-control " required="">
                              </div>
-                             <div class="form-group">
+                             <div class="form-group" id="id_place">
                                  <label for="">Id Siswa / Barcode</label>
                                  <input id="barcode_siswa" placeholder="Barcode Siswa" type="text" name="barcode_siswa" class="form-control " required="">
                              </div>
@@ -576,6 +584,41 @@
                      event.target.value = 0
                      $('#dup_num').remove()
                      console.log('asu')
+                 }
+             }
+
+             function ModeGuru(event) {
+                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                 var csrfHash = $('.txt_csrfname').val();
+                 if (event.target.value == 0) {
+                     event.target.value = 1
+                     $('#id_place').html(' <label>Nama Guru</label><select class = "form-control" id="dropdown_guru" name="id_guru"></select>')
+
+                     $.ajax({
+                         type: "POST",
+                         url: "<?php echo site_url('Admin/InventoryBuku/getGuru/') ?>",
+                         data: {
+                             [csrfName]: csrfHash,
+                         },
+                         dataType: "JSON",
+                         success: function(resultData) {
+                             console.log(resultData)
+                             $('.txt_csrfname').val(resultData.token);
+                             $.each(resultData.guru, function(i, guru) {
+                                 $('#dropdown_guru').html('<option value="' + guru.id_user + '">' + guru.nama_guru + '</option>')
+                             });
+
+
+
+
+                         }
+
+                     });
+
+                 } else {
+                     event.target.value = 0
+                     $('#id_place').html('<label for="">Id Siswa / Barcode</label> <input id = "barcode_siswa"placeholder = "Barcode Siswa"type = "text"name = "barcode_siswa"class = "form-control required = "">')
+
                  }
              }
          </script>

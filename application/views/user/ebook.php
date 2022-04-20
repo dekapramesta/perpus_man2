@@ -21,7 +21,7 @@
                                      <div class="course-content">
 
 
-                                         <h3><a href="<?= base_url('Ebook/DetailEbook') ?>"><?= $gpdf['judul_ebook'] ?></a></h3>
+                                         <h3><a href="<?= base_url('Ebook/DetailEbook/' . $gpdf['id_ebook']) ?>"><?= $gpdf['judul_ebook'] ?></a></h3>
                                          <p><?= $gpdf['deskripsi'] ?></p>
                                          <div class="trainer d-flex justify-content-between align-items-center">
                                              <div class="trainer-profile d-flex align-items-center">

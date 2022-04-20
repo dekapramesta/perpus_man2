@@ -43,7 +43,11 @@
                                                     } ?>><?= $no; ?></td>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
                                                         echo "style = 'color : red;'";
-                                                    } ?>><?= $bk['nama'] ?></td>
+                                                    } ?>><?php if ($bk['nama'] != null) {
+                                                                echo $bk['nama'];
+                                                            } else {
+                                                                echo $bk['nama_guru'];
+                                                            }  ?></td>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
                                                         echo "style = 'color : red;'";
                                                     } ?>><?= $bk['judul_buku'] ?></td>
@@ -91,9 +95,18 @@
                         </button>
                     </div>
                     <div class="modal-body" id="card_cari">
+                        <div id="container_dup" class="form-group">
+                            <div class="pretty p-switch">
+                                <input id="togBtn" onchange="ByGuru(event)" type="checkbox" value="0" />
+                                <div class="state p-primary">
+                                    <label>Peminjam Guru</label>
+                                </div>
+                            </div>
+                        </div>
                         <form id="form_booking" action="asas" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <div class="form-group" id="id_place">
+
                                 <input id="idsiswa" placeholder="Kode Buku" type="text" name="idsiswa" class="form-control " required="">
                             </div>
 
@@ -162,42 +175,154 @@
         </div>
         <script>
             let data_pick = [];
+            let sts_val = 0;
+
+            function ByGuru(event) {
+                var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                var csrfHash = $('.txt_csrfname').val();
+                if (event.target.value == 0) {
+                    event.target.value = 1
+                    sts_val = 1;
+                    $('#id_place').html(' <label>Nama Guru</label><select class = "form-control" id="idguru" name="idguru"></select>')
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo site_url('Admin/InventoryBuku/getGuru/') ?>",
+                        data: {
+                            [csrfName]: csrfHash,
+                        },
+                        dataType: "JSON",
+                        success: function(resultData) {
+                            console.log(resultData)
+                            $('.txt_csrfname').val(resultData.token);
+                            $.each(resultData.guru, function(i, guru) {
+                                $('#idguru').html('<option value="' + guru.id_user + '">' + guru.id_user + '</option>')
+                            });
+
+
+
+
+                        }
+
+                    });
+                    // $('#id_place').html('<input id="idguru" placeholder="Kode Buku" type="text" name="idsiswa" class="form-control " required="">')
+
+                } else {
+                    sts_val = 0;
+                    event.target.value = 0
+                    $('#id_place').html('<input id="idsiswa" placeholder="Kode Buku" type="text" name="idsiswa" class="form-control " required="">')
+
+                }
+            }
             document.getElementById("form_booking").addEventListener('submit', function(e) {
                 e.preventDefault();
                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
                 var csrfHash = $('.txt_csrfname').val();
-                let idsiswa = document.getElementById('idsiswa').value;
+                if (sts_val == 1) {
+                    let idguru = document.getElementById('idguru').value;
+                    console.log(idguru)
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
+                        data: {
+                            [csrfName]: csrfHash,
+                            'idguru': idguru
 
-                $.ajax({
-                    type: "POST",
-                    url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
-                    data: {
-                        [csrfName]: csrfHash,
-                        'idsiswa': idsiswa
+                        },
+                        dataType: "JSON",
+                        success: function(result) {
+                            $('.txt_csrfname').val(result.token);
+                            if (!result.buku) {
+                                swal('Tidak Ditemukan', 'Guru Tersebut Belum Meakukan Pemesanan', 'error');
 
-                    },
-                    dataType: "JSON",
-                    success: function(result) {
-                        $('.txt_csrfname').val(result.token);
-                        if (!result.buku) {
-                            swal('Tidak Ditemukan', 'Siswa Tersebut Belum Meakukan Pemesanan', 'error');
+                            } else {
+                                $.each(result.buku, function(i, buku) {
+                                    data_pick = result.buku;
+                                    document.getElementById('card_cari').style.display = "None";
+                                    document.getElementById('card_pilih').style.display = "Block";
+                                    $('#pilih_opsi').append('<div class="col-12 col-md-6 col-lg-6"><a href="#" onclick="cekData(' + i + ')"><div class="card card-primary"><div class="card-header"><h4>' + buku.Judul + '</h4></div><div class = "card-body" ><p>Nama : ' + buku.Nama + '</p><p>Kode Buku: ' + buku.Kode_Buku + '</p></div></div></a></div>')
+                                });
+                            }
+                            console.log(result.buku)
 
-                        } else {
-                            $.each(result.buku, function(i, buku) {
-                                data_pick = result.buku;
-                                document.getElementById('card_cari').style.display = "None";
-                                document.getElementById('card_pilih').style.display = "Block";
-                                $('#pilih_opsi').append('<div class="col-12 col-md-6 col-lg-6"><a href="#" onclick="cekData(' + i + ')"><div class="card card-primary"><div class="card-header"><h4>' + buku.Judul + '</h4></div><div class = "card-body" ><p>Nama : ' + buku.Nama + '</p><p>Kode Buku: ' + buku.Kode_Buku + '</p></div></div></a></div>')
-                            });
+
+
+
                         }
-                        console.log(result.buku)
+
+                    });
+
+                } else if (sts_val == 0) {
+                    let idsiswa = document.getElementById('idsiswa').value;
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
+                        data: {
+                            [csrfName]: csrfHash,
+                            'idsiswa': idsiswa
+
+                        },
+                        dataType: "JSON",
+                        success: function(result) {
+                            $('.txt_csrfname').val(result.token);
+                            if (!result.buku) {
+                                swal('Tidak Ditemukan', 'Siswa Tersebut Belum Meakukan Pemesanan', 'error');
+
+                            } else {
+                                $.each(result.buku, function(i, buku) {
+                                    data_pick = result.buku;
+                                    document.getElementById('card_cari').style.display = "None";
+                                    document.getElementById('card_pilih').style.display = "Block";
+                                    $('#pilih_opsi').append('<div class="col-12 col-md-6 col-lg-6"><a href="#" onclick="cekData(' + i + ')"><div class="card card-primary"><div class="card-header"><h4>' + buku.Judul + '</h4></div><div class = "card-body" ><p>Nama : ' + buku.Nama + '</p><p>Kode Buku: ' + buku.Kode_Buku + '</p></div></div></a></div>')
+                                });
+                            }
+                            console.log(result.buku)
 
 
 
 
-                    }
+                        }
 
-                });
+                    });
+
+                }
+                // let idsiswa = document.getElementById('idsiswa').value;
+
+
+                // alert(sts_val, sts_val);
+                // return false;
+
+
+
+                // $.ajax({
+                //     type: "POST",
+                //     url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
+                //     data: {
+                //         [csrfName]: csrfHash,
+                //         'idsiswa': idsiswa
+
+                //     },
+                //     dataType: "JSON",
+                //     success: function(result) {
+                //         $('.txt_csrfname').val(result.token);
+                //         if (!result.buku) {
+                //             swal('Tidak Ditemukan', 'Siswa Tersebut Belum Meakukan Pemesanan', 'error');
+
+                //         } else {
+                //             $.each(result.buku, function(i, buku) {
+                //                 data_pick = result.buku;
+                //                 document.getElementById('card_cari').style.display = "None";
+                //                 document.getElementById('card_pilih').style.display = "Block";
+                //                 $('#pilih_opsi').append('<div class="col-12 col-md-6 col-lg-6"><a href="#" onclick="cekData(' + i + ')"><div class="card card-primary"><div class="card-header"><h4>' + buku.Judul + '</h4></div><div class = "card-body" ><p>Nama : ' + buku.Nama + '</p><p>Kode Buku: ' + buku.Kode_Buku + '</p></div></div></a></div>')
+                //             });
+                //         }
+                //         console.log(result.buku)
+
+
+
+
+                //     }
+
+                // });
             });
 
             function cekData(i) {

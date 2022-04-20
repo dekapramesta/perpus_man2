@@ -7,6 +7,7 @@ class Booking extends CI_Controller
     {
 
         parent::__construct();
+        time_booking();
         date_default_timezone_set('Asia/Jakarta');
         if ($this->session->userdata('role_id') != 77) {
             redirect('');
@@ -39,16 +40,30 @@ class Booking extends CI_Controller
     public function getBooking()
     {
         $idsiswa = $this->input->post('idsiswa');
-        $data['token'] = $this->security->get_csrf_hash();
-        $databuku = $this->Model_admin->getBooking($idsiswa)->result_array();
-        // var_dump($databuku);
-        if ($databuku) {
-            foreach ($databuku as $dt) {
-                $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
+        $idguru = $this->input->post('idguru');
+        if ($idguru != null) {
+            $data['token'] = $this->security->get_csrf_hash();
+            $databuku = $this->Model_admin->getBookingGuru($idguru)->result_array();
+            // var_dump($databuku);
+            if ($databuku) {
+                foreach ($databuku as $dt) {
+                    $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama_guru'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
+                }
+                $data['buku'] = $dat;
             }
-            $data['buku'] = $dat;
+            echo json_encode($data);
+        } elseif ($idsiswa != null) {
+            $data['token'] = $this->security->get_csrf_hash();
+            $databuku = $this->Model_admin->getBooking($idsiswa)->result_array();
+            // var_dump($databuku);
+            if ($databuku) {
+                foreach ($databuku as $dt) {
+                    $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
+                }
+                $data['buku'] = $dat;
+            }
+            echo json_encode($data);
         }
-        echo json_encode($data);
     }
     public function TrackingBooking($id)
     {
