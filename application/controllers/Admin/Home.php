@@ -7,10 +7,12 @@ class Home extends CI_Controller
     {
 
         parent::__construct();
+
         date_default_timezone_set('Asia/Jakarta');
         if ($this->session->userdata('role_id') != 77) {
             redirect('');
         }
+        KirimWA();
     }
 
     /**

@@ -40,33 +40,33 @@ class Model_admin extends CI_Model
     }
     public function DataBooking()
     {
-        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*,t_guru.*');
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_siswa.*,t_guru.*');
         $this->db->from('t_booking');
         $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
-        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
         return $this->db->get();
     }
     public function TrackingBooking($idbuku)
     {
         $this->db->where('t_booking.id_buku', $idbuku);
-        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_siswa.*');
         $this->db->from('t_booking');
         $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
-        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->where('status_pesan=0');
         return $this->db->get();
     }
     public function getBooking($idsiswa)
     {
         $this->db->where('t_booking.id_user', $idsiswa);
-        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_siswa.*');
         $this->db->from('t_booking');
         $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
-        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->where('status_pesan=0');
         return $this->db->get();
     }
@@ -83,11 +83,11 @@ class Model_admin extends CI_Model
     }
     public function getBookingAll()
     {
-        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_profile.*');
+        $this->db->select('t_booking.*,t_buku.* ,t_user.id_user , t_user.username, t_siswa.*');
         $this->db->from('t_booking');
         $this->db->join('t_buku', 't_buku.id_buku=t_booking.id_buku', 'left');
         $this->db->join('t_user', 't_user.id_user=t_booking.id_user', 'left');
-        $this->db->join('t_profile', 't_profile.id_user=t_user.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->where('status_pesan=0');
         return $this->db->get();
     }
@@ -96,6 +96,99 @@ class Model_admin extends CI_Model
         $this->db->select('t_guru.*,t_user.id_user , t_user.username');
         $this->db->from('t_guru');
         $this->db->join('t_user', 't_user.id_user=t_guru.id_user', 'left');
+        return $this->db->get();
+    }
+    public function LaporanPeminjaman($tahun, $bulan, $hari)
+    {
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_pengembalian.*,t_buku.*');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->join('t_pengembalian', 't_pengembalian.id_peminjaman=t_peminjaman.id_peminjaman', 'left');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+        if (($tahun != null) && ($bulan != null) && ($hari != null)) {
+            $this->db->where('YEAR(t_peminjaman.tanggal_pinjam)', $tahun);
+            $this->db->where('MONTH(t_peminjaman.tanggal_pinjam)', $bulan);
+            $this->db->where('DAY(t_peminjaman.tanggal_pinjam)', $hari);
+        } elseif (($tahun != null) && ($bulan != null) && ($hari == null)) {
+            $this->db->where('YEAR(t_peminjaman.tanggal_pinjam)', $tahun);
+            $this->db->where('MONTH(t_peminjaman.tanggal_pinjam)', $bulan);
+        } elseif (($tahun != null) && ($bulan == null) && ($hari == null)) {
+            $this->db->where('YEAR(t_peminjaman.tanggal_pinjam)', $tahun);
+        }
+        $this->db->where('status_pengembalian=1');
+        return $this->db->get();
+    }
+    public function LaporanBuku($tahun, $bulan, $hari)
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        if (($tahun != null) && ($bulan != null) && ($hari != null)) {
+            $this->db->where('YEAR(tanggal_masuk)', $tahun);
+            $this->db->where('MONTH(tanggal_masuk)', $bulan);
+            $this->db->where('DAY(tanggal_masuk)', $hari);
+        } elseif (($tahun != null) && ($bulan != null) && ($hari == null)) {
+            $this->db->where('YEAR(tanggal_masuk)', $tahun);
+            $this->db->where('MONTH(tanggal_masuk)', $bulan);
+        } elseif (($tahun != null) && ($bulan == null) && ($hari == null)) {
+            $this->db->where('YEAR(tanggal_masuk)', $tahun);
+        }
+        return $this->db->get();
+    }
+    public function LaporanPengembalian()
+    {
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_pengembalian.*,t_buku.*');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->join('t_pengembalian', 't_pengembalian.id_peminjaman=t_peminjaman.id_peminjaman', 'left');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+
+        $this->db->where('status_pengembalian=1');
+        return $this->db->get();
+    }
+    public function LaporanPeminjamanAll()
+    {
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_buku.*');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+        return $this->db->get();
+    }
+    public function KirimNotif()
+    {
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_buku.*,t_siswa.no_hp as hp_siswa,t_guru.no_hp as hp_guru');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+        $this->db->where('status_pengembalian=0');
+        return $this->db->get();
+    }
+
+    public function AmbilTahun()
+    {
+        $this->db->select('YEAR(tanggal_pinjam)');
+        $this->db->group_by('YEAR(tanggal_pinjam)');
+        $this->db->from('t_peminjaman');
+        return $this->db->get();
+    }
+    public function AmbilTahunBuku()
+    {
+        $this->db->select('YEAR(tanggal_masuk)');
+        $this->db->group_by('YEAR(tanggal_masuk)');
+        $this->db->from('t_buku');
+        return $this->db->get();
+    }
+    public function get_data_onecol($table, $col)
+    {
+        $this->db->select($col);
+        $this->db->from($table);
         return $this->db->get();
     }
 }

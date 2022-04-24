@@ -84,15 +84,15 @@
                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                    </div>
                    <?php if ($role == 1) {
-                        $id_url = $profile->id_profile;
+                        $id_url = $profile->id_siswa;
                     } elseif ($role == 2) {
                         $id_url = $profile->id_guru;
                     } ?>
-                   <form action="<?= base_url('Profile/EditProfile/' . $id_url) ?>" enctype="multipart/form-data" method="post">
+                   <form action="<?= base_url('Profile/EditProfile/') ?>" enctype="multipart/form-data" method="post">
                        <div class="modal-body">
                            <?php if ($role == 1) : ?>
                                <div class="form-group ">
-                                   <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_profile ?>" required="">
+                                   <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_siswa ?>" required=""> -->
                                    <input placeholder="Nama" name="nama" type="text" class="form-control " value="<?= $profile->nama ?>" required="">
                                    <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                </div>
@@ -111,7 +111,7 @@
                                </div>
                            <?php elseif ($role == 2) : ?>
                                <div class="form-group ">
-                                   <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_guru ?>" required="">
+                                   <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_guru ?>" required=""> -->
                                    <input placeholder="Nama" name="nama" type="text" class="form-control " value="<?= $profile->nama_guru ?>" required="">
                                    <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                </div>

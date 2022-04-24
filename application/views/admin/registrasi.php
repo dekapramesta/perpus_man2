@@ -90,7 +90,7 @@
                  $('#edit_regis').appendTo("body").modal('show');
                  $.ajax({
                      type: "POST",
-                     url: "<?php echo site_url('Admin/Registrasi/getRegister/') ?>" + id,
+                     url: "<?php echo site_url('SuperAdmin/Registrasi/getRegister/') ?>" + id,
                      data: {
                          [csrfName]: csrfHash,
                      },
@@ -124,7 +124,7 @@
                          </button>
                      </div>
                      <div class="modal-body">
-                         <form action="<?php echo base_url('Admin/Registrasi/csv_regist') ?>" method="post" enctype="multipart/form-data">
+                         <form action="<?php echo base_url('SiperAdmin/Registrasi/csv_regist') ?>" method="post" enctype="multipart/form-data">
                              <div class="form-group">
                                  <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
@@ -152,7 +152,7 @@
                          </button>
                      </div>
                      <div class="modal-body">
-                         <form action="<?php echo base_url('Admin/Registrasi/tambah_regist') ?>" method="post" enctype="multipart/form-data">
+                         <form action="<?php echo base_url('SuperAdmin/Registrasi/tambah_regist') ?>" method="post" enctype="multipart/form-data">
                              <div class="form-group">
                                  <input id="nisn" placeholder="NISN" type="text" name="nisn" class="form-control " required="">
                              </div>
@@ -189,7 +189,7 @@
                          </button>
                      </div>
                      <div class="modal-body">
-                         <form action="<?php echo base_url('Admin/Registrasi/edit_regist') ?>" method="post" enctype="multipart/form-data">
+                         <form action="<?php echo base_url('SuperAdmin/Registrasi/edit_regist') ?>" method="post" enctype="multipart/form-data">
                              <div class="form-group">
                                  <strong><label>NISN</label></strong>
                                  <input id="edit_id_register" type="text" name="id_register" class="form-control " required="">

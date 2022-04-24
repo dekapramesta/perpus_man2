@@ -36,9 +36,9 @@ class Register extends CI_Controller
         $this->form_validation->set_rules('nisn', 'NISN', 'required');
         $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
         $this->form_validation->set_rules('password', 'Password', 'required');
-        $this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required|is_unique[t_profile.nama]');
+        $this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required|is_unique[t_siswa.nama]');
         $this->form_validation->set_rules('email', 'Email', 'required');
-        $this->form_validation->set_rules('no_hp', 'No HP', 'required|is_unique[t_profile.no_hp]');
+        $this->form_validation->set_rules('no_hp', 'No HP', 'required|is_unique[t_siswa.no_hp]');
         $this->form_validation->set_rules('angkatan', 'Angkatan', 'required');
         $this->form_validation->set_rules('barcode', 'Barcode', 'required');
 
@@ -78,7 +78,7 @@ class Register extends CI_Controller
                     'angkatan' => $angkatan,
                     'nisn' => $nisn
                 );
-                $regis_profile = $this->Model_auth->daftar_user($data_profile, 't_profile');
+                $regis_profile = $this->Model_auth->daftar_user($data_profile, 't_siswa');
                 if ($regis_profile) {
                     $wherenisn = array(
                         'nisn' => $nisn
@@ -164,7 +164,7 @@ class Register extends CI_Controller
     public function checkingcode()
     {
         $code = $this->input->post('hashcode');
-        $data_regis['profile'] = $this->Model_auth->checkingcode_guru($code)->row();
+        $data_regis['profile'] = $this->Model_auth->checkingcode($code)->row();
         $data_regis['token'] = $this->security->get_csrf_hash();
         $data_regis['token_name'] = $this->security->get_csrf_token_name();
         if ($data_regis) {

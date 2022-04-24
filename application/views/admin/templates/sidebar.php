@@ -16,11 +16,19 @@
             </li>
 
             <li class="dropdown">
-                <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="file"></i><span>Laporan</span></a>
+                <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="book"></i><span>Perpustakaan</span></a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="chat.html">Peminjaman</a></li>
-                    <li><a class="nav-link" href="portfolio.html">Pengembalian</a></li>
-                    <li><a class="nav-link" href="blog.html">Buku Masuk</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPeminjaman') ?>">Peminjaman</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPengembalian') ?>">Pengembalian</a></li>
+                    <!-- <li><a class="nav-link" href="blog.html">Buku Masuk</a></li> -->
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="clipboard"></i><span>Laporan</span></a>
+                <ul class="dropdown-menu">
+                    <li><a class="nav-link" href="<?= base_url('Admin/Laporan/LaporanPeminjaman') ?>">Cetak Laporan Peminjaman</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/Laporan/BukuMasuk') ?>">Cetak Laporan Buku Masuk</a></li>
+                    <!-- <li><a class="nav-link" href="blog.html">Buku Masuk</a></li> -->
                 </ul>
             </li>
 

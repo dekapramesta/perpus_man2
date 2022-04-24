@@ -29,6 +29,8 @@
                                             <th>Peminjam</th>
                                             <th>Judul Buku</th>
                                             <th>Id Buku</th>
+                                            <th>Tanggal Booking</th>
+                                            <th>Status Booking</th>
                                             <th>Aksi</th>
 
                                         </tr>
@@ -39,9 +41,13 @@
 
                                             <tr>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
+                                                        echo "style = 'color : green;'";
+                                                    } elseif ($bk['status_pesan'] == 6) {
                                                         echo "style = 'color : red;'";
                                                     } ?>><?= $no; ?></td>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
+                                                        echo "style = 'color : green;'";
+                                                    } elseif ($bk['status_pesan'] == 6) {
                                                         echo "style = 'color : red;'";
                                                     } ?>><?php if ($bk['nama'] != null) {
                                                                 echo $bk['nama'];
@@ -49,11 +55,30 @@
                                                                 echo $bk['nama_guru'];
                                                             }  ?></td>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
+                                                        echo "style = 'color : green;'";
+                                                    } elseif ($bk['status_pesan'] == 6) {
                                                         echo "style = 'color : red;'";
                                                     } ?>><?= $bk['judul_buku'] ?></td>
                                                 <td <?php if ($bk['status_pesan'] == 1) {
+                                                        echo "style = 'color : green;'";
+                                                    } elseif ($bk['status_pesan'] == 6) {
                                                         echo "style = 'color : red;'";
                                                     } ?>><?= $bk['id_buku'] ?></td>
+                                                <td <?php if ($bk['status_pesan'] == 1) {
+                                                        echo "style = 'color : green;'";
+                                                    } elseif ($bk['status_pesan'] == 6) {
+                                                        echo "style = 'color : red;'";
+                                                    } ?>><?= date('Y-m-d', strtotime($bk['tgl_pemesanan']))  ?></td>
+                                                <td class="text-center" <?php if ($bk['status_pesan'] != 0) {
+                                                                            echo "style = 'color : red;'";
+                                                                        } ?>> <?php if ($bk['status_pesan'] == 0) {
+                                                                                    echo '<span class="badge badge-primary">Berlaku</span>';
+                                                                                } elseif ($bk['status_pesan'] == 1) {
+                                                                                    echo '<span class="badge badge-success">Sudah Dimbil</span>';
+                                                                                } elseif ($bk['status_pesan'] == 6) {
+                                                                                    echo '<span class="badge badge-danger">Invalid</span>';
+                                                                                } ?></td>
+
                                                 <td class="text-center">
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle w-75">Options</a>

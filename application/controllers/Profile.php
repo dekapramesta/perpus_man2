@@ -46,23 +46,39 @@ class Profile extends CI_Controller
             redirect("");
         }
     }
-    public function EditProfile($id)
+    public function EditProfile()
     {
-        if ($this->session->userdata('id_user') == $id) {
-            $data_edit = array(
-                'nama' => $this->input->post('nama'),
-                'email' => $this->input->post('email'),
-                'no_hp' => $this->input->post('no_hp'),
-                'angkatan' => $this->input->post('angkatan'),
-                'nisn' => $this->input->post('nisn'),
-            );
-            $data_where = array(
-                'id_profile' => $id
-            );
-            $this->Model_user->edit_data($data_where, $data_edit, 't_profile');
-            redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+        if ($this->session->userdata('id_user') != null) {
+            if ($this->session->userdata('role_id') == 1) {
+                $id_siswa = $this->db->get_where('t_siswa', array('id_user' => $this->session->userdata('id_user')))->row()->id_siswa;
+                $data_edit = array(
+                    'nama' => $this->input->post('nama'),
+                    'email' => $this->input->post('email'),
+                    'no_hp' => $this->input->post('no_hp'),
+                    'angkatan' => $this->input->post('angkatan'),
+                    'nisn' => $this->input->post('nisn'),
+                );
+                $data_where = array(
+                    'id_siswa' => $id_siswa
+                );
+                $this->Model_user->edit_data($data_where, $data_edit, 't_siswa');
+                redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+            } elseif ($this->session->userdata('role_id') == 2) {
+                $id_guru = $this->db->get_where('t_guru', array('id_user' => $this->session->userdata('id_user')))->row()->id_guru;
+                $data_edit = array(
+                    'nama_guru' => $this->input->post('nama'),
+                    'email' => $this->input->post('email'),
+                    'no_hp' => $this->input->post('no_hp'),
+                    'alamat' => $this->input->post('alamat'),
+                );
+                $data_where = array(
+                    'id_guru' => $id_guru
+                );
+                $this->Model_user->edit_data($data_where, $data_edit, 't_guru');
+                redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+            }
         } else {
-            redirect("");
+            redirect("/");
         }
     }
 }

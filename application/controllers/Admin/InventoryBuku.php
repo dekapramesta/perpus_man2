@@ -423,6 +423,21 @@ class InventoryBuku extends CI_Controller
     public function KembaliBuku()
     {
         // $id_buku = $this->input->post('barcode_return');
+        $aktifasi = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row()->status_fitur;
+        if ($aktifasi == 1) {
+            $id_user = $this->db->get_where('t_peminjaman', array('id_peminjaman' => $this->input->post('id_peminjaman')))->row()->id_user;
+            $role_id = $this->db->get_where('t_user', array('id_user' => $id_user))->row()->role_id;
+            if ($role_id == 1) {
+                $siswa = $this->db->get_where('t_siswa', array('id_user' => $id_user))->row();
+                $data_coin = array(
+                    "coin" => $siswa->coin + 2
+                );
+                $data_where = array(
+                    'id_siswa' => $siswa->id_siswa
+                );
+                $this->Model_admin->edit_data($data_where, $data_coin, 't_siswa');
+            }
+        }
         $data = array(
             'id_peminjaman' => $this->input->post('id_peminjaman'),
             'tgl_pengembalian' => date('Y-m-d'),
