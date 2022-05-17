@@ -71,7 +71,7 @@ function KirimWA()
                     $payload = json_encode($data);
 
                     // Prepare new cURL resource
-                    $ch = curl_init('https://deka-ciapi.herokuapp.com/send-message');
+                    $ch = curl_init('http://localhost:5000/send-message');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
                     curl_setopt($ch, CURLOPT_POST, true);
@@ -119,7 +119,7 @@ function KirimWA()
                     $payload = json_encode($data);
 
                     // Prepare new cURL resource
-                    $ch = curl_init('https://deka-ciapi.herokuapp.com/send-message');
+                    $ch = curl_init('http://localhost:5000/send-message');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
                     curl_setopt($ch, CURLOPT_POST, true);
@@ -139,24 +139,29 @@ function KirimWA()
                     $result = curl_exec($ch);
                     $hasil = json_decode($result);
 
+
                     // Close cURL session handle
                     curl_close($ch);
-                    if ($hasil->status == true) {
-                        $data_array = array(
-                            'id_peminjaman' => $dt['id_peminjaman'],
-                            'no_wa' => $dt['hp_guru'],
-                            'tanggal_wa' => date('Y-m-d'),
-                            'status_kirim' => 1
-                        );
-                        $CI->Model_admin->Tambah_data($data_array, 't_notice');
-                    } else {
-                        $data_array = array(
-                            'id_peminjaman' => $dt['id_peminjaman'],
-                            'no_wa' => $dt['hp_guru'],
-                            'tanggal_wa' => date('Y-m-d'),
-                            'status_kirim' => 0
-                        );
-                        $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                    if ($hasil) {
+
+
+                        if ($hasil->status == true) {
+                            $data_array = array(
+                                'id_peminjaman' => $dt['id_peminjaman'],
+                                'no_wa' => $dt['hp_guru'],
+                                'tanggal_wa' => date('Y-m-d'),
+                                'status_kirim' => 1
+                            );
+                            $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                        } else {
+                            $data_array = array(
+                                'id_peminjaman' => $dt['id_peminjaman'],
+                                'no_wa' => $dt['hp_guru'],
+                                'tanggal_wa' => date('Y-m-d'),
+                                'status_kirim' => 0
+                            );
+                            $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                        }
                     }
                 }
             }

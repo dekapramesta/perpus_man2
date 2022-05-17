@@ -179,7 +179,7 @@
                      </div>
                      <div id="container_pinjam" class="modal-body" style="display: none;">
                          <form action="<?= base_url('Admin/InventoryBuku/PinjamBuku') ?>" method="post" enctype="multipart/form-data">
-                             <div id="container_dup" class="form-group">
+                             <div id="container" class="form-group">
                                  <div class="pretty p-switch">
                                      <input id="togBtn" onchange="ModeGuru(event)" type="checkbox" value="0" />
                                      <div class="state p-primary">

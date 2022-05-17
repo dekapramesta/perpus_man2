@@ -59,7 +59,7 @@
                     <li><a class="<?php echo $this->uri->segment(1) == "Home" ?  "active" : '' ?>" href="<?= base_url('Home') ?>">Home</a></li>
                     <li><a class="<?php echo $this->uri->segment(1) == "Buku" ?  "active" : '' ?>" href="<?= base_url('Buku') ?>">Buku</a></li>
                     <li><a class="<?php echo $this->uri->segment(1) == "Ebook" ?  "active" : '' ?>" href="<?= base_url('Ebook') ?>">E-Book</a></li>
-                    <li><a href="#">Events</a></li>
+                    <li><a class="<?php echo $this->uri->segment(1) == "Events" ?  "active" : '' ?>" href="<?= base_url('Events') ?>">Events</a></li>
                     <li><a href="#">About</a></li>
                     <li><a href="#" onclick="modalcari()">Cari</a></li>
                     <?php if ($this->session->userdata('id_user') == null) : ?>

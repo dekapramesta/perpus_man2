@@ -36,6 +36,14 @@ class InventoryBuku extends CI_Controller
         $this->load->view('Admin/buku', $data);
         $this->load->view('Admin/templates/footer');
     }
+    public function PenambahanBuku()
+    {
+        # code...
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar');
+        $this->load->view('Admin/penambahan_buku');
+        $this->load->view('Admin/templates/footer');
+    }
     public function TambahBuku()
     {
         $dup_num = $this->input->post('dup_number');
@@ -67,6 +75,12 @@ class InventoryBuku extends CI_Controller
                     }
                 }
             }
+            $this->load->library('zend');
+            $this->zend->load('Zend/Barcode');
+            $file = Zend_Barcode::draw('code128', 'image', array('text' => $Primary_Barcode), array());
+            $code = time() . $Primary_Barcode;
+            imagepng($file, "./assets/img/Barcode/{$code}.png");
+            // return $code . '.png';
             $data = array(
                 'id_buku' => $Primary_Barcode,
                 'judul_buku' => $judul,
@@ -79,7 +93,8 @@ class InventoryBuku extends CI_Controller
                 'halaman' => $halaman,
                 'cover_buku' => $cover,
                 'status_buku' => 0,
-                'src_book' => $src_book
+                'src_book' => $src_book,
+                'barcode_pic' => $code . '.png'
             );
             $this->Model_admin->Tambah_data($data, 't_buku');
             redirect('Admin/InventoryBuku');
@@ -112,6 +127,11 @@ class InventoryBuku extends CI_Controller
                         }
                     }
                 }
+                $this->load->library('zend');
+                $this->zend->load('Zend/Barcode');
+                $file = Zend_Barcode::draw('code128', 'image', array('text' => $Primary_Barcode), array());
+                $code = time() . $Primary_Barcode;
+                imagepng($file, "./assets/img/Barcode/{$code}.png");
                 $data = array(
                     'id_buku' => $Primary_Barcode,
                     'judul_buku' => $judul,
@@ -124,7 +144,8 @@ class InventoryBuku extends CI_Controller
                     'halaman' => $halaman,
                     'cover_buku' => $cover,
                     'status_buku' => 0,
-                    'src_book' => $src_book
+                    'src_book' => $src_book,
+                    'barcode_pic' => $code . '.png'
                 );
                 $this->Model_admin->Tambah_data($data, 't_buku');
             }
@@ -465,5 +486,56 @@ class InventoryBuku extends CI_Controller
         $data['token'] = $this->security->get_csrf_hash();
         $data['guru'] = $this->Model_admin->getGuru()->result_array();
         echo json_encode($data);
+    }
+    public function CetakBarcode()
+    {
+        $data['buku'] = $this->Model_user->get_data_home('t_buku')->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar');
+        $this->load->view('Admin/cetak_barcode', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function CetakBarcodeBuku()
+    {
+
+        $data_buku = $this->input->post('buku', TRUE);
+        $buku = array();
+        foreach ($data_buku as $dt) {
+            $buku[] = $this->db->get_where('t_buku', array('judul_buku' => $dt))->result_array();
+        }
+        // foreach ($buku as $bk) {
+        //     foreach ($bk as $bl) {
+        //         echo $bl['judul_buku'];
+        //     }
+        // }
+        // die;
+        // var_dump($buku);
+        // die;
+        $this->data['buku'] = $buku;
+
+        $this->load->library('pdfgenerator');
+
+        // title dari pdf
+        $this->data['title_pdf'] = 'Cetak Buku Perpustakaan MAN 2 Ngawi';
+
+        // filename dari pdf ketika didownload
+        $file_pdf = 'cetak_barcode';
+        // setting paper
+        $paper = 'A4';
+        //orientasi paper potrait / landscape
+        $orientation = "portrait";
+
+        $html = $this->load->view('admin/barcode_buku', $this->data, true);
+
+        // run dompdf
+        $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);
+    }
+    public function BarcodeCetak($code)
+    {
+        $this->load->library('zend');
+        // Load in folder Zend
+        $this->zend->load('Zend/Barcode');
+        // Generate barcode
+        Zend_Barcode::render('code128', 'image', array('text' => $code), array('imageType' => 'png'));
     }
 }

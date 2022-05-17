@@ -10,13 +10,57 @@
                          </div>
                          <div class="card-body" id="card_search">
                              <div class="section-title mt-0">Kode Buku</div>
-                             <div class="form-group">
-                                 <input type="text" id="id_buku" class="form-control">
-                                 <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-                             </div>
-                             <div class="form-group">
-                                 <button onclick="CariBuku()" class="btn btn-primary w-100">Lihat</button>
-                             </div>
+                             <form id="pinjam_form">
+                                 <div class="form-group">
+                                     <input type="text" id="id_buku" class="form-control">
+                                     <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                                 </div>
+                                 <div class="form-group">
+                                     <button type="submit" class="btn btn-primary w-100">Lihat</button>
+                                 </div>
+                             </form>
+                             <script>
+                                 document.getElementById("pinjam_form").addEventListener('submit', function(e) {
+                                     e.preventDefault();
+                                     var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                                     var csrfHash = $('.txt_csrfname').val();
+                                     let place_search = document.getElementById('card_search')
+                                     let place_pinjam = document.getElementById('card_pinjam')
+                                     let idbuku = document.getElementById('id_buku').value;
+                                     $.ajax({
+                                         type: "POST",
+                                         url: "<?php echo site_url('Admin/InventoryBuku/getBook') ?>",
+                                         data: {
+                                             [csrfName]: csrfHash,
+                                             'barcode_book': idbuku
+
+                                         },
+                                         dataType: "JSON",
+                                         success: function(result) {
+                                             console.log(result)
+                                             if (result.buku == "unavailable") {
+                                                 $('.txt_csrfname').val(result.token);
+                                                 swal('Tidak Tersedia', 'Buku Masih Dipinjam', 'error');
+                                             } else if (result.buku == "booking") {
+                                                 $('.txt_csrfname').val(result.token);
+                                                 swal('Tidak Tersedia', 'Buku Telah Dipesan', 'error');
+                                             } else if (result.buku == false) {
+                                                 $('.txt_csrfname').val(result.token);
+                                                 swal('Tidak Tersedia', 'Buku Tidak Ada', 'error');
+                                             } else {
+                                                 console.log(result.buku)
+                                                 $('.txt_csrfname').val(result.token);
+                                                 document.getElementById('barcode_buku').value = result.buku.id_buku
+                                                 document.getElementById('judul_buku').value = result.buku.judul_buku
+                                                 place_search.style.display = "none";
+                                                 place_pinjam.style.display = "block";
+
+                                             }
+                                         }
+
+                                     });
+                                 });
+                             </script>
 
                          </div>
                          <div class="card-body" id="card_pinjam" style="display: none;">
@@ -218,46 +262,6 @@
 
  </div>
  <script>
-     function CariBuku() {
-         var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
-         var csrfHash = $('.txt_csrfname').val();
-         let place_search = document.getElementById('card_search')
-         let place_pinjam = document.getElementById('card_pinjam')
-         let idbuku = document.getElementById('id_buku').value;
-         $.ajax({
-             type: "POST",
-             url: "<?php echo site_url('Admin/InventoryBuku/getBook') ?>",
-             data: {
-                 [csrfName]: csrfHash,
-                 'barcode_book': idbuku
-
-             },
-             dataType: "JSON",
-             success: function(result) {
-                 console.log(result)
-                 if (result.buku == "unavailable") {
-                     $('.txt_csrfname').val(result.token);
-                     swal('Tidak Tersedia', 'Buku Masih Dipinjam', 'error');
-                 } else if (result.buku == "booking") {
-                     $('.txt_csrfname').val(result.token);
-                     swal('Tidak Tersedia', 'Buku Telah Dipesan', 'error');
-                 } else if (result.buku == false) {
-                     $('.txt_csrfname').val(result.token);
-                     swal('Tidak Tersedia', 'Buku Tidak Ada', 'error');
-                 } else {
-                     console.log(result.buku)
-                     $('.txt_csrfname').val(result.token);
-                     document.getElementById('barcode_buku').value = result.buku.id_buku
-                     document.getElementById('judul_buku').value = result.buku.judul_buku
-                     place_search.style.display = "none";
-                     place_pinjam.style.display = "block";
-
-                 }
-             }
-
-         });
-     }
-
      function ModeGuru(event) {
          var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
          var csrfHash = $('.txt_csrfname').val();
