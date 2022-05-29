@@ -11,9 +11,9 @@
                                          <h4>Buku</h4>
                                      </div>
                                      <div class="col text-right">
-                                         <button onclick="KembaliBuku()" type="button" class="btn btn-success" href="">Pengembalian Buku</button>
-                                         <button onclick="PinjamBuku()" type="button" class="btn btn-success" href="">Pinjam Buku</button>
-                                         <button onclick="addBook()" type="button" class="btn btn-primary" href="">Tambah Data</button>
+                                         <!-- <button onclick="KembaliBuku()" type="button" class="btn btn-success" href="">Pengembalian Buku</button>
+                                         <button onclick="PinjamBuku()" type="button" class="btn btn-success" href="">Pinjam Buku</button> -->
+                                         <a href="<?= base_url('Admin/InventoryBuku/PenambahanBuku') ?>" class="btn btn-primary">Tambah Data</a>
 
                                      </div>
                                  </div>

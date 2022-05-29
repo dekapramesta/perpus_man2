@@ -22,6 +22,7 @@ class Ebook extends CI_Controller
     public function index()
     {
         $data['getAllPdf'] = $this->db->get('t_ebook')->result_array();
+        $data['kategori'] = $this->db->get('t_kategori')->result_array();
         $this->load->view('templates/header');
         $this->load->view('user/ebook', $data);
         $this->load->view('templates/footer');
@@ -31,6 +32,14 @@ class Ebook extends CI_Controller
         $data['ebook'] = $this->db->get_where('t_ebook', array('id_ebook' => $id))->row();
         $this->load->view('templates/header');
         $this->load->view('user/detail_ebook', $data);
+        $this->load->view('templates/footer');
+    }
+    public function ByKategori($kategori)
+    {
+        $data['getAllPdf'] = $this->Model_user->SearchKategoriEbook($kategori)->result_array();
+        $data['kategori'] = $this->db->get('t_kategori')->result_array();
+        $this->load->view('templates/header');
+        $this->load->view('user/ebook', $data);
         $this->load->view('templates/footer');
     }
 }

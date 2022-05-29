@@ -1,20 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Home extends CI_Controller
+class Tentang extends CI_Controller
 {
-    public function __construct()
-    {
-
-        parent::__construct();
-
-        date_default_timezone_set('Asia/Jakarta');
-        if ($this->session->userdata('role_id') != 77) {
-            redirect('');
-        }
-        KirimWA();
-        time_booking();
-    }
 
     /**
      * Index Page for this controller.
@@ -29,13 +17,13 @@ class Home extends CI_Controller
      *
      * So any other public methods not prefixed with an underscore will
      * map to /index.php/welcome/<method_name>
-     * @seehttps://codeigniter.com/user_guide/general/urls.html
+     * @see https://codeigniter.com/user_guide/general/urls.html
      */
     public function index()
     {
-        $this->load->view('Admin/templates/header');
-        $this->load->view('Admin/templates/sidebar');
-        $this->load->view('Admin/home');
-        $this->load->view('Admin/templates/footer');
+
+        $this->load->view('templates/header');
+        $this->load->view('user/about');
+        $this->load->view('templates/footer');
     }
 }

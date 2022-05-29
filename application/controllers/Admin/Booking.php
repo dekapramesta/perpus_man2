@@ -53,8 +53,9 @@ class Booking extends CI_Controller
             }
             echo json_encode($data);
         } elseif ($idsiswa != null) {
+            $id_siswa = $this->db->get_where('t_siswa', array('nisn' => $idsiswa))->row()->id_user;
             $data['token'] = $this->security->get_csrf_hash();
-            $databuku = $this->Model_admin->getBooking($idsiswa)->result_array();
+            $databuku = $this->Model_admin->getBooking($id_siswa)->result_array();
             // var_dump($databuku);
             if ($databuku) {
                 foreach ($databuku as $dt) {

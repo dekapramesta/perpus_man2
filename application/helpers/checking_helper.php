@@ -53,9 +53,12 @@ function KirimWA()
     $CI->load->database();
     $data =  $CI->Model_admin->KirimNotif()->result_array();
     $checknotif =  $CI->Model_admin->get_data_onecol('t_notice', 'id_peminjaman')->result_array();
+    $notif = array();
     foreach ($checknotif as $ck) {
         $notif[] = $ck['id_peminjaman'];
     }
+    // var_dump($data);
+    // die;
 
     foreach ($data as $dt) {
         if (!in_array($dt['id_peminjaman'], $notif)) {

@@ -59,6 +59,7 @@
                                  </div>
                                  <div class="form-group" id="category">
                                      <label class="form-label">Kategori</label>
+                                     <div class="col" id="kene_cat"></div>
 
                                  </div>
                                  <div class="form-group">
@@ -209,7 +210,8 @@
                                      if (willDelete) {
                                          $('#cover_place').html('<input type="file" name="cover" class="form-control"/>');
                                          $('#src_place').html('<input type="text" name="src_book"  class="form-control" value="1"/>');
-                                         $('#category').append('<select name="kategori" class="form-control"><option value="Fiksi"> Fiksi</option><option >Option 2</option><option>Option 3 < /option></select>');
+                                         $('#category').append('<select name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
+                                         $(".select2").select2();
                                          formscan.style.display = "none";
                                          document.getElementById('form_addBook').style.display = "block";
                                      } else {

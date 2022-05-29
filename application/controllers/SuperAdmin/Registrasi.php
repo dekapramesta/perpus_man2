@@ -88,6 +88,35 @@ class Registrasi extends CI_Controller
             redirect('SuperAdmin/Registrasi/RegisterGuru');
         }
     }
+    public function edit_guru()
+    {
+        # code...
+        $id_register = $this->input->post('id_registerGuru');
+        $nama = $this->input->post('nama_guru');
+        $no_wa = $this->input->post('no_hp');
+        $code = $this->input->post('code');
+        $email = $this->input->post('email');
+        $data = $this->db->get_where('t_registerguru', array('id_registerGuru' => $id_register))->row();
+        if ($data->status_daftar == 0) {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
+        $code = $data->code;
+
+        $data_update = array(
+            'email' => $email,
+            'nama_guru' => $nama,
+            'no_hp' => $no_wa,
+            'status_daftar' => $status,
+            'code' => $code
+        );
+        $whereid = array(
+            'id_registerGuru' => $id_register
+        );
+        $this->Model_admin->edit_data($whereid, $data_update, 't_registerguru');
+        redirect('SuperAdmin/Registrasi/RegisterGuru');
+    }
     public function edit_regist()
     {
         $id_register = $this->input->post('id_register');
@@ -126,6 +155,68 @@ class Registrasi extends CI_Controller
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
+    public function getRegisterGuru($id)
+    {
+        $data['profile'] = $this->db->get_where('t_registerguru', array('id_registerGuru' => $id))->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        echo json_encode($data);
+    }
+    public function download()
+    {
+        $this->load->helper('download');
+        force_download('uploads/TemplateRegisSiswa.csv', NULL);
+
+        redirect('SuperAdmin/Registrasi');
+    }
+    public function download_guru()
+    {
+        $this->load->helper('download');
+        force_download('uploads/TemplateRegisGuru.csv', NULL);
+
+        redirect('SuperAdmin/Registrasi');
+    }
+    public function csv_guru()
+    {
+        # code...
+        $this->load->library('csvimport');
+        // $data['addressbook'] = $this->csv_model->get_addressbook();
+        // $data['error'] = '';    //initialize image upload error array to empty
+
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'csv';
+        $config['max_size'] = '1000';
+
+        $this->load->library('upload', $config);
+
+
+        // If upload failed, display error
+        if (!$this->upload->do_upload()) {
+            echo 'Empty';
+        } else {
+            $file_data = $this->upload->data();
+            $file_path =  './uploads/' . $file_data['file_name'];
+
+            if ($this->csvimport->get_array($file_path)) {
+                $csv_array = $this->csvimport->get_array($file_path);
+                // var_dump($csv_array);
+                // die;
+                foreach ($csv_array as $row) {
+                    $insert_data = array(
+                        'nama_guru' => $row['nama'],
+                        'email' => $row['email'],
+                        'code' =>  rand(100000, 999999),
+                        'no_hp' => $row['no_hp'],
+                        'status_daftar' => 0,
+                    );
+                    $this->Model_auth->Tambah_data($insert_data, 't_registerguru');
+                }
+                redirect('SuperAdmin/Registrasi/RegisterGuru');
+                //echo "<pre>"; print_r($insert_data);
+            } else {
+                echo 'cok';
+            }
+        }
+    }
     public function csv_regist()
     {
         $this->load->library('csvimport');
@@ -141,7 +232,7 @@ class Registrasi extends CI_Controller
 
         // If upload failed, display error
         if (!$this->upload->do_upload()) {
-            echo 'asu';
+            echo 'Empty';
         } else {
             $file_data = $this->upload->data();
             $file_path =  './uploads/' . $file_data['file_name'];

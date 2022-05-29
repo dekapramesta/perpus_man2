@@ -47,7 +47,7 @@
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle w-75">Options</a>
                                                         <div class="dropdown-menu">
-                                                            <a onclick="" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
+                                                            <a href="<?= base_url('Admin/InventoryPdf/DetailPdf/' . $pdf['id_ebook']) ?>" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
                                                             <a href="" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
                                                         </div>
                                                     </div>

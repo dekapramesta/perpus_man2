@@ -39,9 +39,10 @@ class InventoryBuku extends CI_Controller
     public function PenambahanBuku()
     {
         # code...
+        $data['kategori'] = $this->db->get('t_kategori')->result_array();
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar');
-        $this->load->view('Admin/penambahan_buku');
+        $this->load->view('Admin/penambahan_buku', $data);
         $this->load->view('Admin/templates/footer');
     }
     public function TambahBuku()
@@ -63,7 +64,7 @@ class InventoryBuku extends CI_Controller
                 $cover = $this->input->post('cover');
                 $kategori = implode(',', $this->input->post('kategori', TRUE));
             } else {
-                $kategori = $this->input->post('kategori');
+                $kategori = implode(',', $this->input->post('kategori', TRUE));
                 $cover = $_FILES['cover']['name'];
                 if ($cover != null) {
                     $config['upload_path'] = './assets/img/CoverBuku/';
@@ -115,7 +116,8 @@ class InventoryBuku extends CI_Controller
                     $cover = $this->input->post('cover');
                     $kategori = implode(',', $this->input->post('kategori', TRUE));
                 } else {
-                    $kategori = $this->input->post('kategori');
+                    $kategori = implode(',', $this->input->post('kategori', TRUE));
+
                     $cover = $_FILES['cover']['name'];
                     if ($cover != null) {
                         $config['upload_path'] = './assets/img/CoverBuku/';
@@ -395,6 +397,8 @@ class InventoryBuku extends CI_Controller
             );
             $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
         } elseif ($id_user != null) {
+            $id_siswa = $this->db->get_where('t_siswa', array('nisn' => $id_user))->row()->id_user;
+
             $id_buku = $this->input->post('barcode_buku');
             $lama_pinjam = $this->input->post('lama_pinjam');
             if ($lama_pinjam == 3) {
@@ -418,7 +422,7 @@ class InventoryBuku extends CI_Controller
             }
 
             $data = array(
-                'id_user' => $id_user,
+                'id_user' => $id_siswa,
                 'id_buku' => $id_buku,
                 'tanggal_pinjam' => date('Y-m-d'),
                 'tanggal_pengembalian' => $tgl_pengembalian

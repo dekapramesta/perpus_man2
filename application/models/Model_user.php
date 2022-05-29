@@ -50,6 +50,13 @@ class Model_user extends CI_Model
         $this->db->group_by('judul_buku');
         return $this->db->get();
     }
+    public function SearchKategoriEbook($keyword)
+    {
+        $this->db->select('*');
+        $this->db->from('t_ebook');
+        $this->db->like('kategori', $keyword);
+        return $this->db->get();
+    }
     public function Profile($id)
     {
         $this->db->where('t_user.id_user', $id);
@@ -66,6 +73,14 @@ class Model_user extends CI_Model
         $this->db->from('t_user');
         $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
         // $this->db->where('status_pengembalian=0');
+        return $this->db->get();
+    }
+    function buku_pag($number, $offset)
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->group_by('judul_buku');
+        $this->db->limit($number, $offset);
         return $this->db->get();
     }
 }

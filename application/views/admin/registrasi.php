@@ -13,6 +13,7 @@
                                      <div class="col text-right">
                                          <button onclick="modal_register()" type="button" class="btn btn-primary" href="">Tambah Data</button>
                                          <button onclick="modal_csv()" type="button" class="btn btn-primary" href="">Import CSV file</button>
+                                         <a href="<?= base_url('SuperAdmin/Registrasi/download') ?>" type="button" class="btn btn-primary" href="">Download</a>
 
 
                                      </div>
@@ -124,12 +125,11 @@
                          </button>
                      </div>
                      <div class="modal-body">
-                         <form action="<?php echo base_url('SiperAdmin/Registrasi/csv_regist') ?>" method="post" enctype="multipart/form-data">
+                         <form action="<?php echo base_url('SuperAdmin/Registrasi/csv_regist') ?>" method="post" enctype="multipart/form-data">
                              <div class="form-group">
                                  <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
                                  <input type="file" name="userfile">
-                                 <input type="submit" name="submit" value="UPLOAD" class="btn btn-primary">
                                  <!-- <input id="nisn" placeholder="NISN" type="text" name="nisn" class="form-control " required=""> -->
                              </div>
 

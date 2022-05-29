@@ -57,21 +57,13 @@
                          <div class="course-content text-center">
                              <h3 id="ktg">Kategori</h3>
                          </div>
-                         <div class="trainer d-flex justify-content-between align-items-center ">
-                             <div class="trainer-profile d-flex align-items-center">
-                                 <span class="mb-3">Fiksi </span>
+                         <?php foreach ($kategori as $ktg) : ?>
+                             <div onclick="window.location='<?= base_url('Ebook/ByKategori/' . $ktg['nama_kategori']) ?>'" style=" cursor: pointer;" class="trainer d-flex justify-content-between align-items-center ">
+                                 <div class="trainer-profile d-flex align-items-center">
+                                     <span class="mb-3"><?= $ktg['nama_kategori'] ?> </span>
+                                 </div>
                              </div>
-                         </div>
-                         <div class="trainer d-flex justify-content-between align-items-center ">
-                             <div class="trainer-profile d-flex align-items-center">
-                                 <span class="mb-3">Fiksi </span>
-                             </div>
-                         </div>
-                         <div class="trainer d-flex justify-content-between align-items-center ">
-                             <div class="trainer-profile d-flex align-items-center">
-                                 <span class="mb-3">Fiksi </span>
-                             </div>
-                         </div>
+                         <?php endforeach; ?>
                      </div>
                  </div>
 

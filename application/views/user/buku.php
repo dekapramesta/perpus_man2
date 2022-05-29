@@ -63,6 +63,22 @@
 
 
                      </div>
+                     <style>
+                         .page-item.active .page-link {
+                             z-index: 1;
+
+                             color: #ffff !important;
+                             background: #8FBC8F !important;
+                             border-color: #8FBC8F;
+
+                         }
+                     </style>
+                     <div class="col-lg-12 d-flex justify-content-center mt-3">
+
+                         <?php echo $this->pagination->create_links();
+                            ?>
+                     </div>
+
                  </div>
                  <div class="col">
                      <div class="course-item">

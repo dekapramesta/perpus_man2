@@ -191,4 +191,20 @@ class Model_admin extends CI_Model
         $this->db->from($table);
         return $this->db->get();
     }
+    public function GetAllSiswa()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_siswa');
+        $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
+        return $this->db->get();
+    }
+    public function GetAngkatan()
+    {
+        # code...
+        $this->db->select('angkatan');
+        $this->db->from('t_siswa');
+        $this->db->group_by('angkatan');
+        return $this->db->get();
+    }
 }
