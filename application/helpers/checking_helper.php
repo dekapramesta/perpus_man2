@@ -66,45 +66,26 @@ function KirimWA()
             $hari = date('Y-m-d', strtotime($dt['tanggal_pengembalian'] . '-1 days'));
             if ($hari_ini == $hari) {
                 if ($dt['role_id'] == 1) {
-                    $data = array(
-                        'number' => $dt['hp_siswa'],
-                        'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
-                    );
+                    $cek_wa = curl_init();
 
-                    $payload = json_encode($data);
+                    curl_setopt_array($cek_wa, array(
+                        CURLOPT_URL => 'http://nusagateway.com/api/check-number.php',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $dt['hp_siswa']),
+                    ));
 
-                    // Prepare new cURL resource
-                    $ch = curl_init('http://localhost:5000/send-message');
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                    $status_cek = curl_exec($cek_wa);
+                    $hasil_cek = json_decode($status_cek);
 
-                    // Set HTTP Header for POST request 
-                    curl_setopt(
-                        $ch,
-                        CURLOPT_HTTPHEADER,
-                        array(
-                            'Content-Type: application/json',
-                            'Content-Length: ' . strlen($payload)
-                        )
-                    );
+                    curl_close($cek_wa);
 
-                    // Submit the POST request
-                    $result = curl_exec($ch);
-                    $hasil = json_decode($result);
-
-                    // Close cURL session handle
-                    curl_close($ch);
-                    if ($hasil->status == true) {
-                        $data_array = array(
-                            'id_peminjaman' => $dt['id_peminjaman'],
-                            'no_wa' => $dt['hp_siswa'],
-                            'tanggal_wa' => date('Y-m-d'),
-                            'status_kirim' => 1
-                        );
-                        $CI->Model_admin->Tambah_data($data_array, 't_notice');
-                    } else {
+                    if ($hasil_cek->status == 'invalid') {
                         $data_array = array(
                             'id_peminjaman' => $dt['id_peminjaman'],
                             'no_wa' => $dt['hp_siswa'],
@@ -112,43 +93,107 @@ function KirimWA()
                             'status_kirim' => 0
                         );
                         $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                    } else {
+                        $data = array(
+                            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                            'phone' => $dt['hp_siswa'],
+                            'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
+                        );
+                        $curl = curl_init();
+
+                        curl_setopt_array($curl, array(
+                            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS => $data,
+                        ));
+
+                        $response = curl_exec($curl);
+                        $hasil = json_decode($response);
+
+                        curl_close($curl);
+
+                        if ($hasil->result == true) {
+                            $data_array = array(
+                                'id_peminjaman' => $dt['id_peminjaman'],
+                                'no_wa' => $dt['hp_siswa'],
+                                'tanggal_wa' => date('Y-m-d'),
+                                'status_kirim' => 1
+                            );
+                            $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                        } else {
+                            $data_array = array(
+                                'id_peminjaman' => $dt['id_peminjaman'],
+                                'no_wa' => $dt['hp_siswa'],
+                                'tanggal_wa' => date('Y-m-d'),
+                                'status_kirim' => 0
+                            );
+                            $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                        }
                     }
                 } elseif ($dt['role_id'] == 2) {
-                    $data = array(
-                        'number' => $dt['hp_guru'],
-                        'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
-                    );
+                    $cek_wa = curl_init();
 
-                    $payload = json_encode($data);
+                    curl_setopt_array($cek_wa, array(
+                        CURLOPT_URL => 'http://nusagateway.com/api/check-number.php',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $dt['hp_guru']),
+                    ));
 
-                    // Prepare new cURL resource
-                    $ch = curl_init('http://localhost:5000/send-message');
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                    $status_cek = curl_exec($cek_wa);
+                    $hasil_cek = json_decode($status_cek);
 
-                    // Set HTTP Header for POST request 
-                    curl_setopt(
-                        $ch,
-                        CURLOPT_HTTPHEADER,
-                        array(
-                            'Content-Type: application/json',
-                            'Content-Length: ' . strlen($payload)
-                        )
-                    );
+                    curl_close($cek_wa);
+                    // var_dump($hasil_cek);
+                    // die;
+                    if ($hasil_cek->status == 'invalid') {
+                        $data_array = array(
+                            'id_peminjaman' => $dt['id_peminjaman'],
+                            'no_wa' => $dt['hp_guru'],
+                            'tanggal_wa' => date('Y-m-d'),
+                            'status_kirim' => 0
+                        );
+                        $CI->Model_admin->Tambah_data($data_array, 't_notice');
+                    } else {
+                        // echo "kene";
+                        // die;
+                        $data = array(
+                            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                            'phone' => $dt['hp_guru'],
+                            'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
+                        );
+                        $curl = curl_init();
 
-                    // Submit the POST request
-                    $result = curl_exec($ch);
-                    $hasil = json_decode($result);
+                        curl_setopt_array($curl, array(
+                            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS => $data,
+                        ));
+
+                        $response = curl_exec($curl);
+                        $hasil = json_decode($response);
+
+                        curl_close($curl);
 
 
-                    // Close cURL session handle
-                    curl_close($ch);
-                    if ($hasil) {
-
-
-                        if ($hasil->status == true) {
+                        if ($hasil->result == true) {
                             $data_array = array(
                                 'id_peminjaman' => $dt['id_peminjaman'],
                                 'no_wa' => $dt['hp_guru'],
@@ -166,6 +211,36 @@ function KirimWA()
                             $CI->Model_admin->Tambah_data($data_array, 't_notice');
                         }
                     }
+
+
+                    // $payload = json_encode($data);
+
+                    // // Prepare new cURL resource
+                    // $ch = curl_init('http://localhost:5000/send-message');
+                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    // curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+                    // curl_setopt($ch, CURLOPT_POST, true);
+                    // curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+                    // // Set HTTP Header for POST request 
+                    // curl_setopt(
+                    //     $ch,
+                    //     CURLOPT_HTTPHEADER,
+                    //     array(
+                    //         'Content-Type: application/json',
+                    //         'Content-Length: ' . strlen($payload)
+                    //     )
+                    // );
+
+                    // // Submit the POST request
+                    // $result = curl_exec($ch);
+                    // $hasil = json_decode($result);
+
+
+                    // // Close cURL session handle
+                    // curl_close($ch);
+
+
                 }
             }
         }

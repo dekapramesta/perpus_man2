@@ -8,10 +8,9 @@
                             <div class="col">
                                 <div class="row ">
                                     <div class="col">
-                                        <h4>Data Siswa</h4>
+                                        <h4>Data Guru</h4>
                                     </div>
                                     <div class="col text-right">
-                                        <button onclick="modal_block()" type="button" class="btn btn-primary">Non Aktif Angkatan</button>
                                     </div>
                                 </div>
                             </div>
@@ -24,29 +23,25 @@
                                             <th class="text-center">
                                                 #
                                             </th>
-                                            <th>Nama Siswa</th>
+                                            <th>Nama Guru</th>
                                             <th>No HP</th>
                                             <th>Email</th>
-                                            <th>Angkatan</th>
-                                            <th>Nisn</th>
                                             <th>Status User</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $no = 0;
-                                        foreach ($siswa as $sw) : $no++; ?>
+                                        foreach ($guru as $gr) : $no++; ?>
                                             <tr>
                                                 <td>
                                                     <?= $no; ?>
                                                 </td>
-                                                <td><?= $sw['nama'] ?></td>
-                                                <td><?= $sw['no_hp'] ?></td>
-                                                <td><?= $sw['email'] ?></td>
-                                                <td><?= $sw['angkatan'] ?></td>
-                                                <td><?= $sw['nisn'] ?></td>
+                                                <td><?= $gr['nama_guru'] ?></td>
+                                                <td><?= $gr['no_hp'] ?></td>
+                                                <td><?= $gr['email'] ?></td>
                                                 <td class="text-center">
-                                                    <?php if ($sw['status_block'] == 0) { ?>
+                                                    <?php if ($gr['status_block'] == 0) { ?>
                                                         <div class="badge badge-success badge-shadow w-75">Aktif</div>
                                                     <?php } else { ?>
                                                         <div class="badge badge-danger badge-shadow">Non-Aktif</div>
@@ -58,12 +53,12 @@
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
                                                         <div class="dropdown-menu">
-                                                            <a onclick="edit_dts(<?= $sw['id_siswa'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                            <a onclick="ganti_pass(<?= $sw['id_user'] ?>)" class="dropdown-item has-icon"><i class="fas fa-user-shield"></i> Ganti Password</a>
-                                                            <?php if ($sw['status_block'] == 0) { ?>
-                                                                <a class="dropdown-item has-icon" href="<?= base_url('SuperAdmin/DataUser/UbahStatusById/' . $sw['id_user']) ?>"><i class="fas fa-times"></i>Non Aktif User</a>
+                                                            <a onclick="edit_dtg(<?= $gr['id_guru'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
+                                                            <a onclick="ganti_pass(<?= $gr['id_user'] ?>)" class="dropdown-item has-icon"><i class="fas fa-user-shield"></i> Ganti Password</a>
+                                                            <?php if ($gr['status_block'] == 0) { ?>
+                                                                <a class="dropdown-item has-icon" href="<?= base_url('SuperAdmin/DataUser/UbahStatusById/' . $gr['id_user']) ?>"><i class="fas fa-times"></i>Non Aktif User</a>
                                                             <?php } else { ?>
-                                                                <a class="dropdown-item has-icon" href="<?= base_url('SuperAdmin/DataUser/UbahStatusById/' . $sw['id_user']) ?>"><i class="fas fa-check"></i>Aktifkan User</a>
+                                                                <a class="dropdown-item has-icon" href="<?= base_url('SuperAdmin/DataUser/UbahStatusById/' . $gr['id_user']) ?>"><i class="fas fa-check"></i>Aktifkan User</a>
                                                             <?php } ?>
                                                         </div>
                                                     </div>
@@ -81,13 +76,13 @@
 
         </div>
         <script>
-            function edit_dts(id) {
+            function edit_dtg(id) {
                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
                 var csrfHash = $('.txt_csrfname').val();
                 $('#edit_datasiswa').appendTo("body").modal('show');
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo site_url('SuperAdmin/DataUser/getSiswa/') ?>" + id,
+                    url: "<?php echo site_url('SuperAdmin/DataUser/getGuru/') ?>" + id,
                     data: {
                         [csrfName]: csrfHash,
                     },
@@ -95,12 +90,10 @@
                     success: function(resultData) {
                         console.log(resultData)
                         $('.txt_csrfname').val(resultData.token);
-                        $('#edit_id_siswa').val(resultData.profile.id_siswa);
-                        $('#edit_nama').val(resultData.profile.nama);
+                        $('#edit_id_guru').val(resultData.profile.id_guru);
+                        $('#edit_nama').val(resultData.profile.nama_guru);
                         $('#edit_nohp').val(resultData.profile.no_hp);
                         $('#edit_email').val(resultData.profile.email);
-                        $('#edit_nisn').val(resultData.profile.nisn);
-                        $('#edit_angkatan').val(resultData.profile.angkatan);
 
                     }
 
@@ -163,33 +156,27 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateSiswa') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateGuru') ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <strong><label>Nama</label></strong>
-                                <input id="edit_id_siswa" type="text" name="id_siswa" class="form-control " required="">
-                                <input id="edit_nama" placeholder="Nama Guru" type="text" name="nama" class="form-control " required="">
+                                <input id="edit_id_guru" type="text" name="id_guru" class="form-control " required="">
+                                <input id="edit_nama" type="text" name="nama_guru" class="form-control " required="">
                             </div>
                             <div class="form-group">
                                 <strong><label>No HP</label></strong>
-                                <input id="edit_nohp" placeholder="Nama" type="text" name="no_hp" class="form-control" required="">
+                                <input id="edit_nohp" type="text" name="no_hp" class="form-control" required="">
                             </div>
                             <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
                             <!-- <div class="form-group">
                                  <input placeholder="Code" type="text" name="code" class="form-control" required="">
                              </div> -->
-                            <div class="form-group">
-                                <strong><label>Angakatan</label></strong>
-                                <input id="edit_angkatan" placeholder="No Whatssapp" type="text" name="angkatan" class="form-control" required="">
-                            </div>
+
                             <div class="form-group">
                                 <strong><label>Email</label></strong>
-                                <input id="edit_email" placeholder="Barcode" type="text" name="email" class="form-control" required="">
+                                <input id="edit_email" type="text" name="email" class="form-control" required="">
                             </div>
-                            <div class="form-group">
-                                <strong><label>Nisn</label></strong>
-                                <input id="edit_nisn" placeholder="Barcode" type="text" name="nisn" class="form-control" required="">
-                            </div>
+
                             <div align="right">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                                 <button type="submit" class="btn btn-primary">Simpan</button>

@@ -6,11 +6,11 @@
                  <div class="col-12 col-md-12 col-lg-10">
                      <div class="card">
                          <div class="card-header">
-                             <h4>Cetak Barcode Guru</h4>
+                             <h4>Cetak Barcode</h4>
                          </div>
                          <div class="card-body" id="card_kembali">
                              <form action="<?= base_url('Admin/InventoryBuku/CetakBarcodeBuku') ?>" method="post" enctype="multipart/form-data">
-                                 <div class="section-title">Tahun</div>
+                                 <div class="section-title">Buku</div>
                                  <div class="form-group">
                                      <select name="buku[]" class="form-control w-100 select2" multiple="" id="pilih_buku">
                                          <?php foreach ($buku as $bk) : ?>

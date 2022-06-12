@@ -44,62 +44,147 @@ class Events extends CI_Controller
         $coin = (int) $siswa->coin;
         if ($coin >= $hadiah) {
             $kode = rand(100000, 999999);
-            $data_array = array(
-                'id_penukaran' => $kode,
-                'id_siswa' => $siswa->id_siswa,
-                'id_hadiah' => $id_hadiah,
-                'status_penukaran' => 0
-            );
-            $kirim = $this->Model_user->Tambah_data($data_array, 't_penukaran');
-            if ($kirim) {
-                $where = array(
-                    'id_siswa' => $siswa->id_siswa
-                );
-                $data_update = array(
-                    'coin' => $coin - $hadiah
-                );
-                $this->Model_user->Edit_data($where, $data_update, 't_siswa');
+            $cek_wa = curl_init();
+
+            curl_setopt_array($cek_wa, array(
+                CURLOPT_URL => 'http://nusagateway.com/api/check-number.php',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $siswa->no_hp),
+            ));
+
+            $status_cek = curl_exec($cek_wa);
+            $hasil_cek = json_decode($status_cek);
+
+            curl_close($cek_wa);
+            // var_dump($hasil_cek);
+            // die;
+            if ($hasil_cek->status == "valid") {
                 $data = array(
-                    'number' => $siswa->no_hp,
+                    'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                    'phone' => $siswa->no_hp,
                     'message' => 'Selamat Coin Berhasil Ditukarkan, Berikut Kode Penukaran : ' . $kode
                 );
+                $curl = curl_init();
 
-                $payload = json_encode($data);
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $data,
+                ));
 
-                // Prepare new cURL resource
-                $ch = curl_init('http://localhost:5000/send-message');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                $response = curl_exec($curl);
+                $hasil = json_decode($response);
 
-                // Set HTTP Header for POST request 
-                curl_setopt(
-                    $ch,
-                    CURLOPT_HTTPHEADER,
-                    array(
-                        'Content-Type: application/json',
-                        'Content-Length: ' . strlen($payload)
-                    )
-                );
+                curl_close($curl);
+                if ($hasil->result == true) {
+                    $data_array = array(
+                        'id_penukaran' => $kode,
+                        'id_siswa' => $siswa->id_siswa,
+                        'id_hadiah' => $id_hadiah,
+                        'status_penukaran' => 0
+                    );
+                    $kirim = $this->Model_user->Tambah_data($data_array, 't_penukaran');
+                    if ($kirim) {
+                        $where = array(
+                            'id_siswa' => $siswa->id_siswa
+                        );
+                        $data_update = array(
+                            'coin' => $coin - $hadiah
+                        );
+                        $this->Model_user->Edit_data($where, $data_update, 't_siswa');
+                    }
+                } else {
+                    $this->session->set_flashdata(
+                        'pesan',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+				<script type ="text/JavaScript">swal("Gagal","Gagal Penukaran","error");</script>'
+                    );
+                }
 
-                // Submit the POST request
-                $result = curl_exec($ch);
-                $hasil = json_decode($result);
+                // $data_array = array(
+                //     'id_penukaran' => $kode,
+                //     'id_siswa' => $siswa->id_siswa,
+                //     'id_hadiah' => $id_hadiah,
+                //     'status_penukaran' => 0
+                // );
+                // $kirim = $this->Model_user->Tambah_data($data_array, 't_penukaran');
+                // if ($kirim) {
+                //     $where = array(
+                //         'id_siswa' => $siswa->id_siswa
+                //     );
+                //     $data_update = array(
+                //         'coin' => $coin - $hadiah
+                //     );
+                //     $this->Model_user->Edit_data($where, $data_update, 't_siswa');
+                //     $data = array(
+                //         'number' => $siswa->no_hp,
+                //         'message' => 'Selamat Coin Berhasil Ditukarkan, Berikut Kode Penukaran : ' . $kode
+                //     );
 
-                // Close cURL session handle
-                curl_close($ch);
+                //     $payload = json_encode($data);
+
+                //     // Prepare new cURL resource
+                //     $ch = curl_init('http://localhost:5000/send-message');
+                //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                //     curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+                //     curl_setopt($ch, CURLOPT_POST, true);
+                //     curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+                //     // Set HTTP Header for POST request 
+                //     curl_setopt(
+                //         $ch,
+                //         CURLOPT_HTTPHEADER,
+                //         array(
+                //             'Content-Type: application/json',
+                //             'Content-Length: ' . strlen($payload)
+                //         )
+                //     );
+
+                //     // Submit the POST request
+                //     $result = curl_exec($ch);
+                //     $hasil = json_decode($result);
+
+                //     // Close cURL session handle
+                //     curl_close($ch);
                 $this->session->set_flashdata(
                     'pesan',
                     '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-				<script type ="text/JavaScript">swal("Success","Sukses Penukaran","success");</script>'
+                <script type ="text/JavaScript">swal("Success","Sukses Penukaran","success");</script>'
+                );
+                // }
+            } elseif ($hasil_cek->status == "invalid") {
+                $this->session->set_flashdata(
+                    'pesan',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+				<script type ="text/JavaScript">swal("Gagal","No Tidak Terdaftar Whatsapp","error");</script>'
+                );
+            } else {
+                $this->session->set_flashdata(
+                    'pesan',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+				<script type ="text/JavaScript">swal("Gagal","Gagal Penukaran","error");</script>'
                 );
             }
+            // var_dump($hasil_cek);
+            // die;
+
         } else {
             $this->session->set_flashdata(
                 'pesan',
                 '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-				<script type ="text/JavaScript">swal("Gagal","Gagal Penukaran","error");</script>'
+				<script type ="text/JavaScript">swal("Gagal","Koin Kurang","error");</script>'
             );
         }
         redirect('Events', 'refresh');

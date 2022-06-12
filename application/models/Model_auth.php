@@ -40,8 +40,12 @@ class Model_auth extends CI_Model
         if ($cek->num_rows() > 0) {
             $hasil = $cek->row();
             if (password_verify($password, $hasil->password)) {
-
-                return $hasil;
+                if ($hasil->status_block == 0) {
+                    return $hasil;
+                } else {
+                    $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Akun Non-Aktif!</div>');
+                    redirect('Login');
+                }
             } else {
 
                 return array();

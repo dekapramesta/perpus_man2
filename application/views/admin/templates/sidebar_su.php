@@ -15,7 +15,7 @@
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="file"></i><span>Data User</span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser') ?>">Siswa</a></li>
-                    <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser') ?>">Guru</a></li>
+                    <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser/DataGuru') ?>">Guru</a></li>
                 </ul>
             </li>
             <li class="dropdown ">
@@ -24,7 +24,7 @@
             </li>
 
             <li class="dropdown ">
-                <a href="index.html" class="nav-link "><i data-feather="info"></i><span>Profile Perpus</span></a>
+                <a href="<?= base_url('SuperAdmin/ProfilePerpus') ?>" class="nav-link "><i data-feather="info"></i><span>Profile Perpus</span></a>
                 <!-- <a href="<?= base_url('Admin/Registrasi') ?>" class="nav-link "><i data-feather="monitor"></i><span>Registrasi Siswa</span></a> -->
             </li>
 

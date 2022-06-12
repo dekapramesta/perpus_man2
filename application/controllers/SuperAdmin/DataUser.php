@@ -37,6 +37,15 @@ class DataUser extends CI_Controller
         $this->load->view('Admin/DataSiswa', $data);
         $this->load->view('Admin/templates/footer');
     }
+    public function DataGuru()
+    {
+        # code...
+        $data['guru'] = $this->Model_admin->GetAllGuru()->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar_su');
+        $this->load->view('Admin/DataGuru', $data);
+        $this->load->view('Admin/templates/footer');
+    }
     public function UbahStatus()
     {
         # code...
@@ -73,14 +82,24 @@ class DataUser extends CI_Controller
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_user');
 
-
+        if ($data->role_id == 1) {
+            redirect('SuperAdmin/DataUser');
+        } elseif ($data->role_id == 2) {
+            redirect('SuperAdmin/DataUser/DataGuru');
+        }
         // $this->Model_admin->edit_data($whereid, $data_update, 't_registerguru');
-        redirect('SuperAdmin/DataUser');
     }
     public function getSiswa($id)
     {
         # code...
         $data['profile'] = $this->db->get_where('t_siswa', array('id_siswa' => $id))->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        echo json_encode($data);
+    }
+    public function getGuru($id)
+    {
+        # code...
+        $data['profile'] = $this->db->get_where('t_guru', array('id_guru' => $id))->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
@@ -99,5 +118,38 @@ class DataUser extends CI_Controller
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_siswa');
         redirect('SuperAdmin/DataUser');
+    }
+    public function UpdateGuru()
+    {
+        # code...
+        $data_update = array(
+            'nama_guru' => $this->input->post('nama_guru'),
+            'email' => $this->input->post('email'),
+            'no_hp' => $this->input->post('no_hp'),
+
+        );
+        $whereid = array(
+            'id_guru' => $this->input->post('id_guru')
+        );
+        $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
+        redirect('SuperAdmin/DataUser/DataGuru');
+    }
+
+    function UbahPassword()
+    {
+        # code...
+        $data = $this->db->get_where('t_user', array('id_user' => $this->input->post('id_user')))->row();
+        $data_update = array(
+            'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+        );
+        $whereid = array(
+            'id_user' => $this->input->post('id_user')
+        );
+        $this->Model_admin->edit_data($whereid, $data_update, 't_user');
+        if ($data->role_id == 1) {
+            redirect('SuperAdmin/DataUser');
+        } elseif ($data->role_id == 2) {
+            redirect('SuperAdmin/DataUser/DataGuru');
+        }
     }
 }

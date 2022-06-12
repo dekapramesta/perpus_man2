@@ -83,7 +83,7 @@ class InventoryBuku extends CI_Controller
             imagepng($file, "./assets/img/Barcode/{$code}.png");
             // return $code . '.png';
             $data = array(
-                'id_buku' => $Primary_Barcode,
+                'id_buku' => trim(preg_replace('/\\s+/', ' ', $Primary_Barcode)),
                 'judul_buku' => $judul,
                 'kategori' => $kategori,
                 'kode_buku' => $isbn_code,
@@ -91,6 +91,7 @@ class InventoryBuku extends CI_Controller
                 'penulis' => $penulis,
                 'tahun_terbit' => $tahun_terbit,
                 'tanggal_masuk' => $tanggal_masuk,
+                'lokasi_buku' => $this->input->post('lokasi_buku'),
                 'halaman' => $halaman,
                 'cover_buku' => $cover,
                 'status_buku' => 0,
@@ -135,7 +136,7 @@ class InventoryBuku extends CI_Controller
                 $code = time() . $Primary_Barcode;
                 imagepng($file, "./assets/img/Barcode/{$code}.png");
                 $data = array(
-                    'id_buku' => $Primary_Barcode,
+                    'id_buku' => trim(preg_replace('/\\s+/', ' ', $Primary_Barcode)),
                     'judul_buku' => $judul,
                     'kategori' => $kategori,
                     'kode_buku' => $isbn_code,
@@ -143,6 +144,7 @@ class InventoryBuku extends CI_Controller
                     'penulis' => $penulis,
                     'tahun_terbit' => $tahun_terbit,
                     'tanggal_masuk' => $tanggal_masuk,
+                    'lokasi_buku' => $this->input->post('lokasi_buku'),
                     'halaman' => $halaman,
                     'cover_buku' => $cover,
                     'status_buku' => 0,
@@ -157,6 +159,7 @@ class InventoryBuku extends CI_Controller
     public function DetailBuku($idbuku)
     {
         $databuku = $this->db->get_where('t_buku', array('id_buku' => $idbuku))->row();
+
         $data['category'] = $this->db->get('t_kategori')->result_array();
         if ($databuku->status_buku == 1) {
             $data['buku'] = $this->Model_admin->DetailBuku($idbuku)->row();

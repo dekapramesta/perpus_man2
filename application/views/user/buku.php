@@ -75,7 +75,9 @@
                      </style>
                      <div class="col-lg-12 d-flex justify-content-center mt-3">
 
-                         <?php echo $this->pagination->create_links();
+                         <?php if ($this->uri->segment(2) != 'SearchBuku') {
+                                echo $this->pagination->create_links();
+                            }
                             ?>
                      </div>
 

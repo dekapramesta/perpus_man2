@@ -48,7 +48,7 @@
 
                                  <div class="form-group">
                                      <label for="">Deskripsis / Sinopsis</label>
-                                     <textarea id="sinopsis" name="desc" class="form-control" rows="3" h-100>asjakj</textarea>
+                                     <textarea id="sinopsis" name="desc" class="form-control" rows="3" h-100></textarea>
 
                                  </div>
 
@@ -75,6 +75,10 @@
                                      <input id="halaman" placeholder="Halaman" type="text" name="halaman" class="form-control" required="">
                                  </div>
                                  <div class="form-group">
+                                     <label for="">Lokasi Buku</label>
+                                     <input id="lokasi" placeholder="Lokasi Buku" type="text" name="lokasi_buku" class="form-control" required="">
+                                 </div>
+                                 <div class="form-group">
                                      <label for="">Cover</label>
                                      <div id="cover_place">
 
@@ -87,7 +91,7 @@
 
                                  <div class="row justify-content-between">
                                      <div align="left">
-                                         <button type="button" onclick="back_scan()" class="btn btn-success ml-3">Back To Scan</button>
+                                         <button type="button" onclick="back_scan_add()" class="btn btn-success ml-3">Back To Scan</button>
 
                                      </div>
                                      <div align="right">
@@ -191,7 +195,7 @@
                                  }
                              });
                              $('#cover_place').html('<input type="text" class="form-control" name="cover" value="' + takdir.imageLinks.thumbnail + '"/>');
-                             $('#src_place').html('<input type="text" name="src_book" class="form-control" value="0"/>');
+                             $('#src_place').html('<input hidden type="text" name="src_book" class="form-control" value="0"/>');
 
                              //  $.each(takdir.imageLinks, function(i, gambar) {
                              //      console.log(gambar.thumbnail)
@@ -209,7 +213,7 @@
                                  .then((willDelete) => {
                                      if (willDelete) {
                                          $('#cover_place').html('<input type="file" name="cover" class="form-control"/>');
-                                         $('#src_place').html('<input type="text" name="src_book"  class="form-control" value="1"/>');
+                                         $('#src_place').html('<input hidden type="text" name="src_book"  class="form-control" value="1"/>');
                                          $('#category').append('<select name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
                                          $(".select2").select2();
                                          formscan.style.display = "none";
@@ -234,7 +238,7 @@
                              .then((willDel) => {
                                  if (willDel) {
                                      $('#cover_place').html('<input type="file" name"cover" class="form-control"/>');
-                                     $('#src_place').html('<input type="text" name="src_book" class="form-control" value="1"/>');
+                                     $('#src_place').html('<input hidden type="text" name="src_book" class="form-control" value="1"/>');
                                      formscan.style.display = "none";
                                      document.getElementById('form_addBook').style.display = "block";
                                  } else {
@@ -261,6 +265,26 @@
                  $('#dup_num').remove()
                  console.log('asu')
              }
+         }
+
+         function back_scan_add() {
+
+             document.getElementById('form_scan').style.display = "block";
+             document.getElementById('form_addBook').style.display = "none";
+             document.getElementById('isbn_code_add').value = " ";
+             document.getElementById('sinopsis').innerHTML = " ";
+             document.getElementById('tahun_terbit').value = " ";
+             //  document.getElementById('tanggal_masuk').value = " ";
+             document.getElementById('halaman').value = " ";
+             document.getElementById('lokasi').value = " ";
+             document.getElementById('judul').value = " ";
+             document.getElementById('penulis').value = " ";
+             $('#togBtn').prop('checked', false);
+             $('#ctg_place').remove()
+             $('#dup_num').remove()
+             $('#cover_place').html('');
+             $('#src_place').html('');
+
          }
      </script>
 

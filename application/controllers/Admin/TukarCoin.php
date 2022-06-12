@@ -74,4 +74,14 @@ class TukarCoin extends CI_Controller
             redirect('Admin/TukarCoin');
         }
     }
+    public function getData()
+    {
+        # code...
+        $id_penukaran = $this->input->post('kode_render');
+        $data_penukaran = $this->Model_admin->getPenukaranData($id_penukaran)->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        $data['penukaran'] = $data_penukaran;
+        echo json_encode($data);
+        // echo json_encode('oi');
+    }
 }

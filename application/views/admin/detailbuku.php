@@ -66,6 +66,11 @@
                                              <p class="text-muted"><?= $buku->tanggal_masuk ?></p>
                                          </div>
                                          <div class="col-md-3 col-6 mt-3">
+                                             <strong>Lokasi Buku</strong>
+                                             <br>
+                                             <p class="text-muted"><?= $buku->lokasi_buku ?></p>
+                                         </div>
+                                         <div class="col-md-3 col-6 mt-3">
                                              <strong>Status Buku</strong>
                                              <br>
                                              <p class="text-muted"><?php if ($buku->status_buku == 0) {

@@ -199,12 +199,30 @@ class Model_admin extends CI_Model
         $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
         return $this->db->get();
     }
+    public function GetAllGuru()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_guru');
+        $this->db->join('t_user', 't_user.id_user=t_guru.id_user', 'left');
+        return $this->db->get();
+    }
     public function GetAngkatan()
     {
         # code...
         $this->db->select('angkatan');
         $this->db->from('t_siswa');
         $this->db->group_by('angkatan');
+        return $this->db->get();
+    }
+    public function getPenukaranData($id)
+    {
+        # code...
+        $this->db->where('t_penukaran.id_penukaran', $id);
+        $this->db->select('*');
+        $this->db->from('t_penukaran');
+        $this->db->join('t_siswa', 't_siswa.id_siswa=t_penukaran.id_siswa', 'left');
+        $this->db->join('t_hadiah', 't_hadiah.id_hadiah=t_penukaran.id_hadiah', 'left');
         return $this->db->get();
     }
 }

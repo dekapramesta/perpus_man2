@@ -50,6 +50,15 @@ class Model_user extends CI_Model
         $this->db->group_by('judul_buku');
         return $this->db->get();
     }
+    public function SearchKategoriBuku($keyword, $number, $offset)
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->like('kategori', $keyword);
+        $this->db->group_by('judul_buku');
+        $this->db->limit($number, $offset);
+        return $this->db->get();
+    }
     public function SearchKategoriEbook($keyword)
     {
         $this->db->select('*');
@@ -81,6 +90,16 @@ class Model_user extends CI_Model
         $this->db->from('t_buku');
         $this->db->group_by('judul_buku');
         $this->db->limit($number, $offset);
+        return $this->db->get();
+    }
+    public function BookHome()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->group_by('judul_buku');
+        $this->db->order_by('rand()');
+        $this->db->limit(3);
         return $this->db->get();
     }
 }

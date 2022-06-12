@@ -1,5 +1,5 @@
   <!-- ======= Hero Section ======= -->
-  <section id="hero" class="d-flex justify-content-center align-items-center" style="background: url('<?= base_url('assets/img/bg-library.jpg') ?>') top center; ">
+  <section id="hero" class="d-flex justify-content-center align-items-center" style="background: url('<?= base_url('assets/img/' . profile_perpus()->banner) ?>') top center; ">
       <!-- <img src=" <?= base_url('assets/img/bg-library.jpg') ?>" alt="..." /> -->
       <div class="container position-relative" data-aos="zoom-in" data-aos-delay="100">
           <h1>Perpustakaan,<br />Man 2 Ngawi</h1>
@@ -95,17 +95,17 @@
                               </div> -->
                               <div class="col-xl-6 d-flex align-items-stretch w-50 ">
                                   <div class="icon-box mt-4 mt-xl-0">
-                                      <i class="bx"><span data-purecounter-start="0" data-purecounter-end="64" data-purecounter-duration="1" class="purecounter"></span>
+                                      <i class="bx"><span data-purecounter-start="0" data-purecounter-end="<?= $total_buku ?>" data-purecounter-duration="1" class="purecounter"></span>
                                       </i>
                                       <h4>Buku</h4>
-                                      <p>Saat ini ada 64 Buku di perpustakaan</p>
+                                      <p>Saat ini ada <?= $total_buku ?> Buku di perpustakaan</p>
                                   </div>
                               </div>
                               <div class="col-xl-6 d-flex align-items-stretch w-50">
                                   <div class="icon-box mt-4 mt-xl-0">
-                                      <i class="bx"><span data-purecounter-start="0" data-purecounter-end="89" data-purecounter-duration="1" class="purecounter"></span></i>
+                                      <i class="bx"><span data-purecounter-start="0" data-purecounter-end="<?= $total_ebook ?>" data-purecounter-duration="1" class="purecounter"></span></i>
                                       <h4>E-Book</h4>
-                                      <p>Saat ini ada 89 E-Book yang tersedia</p>
+                                      <p>Saat ini ada <?= $total_ebook ?> E-Book yang tersedia</p>
                                   </div>
                               </div>
                           </div>
@@ -152,7 +152,7 @@
           <div class="container" data-aos="fade-up">
               <div class="section-title">
                   <h2>Buku</h2>
-                  <p>Populer Buku</p>
+                  <p>Rekomendasi Buku</p>
               </div>
 
               <div class="row" data-aos="zoom-in" data-aos-delay="100">

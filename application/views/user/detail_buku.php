@@ -230,7 +230,7 @@
             <form action="<?= base_url('Buku/BookingBuku') ?>" enctype="multipart/form-data" method="post">
                 <div class="modal-body">
                     <p>Apa kau Yakin Ingin Meminjam Buku?</p>
-                    <input name="id_buku" id="idbooking" type="text" value="">
+                    <input hidden name="id_buku" id="idbooking" type="text" value="">
                     <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
                 </div>
