@@ -110,4 +110,18 @@ class InventoryPdf extends CI_Controller
         $this->Model_admin->edit_data($whereid, $data_update, 't_ebook');
         redirect('Admin/InventoryPdf/DetailPdf/' . $idpdf);
     }
+    public function deletePdf()
+    {
+        # code...
+        $delete = $this->db->delete('t_ebook', array('id_ebook' => $this->input->post('id_ebook')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        }
+    }
 }

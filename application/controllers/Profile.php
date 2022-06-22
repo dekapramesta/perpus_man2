@@ -26,6 +26,8 @@ class Profile extends CI_Controller
             if ($this->session->userdata('id_user') == $id) {
                 $data['role'] = 1;
                 $data['profile'] = $this->Model_user->Profile($id)->row();
+                $data['peminjaman'] =  $this->Model_user->BukuPeminjaman($id)->result_array();
+
                 $this->load->view('templates/header');
                 $this->load->view('user/profile', $data);
                 $this->load->view('templates/footer');
@@ -36,6 +38,8 @@ class Profile extends CI_Controller
             if ($this->session->userdata('id_user') == $id) {
                 $data['role'] = 2;
                 $data['profile'] = $this->Model_user->ProfileGuru($id)->row();
+                $data['peminjaman'] =  $this->Model_user->BukuPeminjaman($id)->result_array();
+
                 $this->load->view('templates/header');
                 $this->load->view('user/profile', $data);
                 $this->load->view('templates/footer');
@@ -77,6 +81,52 @@ class Profile extends CI_Controller
                 $this->Model_user->edit_data($data_where, $data_edit, 't_guru');
                 redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
             }
+        } else {
+            redirect("/");
+        }
+    }
+    public function UbahPass()
+    {
+        # code...
+        $pass = $this->input->post('password');
+        $new_pass = $this->input->post('new_pass');
+        $conf_pass = $this->input->post('conf_pass');
+
+        if ($this->session->userdata('id_user') != null) {
+            $data = $this->db->get_where('t_user', array('id_user' => $this->session->userdata('id_user')))->row();
+            if (password_verify($pass, $data->password)) {
+
+
+                if ($conf_pass === $new_pass) {
+                    $data_pass = array(
+                        'password' => password_hash($new_pass, PASSWORD_DEFAULT)
+                    );
+                    $pass_where = array(
+                        'id_user' => $this->session->userdata('id_user')
+                    );
+                    $this->Model_user->edit_data($pass_where, $data_pass, 't_user');
+                    $this->session->set_flashdata(
+                        'password_erorr',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Berhasil","Password Berhasil Dirubah","success");</script>'
+                    );
+                    redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                } else {
+                    $this->session->set_flashdata(
+                        'password_erorr',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Confirmasi Password dan Password Baru Tidak Sama","error");</script>'
+                    );
+                }
+            } else {
+
+                $this->session->set_flashdata(
+                    'password_erorr',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            	<script type ="text/JavaScript">swal("Gagal","Password Salah","error");</script>'
+                );
+            }
+            redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
         } else {
             redirect("/");
         }

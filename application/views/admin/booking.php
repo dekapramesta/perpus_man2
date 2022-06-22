@@ -84,7 +84,7 @@
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle w-75">Options</a>
                                                         <div class="dropdown-menu">
                                                             <a onclick="" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                            <a href="" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
+                                                            <a href="#" onclick="deleteBooking('<?= $bk['id_booking'] ?>')" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -360,5 +360,50 @@
                 document.getElementById('id_booking').value = data_pick[i].Id_booking;
 
 
+            }
+
+            function deleteBooking(id) {
+                var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                var csrfHash = $('.txt_csrfname').val();
+                swal({
+                        title: 'Delete Booking',
+                        text: 'Yakin ingin Mengdelete Booking?',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                type: "POST",
+                                url: "<?php echo site_url('Admin/Booking/deleteBooking') ?>",
+                                data: {
+                                    [csrfName]: csrfHash,
+                                    'id_booking': id,
+                                },
+                                dataType: "JSON",
+                                success: function(resultData) {
+                                    $('.txt_csrfname').val(resultData.token);
+                                    console.log(resultData);
+                                    $(document).ajaxStop(function() {
+                                        if (resultData.status == 0) {
+                                            swal('Gagal', 'Gagal Menghapus', 'error');
+
+                                        } else {
+                                            swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                window.location.reload();
+
+                                            });
+
+                                        }
+                                    });
+
+                                }
+
+                            });
+                        } else {
+                            swal('Dibatalkan!');
+                        }
+                    });
             }
         </script>

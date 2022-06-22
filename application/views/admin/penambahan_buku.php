@@ -6,7 +6,7 @@
                  <div class="col-12 col-md-12 col-lg-10">
                      <div class="card">
                          <div class="card-header">
-                             <h4>Peminjaman</h4>
+                             <h4>Penambahan Buku</h4>
                          </div>
                          <div class="card-body" id="form_scan">
                              <div class="section-title mt-0">Kode Buku</div>

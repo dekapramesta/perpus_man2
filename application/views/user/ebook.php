@@ -16,7 +16,7 @@
                  <div class="col-lg-9">
                      <div class="row">
                          <?php foreach ($getAllPdf as $gpdf) : ?>
-                             <div class="col-lg-12 col-md-12 ">
+                             <div class="col-lg-12 col-md-12 mt-2">
                                  <div class="course-item">
                                      <div class="course-content">
 

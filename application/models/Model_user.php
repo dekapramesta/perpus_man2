@@ -102,4 +102,13 @@ class Model_user extends CI_Model
         $this->db->limit(3);
         return $this->db->get();
     }
+    public function BukuPeminjaman($id)
+    {
+        # code...
+        $this->db->where('t_peminjaman.id_user', $id);
+        $this->db->select('*');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+        return $this->db->get();
+    }
 }

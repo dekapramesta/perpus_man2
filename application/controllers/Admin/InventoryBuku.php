@@ -545,4 +545,18 @@ class InventoryBuku extends CI_Controller
         // Generate barcode
         Zend_Barcode::render('code128', 'image', array('text' => $code), array('imageType' => 'png'));
     }
+    public function deleteBook()
+    {
+        # code...
+        $delete = $this->db->delete('t_buku', array('id_buku' => $this->input->post('id_buku')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        }
+    }
 }

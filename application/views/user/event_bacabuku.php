@@ -1,4 +1,10 @@
- <?php echo $this->session->flashdata('pesan'); ?>
+ <?php if ($this->session->flashdata('pesan')) {
+        echo $this->session->flashdata('pesan');
+        $this->session->set_flashdata(
+            'pesan',
+            ''
+        );
+    } ?>
  <main id="main">
      <!-- ======= Breadcrumbs ======= -->
      <div class="breadcrumbs" data-aos="fade-in">
@@ -30,26 +36,27 @@
                          </div>
                      </div>
                  <?php endforeach; ?>
-
-
-
-
-
-
-
-
              </div>
 
          </div>
      </section><!-- End Pricing Section -->
 
  </main>
+ <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
  <script>
      function Modaltukar(id, nama) {
          //  alert(nama)
-         $('#idhadiah').val(id);
-         $('#item_name').html(nama);
-         $('#ModalTukar').appendTo("body").modal('show');
+         let sess = <?= json_encode($this->session->userdata('id_user')) ?>;
+         console.log(sess);
+         if (!sess) {
+             swal('Gagal', 'Login Terlebih Dahulu', 'error')
+         } else {
+             $('#idhadiah').val(id);
+             $('#item_name').html(nama);
+             $('#ModalTukar').appendTo("body").modal('show');
+         }
+
+
      }
  </script>
  <div class="modal fade" id="ModalTukar" tabindex="-1" aria-labelledby="exampleModalPromoLabel4" aria-hidden="true">

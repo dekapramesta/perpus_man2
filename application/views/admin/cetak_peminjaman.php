@@ -6,7 +6,7 @@
                  <div class="col-12 col-md-12 col-lg-10">
                      <div class="card">
                          <div class="card-header">
-                             <h4>Pengembalian</h4>
+                             <h4>Peminjaman</h4>
                          </div>
                          <div class="card-body" id="card_kembali">
                              <form action="<?= base_url('Admin/Laporan/CetakLaporanPinjam') ?>" method="post" enctype="multipart/form-data">

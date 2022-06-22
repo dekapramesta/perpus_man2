@@ -225,4 +225,19 @@ class Model_admin extends CI_Model
         $this->db->join('t_hadiah', 't_hadiah.id_hadiah=t_penukaran.id_hadiah', 'left');
         return $this->db->get();
     }
+    public function getNotifikasi()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_notice');
+        $this->db->join('t_peminjaman', 't_peminjaman.id_peminjaman=t_notice.id_peminjaman', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+
+
+
+        // $this->db->join('t_hadiah', 't_hadiah.id_hadiah=t_penukaran.id_hadiah', 'left');
+        return $this->db->get();
+    }
 }

@@ -37,6 +37,52 @@ class Event extends CI_Controller
         $this->load->view('Admin/event', $data);
         $this->load->view('Admin/templates/footer');
     }
+    public function Hadiah()
+    {
+        # code...
+        $data['barang'] = $this->Model_admin->get_data_all('t_hadiah')->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar_su');
+        $this->load->view('Admin/hadiah', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function getBarang($id)
+    {
+        # code...
+        $data['hadiah'] = $this->db->get_where('t_hadiah', array('id_hadiah' => $id))->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        echo json_encode($data);
+    }
+    public function UbahBarang()
+    {
+        # code...
+        $data_update = array(
+            'nama_item' => $this->input->post('nama_item'),
+            'jenis_item' => $this->input->post('jenis_item'),
+            'coin_hadiah' => $this->input->post('coin_hadiah'),
+            'jumlah' => $this->input->post('jumlah')
+
+
+
+        );
+        $where = array(
+            'id_hadiah' => $this->input->post('id_hadiah')
+        );
+        $this->Model_admin->edit_data($where, $data_update, 't_hadiah');
+        redirect('SuperAdmin/Event/Hadiah');
+    }
+    public function TambahBarang()
+    {
+        # code...
+        $data_array = array(
+            'nama_item' => $this->input->post('nama_item'),
+            'jenis_item' => $this->input->post('jenis_item'),
+            'coin_hadiah' => $this->input->post('coin_hadiah'),
+            'jumlah' => $this->input->post('jumlah')
+        );
+        $this->Model_admin->Tambah_data($data_array, 't_hadiah');
+        redirect('SuperAdmin/Event/Hadiah');
+    }
     public function ChangeStatus()
     {
         # code...
@@ -53,6 +99,7 @@ class Event extends CI_Controller
                 'coin' => 0
             );
             $this->db->update('t_siswa', $data_coin);
+            $this->db->truncate('t_penukaran');
             redirect('SuperAdmin/Event');
         } else {
             $data_update = array(
@@ -66,6 +113,7 @@ class Event extends CI_Controller
                 'coin' => 0
             );
             $this->db->update('t_siswa', $data_coin);
+            $this->db->truncate('t_penukaran');
             redirect('SuperAdmin/Event');
         }
     }

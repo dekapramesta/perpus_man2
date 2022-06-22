@@ -8,7 +8,7 @@
                             <div class="col">
                                 <div class="row ">
                                     <div class="col">
-                                        <h4>Registrasi Siswa</h4>
+                                        <h4>E-Book</h4>
                                     </div>
                                     <div class="col text-right">
                                         <button onclick="modal_pdf()" type="button" class="btn btn-primary" href="">Tambah Data</button>
@@ -48,7 +48,7 @@
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle w-75">Options</a>
                                                         <div class="dropdown-menu">
                                                             <a href="<?= base_url('Admin/InventoryPdf/DetailPdf/' . $pdf['id_ebook']) ?>" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                            <a href="" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
+                                                            <a href="#" onclick="deletePdf('<?= $pdf['id_ebook'] ?>')" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -84,7 +84,7 @@
                                 <input id="halaman" placeholder="Halaman" type="text" name="halaman" class="form-control " required="">
                             </div>
                             <div class="form-group">
-                                <input id="desc" placeholder="Deskripsi" type="text" name="deskripsi" class="form-control " required="">
+                                <textarea id="desc" placeholder="Deskripsi" type="text" name="deskripsi" class="form-control " required=""></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="">Kategori Pdf</label><br>
@@ -114,6 +114,53 @@
         </div>
         <script>
             function modal_pdf() {
+                $(".select2").select2();
+
                 $('#upload_pdf').appendTo("body").modal('show');
+            }
+
+            function deletePdf(id) {
+                var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                var csrfHash = $('.txt_csrfname').val();
+                swal({
+                        title: 'Delete Ebook',
+                        text: 'Yakin ingin Mengdelete E-Book?',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                type: "POST",
+                                url: "<?php echo site_url('Admin/InventoryPdf/deletePdf') ?>",
+                                data: {
+                                    [csrfName]: csrfHash,
+                                    'id_ebook': id,
+                                },
+                                dataType: "JSON",
+                                success: function(resultData) {
+                                    $('.txt_csrfname').val(resultData.token);
+                                    console.log(resultData);
+                                    $(document).ajaxStop(function() {
+                                        if (resultData.status == 0) {
+                                            swal('Gagal', 'Gagal Menghapus', 'error');
+
+                                        } else {
+                                            swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                window.location.reload();
+
+                                            });
+
+                                        }
+                                    });
+
+                                }
+
+                            });
+                        } else {
+                            swal('Dibatalkan!');
+                        }
+                    });
             }
         </script>

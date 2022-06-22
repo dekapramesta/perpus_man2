@@ -71,4 +71,18 @@ class Booking extends CI_Controller
         $data['booking'] =  $this->Model_admin->TrackingBooking($id)->result_array();
         return $data;
     }
+    public function deleteBooking()
+    {
+        # code...
+        $delete = $this->db->delete('t_booking', array('id_booking' => $this->input->post('id_booking')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        }
+    }
 }

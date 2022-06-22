@@ -45,7 +45,7 @@
                                      </div>
                                  </div>
                                  <div class="w-100 mt-2" style="background-color: #f3f4fa;border: solid 2px #cecece">
-                                     <div id="adobe-dc-view" style="width:100%;" data-file="<?= base_url() ?>assets/pdf/wadwd.pdf" data-meta="wadwd.pdf"></div>
+                                     <div id="adobe-dc-view" style="width:100%;" data-file="<?= base_url() ?>assets/pdf/<?= $ebook->file_ebook ?>" data-meta="wadwd.pdf"></div>
                                  </div>
                              </div>
 
