@@ -86,13 +86,23 @@ class DataUser extends CI_Controller
             redirect('SuperAdmin/DataUser');
         } elseif ($data->role_id == 2) {
             redirect('SuperAdmin/DataUser/DataGuru');
+        } elseif ($data->role_id == 77) {
+            redirect('SuperAdmin/DataUser/Admin');
         }
+
         // $this->Model_admin->edit_data($whereid, $data_update, 't_registerguru');
     }
     public function getSiswa($id)
     {
         # code...
         $data['profile'] = $this->db->get_where('t_siswa', array('id_siswa' => $id))->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        echo json_encode($data);
+    }
+    public function getAdmin($id)
+    {
+        # code...
+        $data['profile'] = $this->db->get_where('t_admin', array('id_admin' => $id))->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
@@ -134,6 +144,20 @@ class DataUser extends CI_Controller
         $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
         redirect('SuperAdmin/DataUser/DataGuru');
     }
+    public function UpdateAdmin()
+    {
+        # code...
+        $data_update = array(
+            'nama_admin' => $this->input->post('nama_admin'),
+
+
+        );
+        $whereid = array(
+            'id_admin' => $this->input->post('id_admin')
+        );
+        $this->Model_admin->edit_data($whereid, $data_update, 't_admin');
+        redirect('SuperAdmin/DataUser/Admin');
+    }
 
     function UbahPassword()
     {
@@ -150,6 +174,36 @@ class DataUser extends CI_Controller
             redirect('SuperAdmin/DataUser');
         } elseif ($data->role_id == 2) {
             redirect('SuperAdmin/DataUser/DataGuru');
+        } elseif ($data->role_id == 77) {
+            redirect('SuperAdmin/DataUser/Admin');
         }
+    }
+    public function Admin()
+    {
+        # code...
+        $data['admin'] = $this->Model_admin->GetAllAdmin()->result_array();
+
+
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar_su');
+        $this->load->view('Admin/DataAdmin', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function TambahAdmin()
+    {
+        # code...
+        $data_user = array(
+            'username' => $this->input->post('username'),
+            'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+            'role_id' => 77,
+            'status_block' => 0
+        );
+        $this->Model_auth->Tambah_data($data_user, 't_user');
+        $data_add = array(
+            'id_user' => $this->db->insert_id(),
+            'nama_admin' => $this->input->post('nama_admin'),
+        );
+        $this->Model_auth->Tambah_data($data_add, 't_admin');
+        redirect('SuperAdmin/DataUser/Admin');
     }
 }

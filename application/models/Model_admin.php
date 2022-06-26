@@ -199,6 +199,14 @@ class Model_admin extends CI_Model
         $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
         return $this->db->get();
     }
+    public function GetAllAdmin()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_admin');
+        $this->db->join('t_user', 't_user.id_user=t_admin.id_user', 'left');
+        return $this->db->get();
+    }
     public function GetAllGuru()
     {
         # code...
@@ -238,6 +246,28 @@ class Model_admin extends CI_Model
 
 
         // $this->db->join('t_hadiah', 't_hadiah.id_hadiah=t_penukaran.id_hadiah', 'left');
+        return $this->db->get();
+    }
+    public function RegisterSiswa()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_aktivasi');
+        $this->db->join('t_user', 't_user.id_user=t_aktivasi.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->where('t_user.role_id', 1);
+
+        return $this->db->get();
+    }
+    public function RegisterGuru()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_aktivasi');
+        $this->db->join('t_user', 't_user.id_user=t_aktivasi.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->where('t_user.role_id', 2);
+
         return $this->db->get();
     }
 }

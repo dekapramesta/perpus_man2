@@ -203,12 +203,18 @@
             let sts_val = 0;
 
             function ByGuru(event) {
+
                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
                 var csrfHash = $('.txt_csrfname').val();
                 if (event.target.value == 0) {
                     event.target.value = 1
                     sts_val = 1;
-                    $('#id_place').html(' <label>Nama Guru</label><select class = "form-control" id="idguru" name="idguru"></select>')
+                    $('#id_place').html(' <label>Nama Guru</label><select class = "form-control select2" id="idguru" name="idguru"></select>')
+                    $(".select2").select2({
+                        dropdownParent: $('#ambil_buku')
+
+                    });
+
                     $.ajax({
                         type: "POST",
                         url: "<?php echo site_url('Admin/InventoryBuku/getGuru/') ?>",
@@ -220,8 +226,9 @@
                             console.log(resultData)
                             $('.txt_csrfname').val(resultData.token);
                             $.each(resultData.guru, function(i, guru) {
-                                $('#idguru').html('<option value="' + guru.id_user + '">' + guru.id_user + '</option>')
+                                $('#idguru').append('<option value="' + guru.id_user + '">' + guru.nama_guru + '</option>')
                             });
+
 
 
 
@@ -257,7 +264,7 @@
                         success: function(result) {
                             $('.txt_csrfname').val(result.token);
                             if (!result.buku) {
-                                swal('Tidak Ditemukan', 'Guru Tersebut Belum Meakukan Pemesanan', 'error');
+                                swal('Tidak Ditemukan', 'Guru Tersebut Belum Melakukan Pemesanan', 'error');
 
                             } else {
                                 $.each(result.buku, function(i, buku) {

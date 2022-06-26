@@ -29,6 +29,10 @@
                                      <label for="">Koordinat Peta</label>
                                      <input type="text" name="kordinat_gmaps" value="<?= $profile->kordinat_gmaps ?>" class="form-control " required="">
                                  </div>
+                                 <div class="form-group">
+                                     <label for="">Token</label>
+                                     <input type="text" name="token_wa" value="<?= $profile->token_wa ?>" class="form-control " required="">
+                                 </div>
                                  <div class="form-group d-flex justify-content-center">
                                      <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-secondary w-50 mr-3">Banner Foto</button>
                                      <button type="submit" class="btn btn-primary w-50">Save</button>

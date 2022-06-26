@@ -35,17 +35,19 @@ class Register extends CI_Controller
     {
         $this->form_validation->set_rules('nisn', 'NISN', 'required');
         $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
-        $this->form_validation->set_rules('password', 'Password', 'required');
-        $this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required|is_unique[t_siswa.nama]');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+        $this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required');
         $this->form_validation->set_rules('email', 'Email', 'required');
-        $this->form_validation->set_rules('no_hp', 'No HP', 'required|is_unique[t_siswa.no_hp]');
+        $this->form_validation->set_rules('no_hp', 'No HP', 'required');
         $this->form_validation->set_rules('angkatan', 'Angkatan', 'required');
-        $this->form_validation->set_rules('barcode', 'Barcode', 'required');
+        $this->form_validation->set_rules('id_user', 'id_user', 'required');
 
+        $this->form_validation->set_message('min_length', '{field} Minimal Harus {param} Karakter .');
         $this->form_validation->set_message('required', '{field} tidak boleh kosong!');
         $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
 
         if ($this->form_validation->run()) {
+            $id_user = $this->input->post('id_user');
             $username = $this->input->post('username');
             $pwd = $this->input->post('password');
             $nisn = $this->input->post('nisn');
@@ -53,7 +55,6 @@ class Register extends CI_Controller
             $email = $this->input->post('email');
             $no_hp = $this->input->post('no_hp');
             $angkatan = $this->input->post('angkatan');
-            $barcode = $this->input->post('barcode');
             $password         = password_hash($pwd, PASSWORD_DEFAULT);
             $roleid = 1;
             $coin = 0;
@@ -62,15 +63,17 @@ class Register extends CI_Controller
             $data_user = array(
                 'username' => $username,
                 'password' => $password,
-                'role_id' => $roleid
+                'status_block' => 0
             );
+            $whereid = array(
+                'id_user' => $id_user
+            );
+            $regis_user = $this->Model_admin->edit_data($whereid, $data_user, 't_user');
 
-            $regis_user = $this->Model_auth->daftar_user($data_user, 't_user');
+            //  = $this->Model_auth->daftar_user($data_user, 't_user');
 
             if ($regis_user) {
-                $id_user =  $this->db->insert_id();
                 $data_profile = array(
-                    'id_user' => $id_user,
                     'nama' => $namalengkap,
                     'email' => $email,
                     'no_hp' => $no_hp,
@@ -78,40 +81,48 @@ class Register extends CI_Controller
                     'angkatan' => $angkatan,
                     'nisn' => $nisn
                 );
-                $regis_profile = $this->Model_auth->daftar_user($data_profile, 't_siswa');
+                $wheresis = array(
+                    'id_user' => $id_user
+                );
+                $regis_profile = $this->Model_admin->edit_data($wheresis, $data_profile, 't_siswa');
+
                 if ($regis_profile) {
-                    $wherenisn = array(
-                        'nisn' => $nisn
+                    $this->db->delete('t_aktivasi', array('id_user' => $id_user));
+                    $pesan = array(
+                        'status' => 1,
+                        'token' => $this->security->get_csrf_hash()
                     );
-                    $changestatus = array(
-                        'status_daftar' => 1
-                    );
-                    $this->Model_auth->change_status($wherenisn, $changestatus, 't_register');
-                    redirect('Login');
+
+                    echo json_encode($pesan);
                 }
             }
         } else {
-            $this->load->view('templates/header');
-            $this->load->view('register');
-            $this->load->view('templates/footer');
+            $pesan = array(
+                'status' => 0,
+                'token' => $this->security->get_csrf_hash(),
+                'message' => strip_tags(validation_errors())
+            );
+
+            echo json_encode($pesan);
         }
     }
     public function daftar_guru()
     {
         $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
-        $this->form_validation->set_rules('password', 'Password', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
         $this->form_validation->set_rules('nama_lengkap', 'Nama Guru', 'required');
         $this->form_validation->set_rules('email', 'Email', 'required');
-        $this->form_validation->set_rules('no_hp', 'No HP', 'required|is_unique[t_guru.no_hp]');
+        $this->form_validation->set_rules('no_hp', 'No HP', 'required');
         $this->form_validation->set_rules('alamat', 'alamat', 'required');
 
+        $this->form_validation->set_rules('id_user', 'id_user', 'required');
 
-
+        $this->form_validation->set_message('min_length', '{field} Minimal Harus {param} Karakter .');
         $this->form_validation->set_message('required', '{field} tidak boleh kosong!');
         $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
 
         if ($this->form_validation->run()) {
-
+            $id_user = $this->input->post('id_user');
             $username = $this->input->post('username');
             $pwd = $this->input->post('password');
             $namalengkap = $this->input->post('nama_lengkap');
@@ -126,39 +137,44 @@ class Register extends CI_Controller
             $data_user = array(
                 'username' => $username,
                 'password' => $password,
-                'role_id' => $roleid
+                'status_block' => 0
+
             );
 
-            $regis_user = $this->Model_auth->daftar_user($data_user, 't_user');
+            $whereid = array(
+                'id_user' => $id_user
+            );
+            $regis_user = $this->Model_admin->edit_data($whereid, $data_user, 't_user');
 
             if ($regis_user) {
-                $id_user =  $this->db->insert_id();
                 $data_profile = array(
-                    'id_user' => $id_user,
                     'nama_guru' => $namalengkap,
                     'email' => $email,
                     'no_hp' => $no_hp,
                     'alamat' => $alamat,
 
                 );
-                $regis_profile = $this->Model_auth->daftar_user($data_profile, 't_guru');
+                $regis_profile = $this->Model_admin->edit_data($whereid, $data_profile, 't_guru');
+
                 if ($regis_profile) {
-                    $wherenisn = array(
-                        'email' => $email
+                    $this->db->delete('t_aktivasi', array('id_user' => $id_user));
+                    $pesan = array(
+                        'status' => 1,
+                        'token' => $this->security->get_csrf_hash()
                     );
-                    $changestatus = array(
-                        'status_daftar' => 1
-                    );
-                    $this->Model_auth->change_status($wherenisn, $changestatus, 't_registerguru');
-                    redirect('Login');
+
+                    echo json_encode($pesan);
                 }
             }
         } else {
-            echo "cok";
-            die;
-            $this->load->view('templates/header');
-            $this->load->view('register');
-            $this->load->view('templates/footer');
+
+            $pesan = array(
+                'status' => 0,
+                'token' => $this->security->get_csrf_hash(),
+                'message' => strip_tags(validation_errors())
+            );
+
+            echo json_encode($pesan);
         }
     }
     public function checkingcode()

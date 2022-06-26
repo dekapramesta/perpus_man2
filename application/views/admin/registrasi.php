@@ -33,8 +33,7 @@
 
                                              <th>Code</th>
                                              <th>No Whatsapp</th>
-                                             <th>Barcode</th>
-                                             <th>Status Registrasi</th>
+
                                              <th>Aksi</th>
                                          </tr>
                                      </thead>
@@ -48,23 +47,15 @@
                                                  <td><?= $sis['nisn'] ?></td>
                                                  <td><?= $sis['nama'] ?></td>
                                                  <td><?= $sis['code'] ?></td>
-                                                 <td><?= $sis['no_wa'] ?></td>
-                                                 <td><?= $sis['barcode'] ?></td>
+                                                 <td><?= $sis['no_hp'] ?></td>
                                                  <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-                                                 <td class="text-center"><?php if ($sis['status_daftar'] == 1) { ?>
-                                                         <div class="badge badge-success badge-shadow w-75">Sudah</div>
-                                                     <?php } else { ?>
-                                                         <div class="badge badge-danger badge-shadow w-75">Belum</div>
-                                                     <?php } ?>
-                                                 </td>
+
 
                                                  <td>
-                                                     <div class="dropdown">
-                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
-                                                         <div class="dropdown-menu">
-                                                             <a onclick="modal_EditRegist(<?= $sis['id_register'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                             <a href="" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
-                                                         </div>
+                                                     <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
+                                                     <div class="dropdown-menu">
+                                                         <a onclick="modal_EditRegist(<?= $sis['id_user'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
+                                                         <a href="#" onclick="deleteAktivasi('<?= $sis['id_user'] ?>')" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
                                                      </div>
                                                  </td>
                                              </tr>
@@ -99,10 +90,9 @@
                      success: function(resultData) {
                          console.log(resultData)
                          $('.txt_csrfname').val(resultData.token);
-                         $('#edit_id_register').val(resultData.profile.id_register);
+                         $('#edit_id_register').val(resultData.profile.id_user);
                          $('#edit_nama').val(resultData.profile.nama);
-                         $('#edit_no_wa').val(resultData.profile.no_wa);
-                         $('#edit_barcode').val(resultData.profile.barcode);
+                         $('#edit_no_wa').val(resultData.profile.no_hp);
                          $('#edit_nisn').val(resultData.profile.nisn);
 
                      }
@@ -165,10 +155,10 @@
                                  <input placeholder="Code" type="text" name="code" class="form-control" required="">
                              </div> -->
                              <div class="form-group">
-                                 <input id="no_wa" placeholder="No Whatssapp" type="text" name="no_wa" class="form-control" required="">
+                                 <input id="no_wa" placeholder="No Whatssapp" type="text" name="no_hp" class="form-control" required="">
                              </div>
                              <div class="form-group">
-                                 <input id="barcode" placeholder="Barcode" type="text" name="barcode" class="form-control" required="">
+                                 <input id="barcode" placeholder="Angkatan" type="text" name="angkatan" class="form-control" required="">
                              </div>
                              <div align="right">
                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -208,10 +198,7 @@
                                  <strong><label>No Whatsapp</label></strong>
                                  <input id="edit_no_wa" placeholder="No Whatssapp" type="text" name="no_wa" class="form-control" required="">
                              </div>
-                             <div class="form-group">
-                                 <strong><label>Barcode</label></strong>
-                                 <input id="edit_barcode" placeholder="Barcode" type="text" name="barcode" class="form-control" required="">
-                             </div>
+
                              <div align="right">
                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                                  <button type="submit" class="btn btn-primary">Simpan</button>
@@ -222,5 +209,48 @@
              </div>
          </div>
          <script>
+             function deleteAktivasi(id) {
+                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                 var csrfHash = $('.txt_csrfname').val();
+                 swal({
+                         title: 'Delete Aktivasi',
+                         text: 'Yakin ingin Menghapus Aktivasi User?',
+                         icon: 'warning',
+                         buttons: true,
+                         dangerMode: true,
+                     })
+                     .then((willDelete) => {
+                         if (willDelete) {
+                             $.ajax({
+                                 type: "POST",
+                                 url: "<?php echo site_url('SuperAdmin/Registrasi/deleteAktivasi') ?>",
+                                 data: {
+                                     [csrfName]: csrfHash,
+                                     'id_user': id,
+                                 },
+                                 dataType: "JSON",
+                                 success: function(resultData) {
+                                     $('.txt_csrfname').val(resultData.token);
+                                     console.log(resultData);
+                                     $(document).ajaxStop(function() {
+                                         if (resultData.status == 0) {
+                                             swal('Gagal', 'Gagal Menghapus', 'error');
 
+                                         } else {
+                                             swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                 window.location.reload();
+
+                                             });
+
+                                         }
+                                     });
+
+                                 }
+
+                             });
+                         } else {
+                             swal('Dibatalkan!');
+                         }
+                     });
+             }
          </script>

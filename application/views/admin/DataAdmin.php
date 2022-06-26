@@ -8,9 +8,10 @@
                             <div class="col">
                                 <div class="row ">
                                     <div class="col">
-                                        <h4>Data Guru</h4>
+                                        <h4>Data Admin</h4>
                                     </div>
                                     <div class="col text-right">
+                                        <button onclick="ModalAdmin()" class="btn btn-primary ">Tambah Admin</button>
                                     </div>
                                 </div>
                             </div>
@@ -23,23 +24,19 @@
                                             <th class="text-center">
                                                 #
                                             </th>
-                                            <th>Nama Guru</th>
-                                            <th>No HP</th>
-                                            <th>Email</th>
+                                            <th>Nama Admin</th>
                                             <th>Status User</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $no = 0;
-                                        foreach ($guru as $gr) : $no++; ?>
+                                        foreach ($admin as $gr) : $no++; ?>
                                             <tr>
                                                 <td>
                                                     <?= $no; ?>
                                                 </td>
-                                                <td><?= $gr['nama_guru'] ?></td>
-                                                <td><?= $gr['no_hp'] ?></td>
-                                                <td><?= $gr['email'] ?></td>
+                                                <td><?= $gr['nama_admin'] ?></td>
                                                 <td class="text-center">
                                                     <?php if ($gr['status_block'] == 0) { ?>
                                                         <div class="badge badge-success badge-shadow w-75">Aktif</div>
@@ -49,11 +46,11 @@
 
                                                 </td>
 
-                                                <td>
+                                                <td class="text-center">
                                                     <div class="dropdown">
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
                                                         <div class="dropdown-menu">
-                                                            <a onclick="edit_dtg(<?= $gr['id_guru'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
+                                                            <a onclick="edit_dta(<?= $gr['id_admin'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
                                                             <a onclick="ganti_pass(<?= $gr['id_user'] ?>)" class="dropdown-item has-icon"><i class="fas fa-user-shield"></i> Ganti Password</a>
                                                             <?php if ($gr['status_block'] == 0) { ?>
                                                                 <a class="dropdown-item has-icon" href="<?= base_url('SuperAdmin/DataUser/UbahStatusById/' . $gr['id_user']) ?>"><i class="fas fa-times"></i>Non Aktif User</a>
@@ -76,13 +73,25 @@
 
         </div>
         <script>
-            function edit_dtg(id) {
+            function ganti_pass(id) {
+                $('#id_gantipass').val(id)
+                $('#ganti_pass').appendTo("body").modal('show');
+
+            }
+
+            function ModalAdmin() {
+
+                $('#add_admin').appendTo("body").modal('show');
+
+            }
+
+            function edit_dta(id) {
                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
                 var csrfHash = $('.txt_csrfname').val();
-                $('#edit_dataguru').appendTo("body").modal('show');
+                $('#edit_dataadmin').appendTo("body").modal('show');
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo site_url('SuperAdmin/DataUser/getGuru/') ?>" + id,
+                    url: "<?php echo site_url('SuperAdmin/DataUser/getAdmin/') ?>" + id,
                     data: {
                         [csrfName]: csrfHash,
                     },
@@ -90,92 +99,41 @@
                     success: function(resultData) {
                         console.log(resultData)
                         $('.txt_csrfname').val(resultData.token);
-                        $('#edit_id_guru').val(resultData.profile.id_guru);
-                        $('#edit_nama').val(resultData.profile.nama_guru);
-                        $('#edit_nohp').val(resultData.profile.no_hp);
-                        $('#edit_email').val(resultData.profile.email);
+                        $('#edit_id_admin').val(resultData.profile.id_admin);
+                        $('#edit_nama').val(resultData.profile.nama_admin);
 
                     }
 
                 });
             }
-
-            function ganti_pass(id) {
-                $('#id_gantipass').val(id)
-                $('#ganti_pass').appendTo("body").modal('show');
-
-            }
-
-
-            function modal_block() {
-
-                $('#angkatan_block').appendTo("body").modal('show');
-
-            }
         </script>
-        <div class="modal fade" id="angkatan_block" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="add_admin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Non Aktif Siswa</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Tambah Data Admin</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?php echo base_url('SuperAdmin/DataUser/UbahStatus') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?php echo base_url('SuperAdmin/DataUser/TambahAdmin') ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group">
-                                <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-
-                                <select class="form-control" name="angkatan">
-                                    <?php foreach ($angkatan as $akt) : ?>
-                                        <option disabled selected hidden>Pilih Angkatan</option>
-                                        <option value="<?= $akt['angkatan'] ?>"><?= $akt['angkatan'] ?></option>
-
-                                    <?php endforeach; ?>
-                                </select>
-                                <!-- <input id="nisn" placeholder="NISN" type="text" name="nisn" class="form-control " required=""> -->
-                            </div>
-
-                            <div align="right">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                <button type="submit" name="import" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="edit_dataguru" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Register</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateGuru') ?>" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <strong><label>Nama</label></strong>
-                                <input id="edit_id_guru" type="text" name="id_guru" class="form-control " required="">
-                                <input id="edit_nama" type="text" name="nama_guru" class="form-control " required="">
-                            </div>
-                            <div class="form-group">
-                                <strong><label>No HP</label></strong>
-                                <input id="edit_nohp" type="text" name="no_hp" class="form-control" required="">
+                                <input id="jeneng" placeholder="Username" type="text" name="username" class="form-control" required="">
                             </div>
                             <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
                             <!-- <div class="form-group">
                                  <input placeholder="Code" type="text" name="code" class="form-control" required="">
                              </div> -->
-
                             <div class="form-group">
-                                <strong><label>Email</label></strong>
-                                <input id="edit_email" type="text" name="email" class="form-control" required="">
+                                <input placeholder="Nama Admin" type="text" name="nama_admin" class="form-control" required="">
                             </div>
+                            <div class="form-group">
+                                <input placeholder="Password" type="password" name="password" class="form-control" required="">
+                            </div>
+
+
 
                             <div align="right">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -190,7 +148,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Non Aktif Siswa</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Ubah Password</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -221,17 +179,36 @@
                 </div>
             </div>
         </div>
-        <script>
-            document.getElementById("ubah_pass").addEventListener('submit', function(e) {
-                e.preventDefault();
-                let pass = $('#password_ubah').val()
-                let conf = $('#conf_pass').val()
-                if (pass == conf) {
-                    document.getElementById("ubah_pass").submit();
+        <div class="modal fade" id="edit_dataadmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Data Admin</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateAdmin') ?>" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <strong><label>Nama</label></strong>
+                                <input hidden id="edit_id_admin" type="text" name="id_admin" class="form-control " required="">
+                                <input id="edit_nama" type="text" name="nama_admin" class="form-control " required="">
+                            </div>
+                            <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
-                } else {
-                    swal('Forbiden', 'Password Tidak Cocok', 'error');
+                            <!-- <div class="form-group">
+                                 <input placeholder="Code" type="text" name="code" class="form-control" required="">
+                             </div> -->
 
-                }
-            })
-        </script>
+
+
+                            <div align="right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -1,3 +1,8 @@
+<style>
+    .swal-modal .swal-text {
+        text-align: center;
+    }
+</style>
 <section class="my-5">
     <div class="container">
         <div class="row justify-content-center">
@@ -6,19 +11,24 @@
             </div>
             <div class="row justify-content-center align-items-center">
                 <form class="form-example" id="code_regis" action="<?php echo base_url('Register/checkingcode_guru') ?>" method="post">
-                    <div class="card mx-auto col-5 py-2 " id="cardcode">
-                        <div class="form-group">
-                            <input id="code_reg" type="text" class="form-control" placeholder="Kode" required />
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-outline-light mt-3 w-100" style="background-color: #3ac162;">Masuk</button>
+                    <div class="col">
+                        <div class="card mx-auto col-5" id="cardcode">
+
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <input id="code_reg" type="text" class="form-control" placeholder="Kode" required />
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-outline-light mt-3 w-100" style="background-color: #3ac162;">Masuk</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </form>
-                <form action="<?php echo base_url('Register/daftar_guru') ?>" method="post" enctype="multipart/form-data">
+                <form id="daftar_guru" action="<?php echo base_url('Register/daftar_guru') ?>" method="post" enctype="multipart/form-data">
                     <div class="card col-5 py-2 mx-auto " style="display: none;" id="cardregist">
                         <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                         <input name="username" type="text" class="form-control mt-2" placeholder="Username" required />
@@ -32,6 +42,8 @@
                         <input id="no_hp" name="no_hp" type="text" class="form-control mt-2" placeholder="No Hp" required />
                         <span class="text-danger"><?= form_error('no_hp') ?></span>
                         <textarea name="alamat" class="form-control summernote-simple mt-2">Alamat</textarea>
+                        <input type="text" id="id_user" hidden name="id_user">
+
                         <span class="text-danger"><?= form_error('alamat') ?></span>
 
                         <div class="row justify-content-center">
@@ -68,19 +80,17 @@
                 if (!resultData.profile) {
                     alert('Data Tidak Ditemukan');
                 } else {
-                    if (resultData.profile.status_daftar == 1) {
 
-                        alert('sudah didaftarkan')
-                    } else if (resultData.profile.status_daftar == 0) {
-                        let x = document.getElementById("cardcode");
-                        let cregis = document.getElementById("cardregist");
-                        x.style.display = "none";
-                        cregis.style.display = "block";
-                        document.getElementById("namalengkap").value = resultData.profile.nama_guru;
-                        document.getElementById("no_hp").value = resultData.profile.no_hp;
-                        document.getElementById("email").value = resultData.profile.email;
+                    let x = document.getElementById("cardcode");
+                    let cregis = document.getElementById("cardregist");
+                    x.style.display = "none";
+                    cregis.style.display = "block";
+                    document.getElementById("namalengkap").value = resultData.profile.nama_guru;
+                    document.getElementById("no_hp").value = resultData.profile.no_hp;
+                    document.getElementById("email").value = resultData.profile.email;
+                    $('#id_user').val(resultData.profile.id_user)
 
-                    }
+
                 }
 
 
@@ -88,6 +98,37 @@
 
         });
 
+
+    });
+    document.getElementById("daftar_guru").addEventListener('submit', function(e) {
+        e.preventDefault();
+        var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+        var csrfHash = $('.txt_csrfname').val();
+        $.ajax({
+            type: "POST",
+            url: "<?php echo site_url('Register/daftar_guru') ?>",
+            data: $('#daftar_guru').serialize(),
+            dataType: "JSON",
+            success: function(result) {
+                //  console.log(result)
+                $('.txt_csrfname').val(result.token);
+                $(document).ajaxStop(function() {
+                    if (result.status == 0) {
+                        swal('Gagal', result.message, 'error');
+
+                    } else {
+                        swal('Success', "Berhasil Daftar", 'success').then((ok) => {
+                            window.location.reload();
+
+                        });
+
+                    }
+                });
+
+
+            }
+
+        });
 
     });
 </script>

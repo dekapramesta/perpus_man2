@@ -5,15 +5,21 @@ class Model_auth extends CI_Model
     public function Checkingcode($hashcode)
     {
         $this->db->select('*');
-        $this->db->from('t_register');
-        $this->db->where('code', $hashcode);
+        $this->db->from('t_aktivasi');
+        $this->db->join('t_user', 't_user.id_user=t_aktivasi.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->where('t_user.role_id', 1);
+        $this->db->where('t_aktivasi.code', $hashcode);
         return $this->db->get();
     }
     public function Checkingcode_guru($hashcode)
     {
         $this->db->select('*');
-        $this->db->from('t_registerguru');
-        $this->db->where('code', $hashcode);
+        $this->db->from('t_aktivasi');
+        $this->db->join('t_user', 't_user.id_user=t_aktivasi.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->where('t_user.role_id', 2);
+        $this->db->where('t_aktivasi.code', $hashcode);
         return $this->db->get();
     }
     public function daftar_user($data, $table)
@@ -59,5 +65,15 @@ class Model_auth extends CI_Model
     public function Tambah_data($data, $table)
     {
         return $this->db->insert($table, $data);
+    }
+    public function CekUser($user)
+    {
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_siswa.no_hp as hp_siswa,t_guru.no_hp as hp_guru,t_user.id_user as main_user');
+        $this->db->from('t_user');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->where('t_user.username', $user);
+
+        return $this->db->get();
     }
 }

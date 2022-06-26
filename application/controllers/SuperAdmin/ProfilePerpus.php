@@ -44,6 +44,8 @@ class ProfilePerpus extends CI_Controller
             'alamat' => $this->input->post('alamat'),
             'profile' => $this->input->post('profile'),
             'kordinat_gmaps' => $this->input->post('kordinat_gmaps'),
+            'token_wa' => $this->input->post('token_wa'),
+
         );
         $where = array(
             'id_profile' => 77

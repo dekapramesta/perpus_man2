@@ -15,6 +15,12 @@ class Model_user extends CI_Model
         $this->db->group_by('judul_buku');
         return $this->db->get();
     }
+    public function get_data_ebook($table)
+    {
+        $this->db->select('*');
+        $this->db->from('t_ebook');
+        return $this->db->get();
+    }
     public function get_data_detail($idbuku)
     {
         $this->db->select('*');
@@ -66,6 +72,15 @@ class Model_user extends CI_Model
         $this->db->like('kategori', $keyword);
         return $this->db->get();
     }
+    public function SearchKategoriEbookNow($keyword, $number, $offset)
+    {
+        $this->db->select('*');
+        $this->db->from('t_ebook');
+        $this->db->like('kategori', $keyword);
+        $this->db->group_by('judul_ebook');
+        $this->db->limit($number, $offset);
+        return $this->db->get();
+    }
     public function Profile($id)
     {
         $this->db->where('t_user.id_user', $id);
@@ -89,6 +104,13 @@ class Model_user extends CI_Model
         $this->db->select('*');
         $this->db->from('t_buku');
         $this->db->group_by('judul_buku');
+        $this->db->limit($number, $offset);
+        return $this->db->get();
+    }
+    function ebook_pag($number, $offset)
+    {
+        $this->db->select('*');
+        $this->db->from('t_ebook');
         $this->db->limit($number, $offset);
         return $this->db->get();
     }

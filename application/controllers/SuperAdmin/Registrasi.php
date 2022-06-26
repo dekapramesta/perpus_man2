@@ -21,7 +21,8 @@ class Registrasi extends CI_Controller
      */
     public function index()
     {
-        $data['siswa'] = $this->Model_admin->get_data_all('t_register')->result_array();
+        $data['siswa'] = $this->Model_admin->RegisterSiswa()->result_array();
+
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar_su');
         $this->load->view('Admin/registrasi', $data);
@@ -29,7 +30,7 @@ class Registrasi extends CI_Controller
     }
     public function RegisterGuru()
     {
-        $data['guru'] = $this->Model_admin->get_data_all('t_registerguru')->result_array();
+        $data['guru'] = $this->Model_admin->RegisterGuru()->result_array();
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar_su');
         $this->load->view('Admin/registrasi_guru', $data);
@@ -38,55 +39,129 @@ class Registrasi extends CI_Controller
     public function tambah_regist()
     {
 
-        $this->form_validation->set_rules('nisn', 'NISN', 'required|is_unique[t_register.nisn]');
-        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|is_unique[t_register.nama]');
-        $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_register.no_wa]');
-        $this->form_validation->set_rules('barcode', 'Barcode', 'required|is_unique[t_register.barcode]');
+        // $this->form_validation->set_rules('nisn', 'NISN', 'required|is_unique[t_register.nisn]');
+        // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|is_unique[t_register.nama]');
+        // $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_register.no_wa]');
+        // $this->form_validation->set_rules('barcode', 'Barcode', 'required|is_unique[t_register.barcode]');
 
-        if ($this->form_validation->run()) {
-            $nisn = $this->input->post('nisn');
-            $nama = $this->input->post('nama');
-            $no_wa = $this->input->post('no_wa');
-            $barcode = $this->input->post('barcode');
-            $kode    = rand(100000, 999999);
+        // if ($this->form_validation->run()) {
+        $data_user = array(
+            'username' => 'siswa' . rand(1000, 9999),
+            'password' => password_hash('12345678', PASSWORD_DEFAULT),
+            'role_id' => 1,
+            'status_block' => 1
+        );
+        $this->Model_auth->Tambah_data($data_user, 't_user');
+        $nisn = $this->input->post('nisn');
+        $nama = $this->input->post('nama');
+        $no_wa = $this->input->post('no_hp');
+        $angakatan = $this->input->post('angkatan');
+        $id_user = $this->db->insert_id();
 
-            $data_add = array(
-                'nisn' => $nisn,
-                'nama' => $nama,
-                'no_wa' => $no_wa,
-                'barcode' => $barcode,
-                'code' => $kode,
-                'status_daftar' => 0
-            );
+        $data_add = array(
+            'nisn' => $nisn,
+            'id_user' => $id_user,
+            'nama' => $nama,
+            'no_hp' => $no_wa,
+            'angkatan' => $angakatan,
+            'coin' => 0
+        );
+        $this->Model_auth->Tambah_data($data_add, 't_siswa');
 
-            $this->Model_auth->Tambah_data($data_add, 't_register');
-            redirect('SuperAdmin/Registrasi');
-        }
+        $code = rand(00000, 99999);
+        $data_aktivasi = array(
+            'id_user' => $id_user,
+            'code' => $code
+        );
+
+
+        $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+        $data = array(
+            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+            'phone' => $no_wa,
+            'message' => 'Berikut Kode Untuk Pendaftaran ' . $code
+        );
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+        ));
+
+        $response = curl_exec($curl);
+        $hasil = json_decode($response);
+
+        curl_close($curl);
+        redirect('SuperAdmin/Registrasi');
+        // }
     }
     public function tambah_regist_guru()
     {
 
-        $this->form_validation->set_rules('email', 'Email', 'required|is_unique[t_registerguru.email]');
-        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
-        $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_registerguru.no_hp]');
+        // $this->form_validation->set_rules('email', 'Email', 'required|is_unique[t_registerguru.email]');
+        // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
+        // $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_registerguru.no_hp]');
 
-        if ($this->form_validation->run()) {
-            $email = $this->input->post('email');
-            $nama = $this->input->post('nama');
-            $no_wa = $this->input->post('no_wa');
-            $kode    = rand(100000, 999999);
+        // if ($this->form_validation->run()) {
+        $data_user = array(
+            'username' => 'guru' . rand(1000, 9999),
+            'password' => password_hash('12345678', PASSWORD_DEFAULT),
+            'role_id' => 2,
+            'status_block' => 1
+        );
+        $this->Model_auth->Tambah_data($data_user, 't_user');
+        $nama = $this->input->post('nama');
+        $no_wa = $this->input->post('no_wa');
+        $id_user = $this->db->insert_id();
 
-            $data_add = array(
-                'email' => $email,
-                'nama_guru' => $nama,
-                'no_hp' => $no_wa,
-                'code' => $kode,
-                'status_daftar' => 0
-            );
+        $data_add = array(
+            'id_user' => $id_user,
+            'nama_guru' => $nama,
+            'no_hp' => $no_wa,
+        );
+        $this->Model_auth->Tambah_data($data_add, 't_guru');
 
-            $this->Model_auth->Tambah_data($data_add, 't_registerguru');
-            redirect('SuperAdmin/Registrasi/RegisterGuru');
-        }
+        $code = rand(00000, 99999);
+        $data_aktivasi = array(
+            'id_user' => $id_user,
+            'code' => $code
+        );
+
+
+        $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+        $data = array(
+            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+            'phone' => $no_wa,
+            'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+        );
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+        ));
+
+        $response = curl_exec($curl);
+        $hasil = json_decode($response);
+
+        curl_close($curl);
+
+        redirect('SuperAdmin/Registrasi/RegisterGuru');
+        // }
     }
     public function edit_guru()
     {
@@ -94,28 +169,32 @@ class Registrasi extends CI_Controller
         $id_register = $this->input->post('id_registerGuru');
         $nama = $this->input->post('nama_guru');
         $no_wa = $this->input->post('no_hp');
-        $code = $this->input->post('code');
-        $email = $this->input->post('email');
-        $data = $this->db->get_where('t_registerguru', array('id_registerGuru' => $id_register))->row();
-        if ($data->status_daftar == 0) {
-            $status = 0;
-        } else {
-            $status = 1;
-        }
-        $code = $data->code;
+
 
         $data_update = array(
-            'email' => $email,
             'nama_guru' => $nama,
             'no_hp' => $no_wa,
-            'status_daftar' => $status,
-            'code' => $code
+
         );
         $whereid = array(
-            'id_registerGuru' => $id_register
+            'id_user' => $id_register
         );
-        $this->Model_admin->edit_data($whereid, $data_update, 't_registerguru');
+        $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
         redirect('SuperAdmin/Registrasi/RegisterGuru');
+    }
+    public function deleteAktivasi()
+    {
+        # code...
+        $delete = $this->db->delete('t_user', array('id_user' => $this->input->post('id_user')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        }
     }
     public function edit_regist()
     {
@@ -123,41 +202,30 @@ class Registrasi extends CI_Controller
         $nisn = $this->input->post('nisn');
         $nama = $this->input->post('nama');
         $no_wa = $this->input->post('no_wa');
-        $barcode = $this->input->post('barcode');
-        $data = $this->db->get_where('t_register', array('id_register' => $id_register))->row();
-        if ($data->status_daftar == 0) {
-            $status = 0;
-        } else {
-            $status = 1;
-        }
-        $code = $data->code;
+
 
         $data_update = array(
-            'id_register' => $id_register,
             'nisn' => $nisn,
             'nama' => $nama,
-            'no_wa' => $no_wa,
-            'barcode' => $barcode,
-            'status_daftar' => $status,
-            'code' => $code
+            'no_hp' => $no_wa,
         );
         $whereid = array(
-            'id_register' => $id_register
+            'id_user' => $id_register
         );
-        $this->Model_admin->edit_data($whereid, $data_update, 't_register');
+        $this->Model_admin->edit_data($whereid, $data_update, 't_siswa');
         redirect('SuperAdmin/Registrasi');
         // var_dump($data);
         // die;
     }
     public function getRegister($id)
     {
-        $data['profile'] = $this->db->get_where('t_register', array('id_register' => $id))->row();
+        $data['profile'] = $this->db->get_where('t_siswa', array('id_user' => $id))->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
     public function getRegisterGuru($id)
     {
-        $data['profile'] = $this->db->get_where('t_registerguru', array('id_registerGuru' => $id))->row();
+        $data['profile'] = $this->db->get_where('t_guru', array('id_user' => $id))->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
@@ -201,19 +269,57 @@ class Registrasi extends CI_Controller
                 // var_dump($csv_array);
                 // die;
                 foreach ($csv_array as $row) {
+                    $data_user = array(
+                        'username' => 'guru' . rand(1000, 9999),
+                        'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                        'role_id' => 2,
+                        'status_block' => 1
+                    );
+                    $this->Model_auth->Tambah_data($data_user, 't_user');
+                    $id_user = $this->db->insert_id();
+
                     $insert_data = array(
                         'nama_guru' => $row['nama'],
-                        'email' => $row['email'],
-                        'code' =>  rand(100000, 999999),
                         'no_hp' => $row['no_hp'],
-                        'status_daftar' => 0,
+                        'id_user' => $id_user
                     );
-                    $this->Model_auth->Tambah_data($insert_data, 't_registerguru');
+                    $this->Model_auth->Tambah_data($insert_data, 't_guru');
+                    $code = rand(00000, 99999);
+                    $data_aktivasi = array(
+                        'id_user' => $id_user,
+                        'code' => $code
+                    );
+
+
+                    $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+                    $data = array(
+                        'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                        'phone' => $row['no_hp'],
+                        'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                    );
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => $data,
+                    ));
+
+                    $response = curl_exec($curl);
+                    $hasil = json_decode($response);
+
+                    curl_close($curl);
                 }
                 redirect('SuperAdmin/Registrasi/RegisterGuru');
                 //echo "<pre>"; print_r($insert_data);
             } else {
-                echo 'cok';
+                echo 'Gagal';
             }
         }
     }
@@ -242,20 +348,59 @@ class Registrasi extends CI_Controller
                 // var_dump($csv_array);
                 // die;
                 foreach ($csv_array as $row) {
+                    $data_user = array(
+                        'username' => 'siswa' . rand(1000, 9999),
+                        'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                        'role_id' => 1,
+                        'status_block' => 1
+                    );
+                    $this->Model_auth->Tambah_data($data_user, 't_user');
+                    $id_user = $this->db->insert_id();
                     $insert_data = array(
                         'nisn' => $row['nisn'],
                         'nama' => $row['nama'],
-                        'code' =>  rand(100000, 999999),
-                        'no_wa' => $row['no_wa'],
-                        'barcode' => $row['barcode'],
-                        'status_daftar' => 0,
+                        'id_user' => $id_user,
+                        'no_hp' => $row['no_wa'],
+                        'angkatan' => $row['angkatan'],
+                        'coin' => 0
                     );
-                    $this->Model_auth->Tambah_data($insert_data, 't_register');
+                    $this->Model_auth->Tambah_data($insert_data, 't_siswa');
+                    $code = rand(00000, 99999);
+                    $data_aktivasi = array(
+                        'id_user' => $id_user,
+                        'code' => $code
+                    );
+
+
+                    $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+                    $data = array(
+                        'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                        'phone' => $row['no_wa'],
+                        'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                    );
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => $data,
+                    ));
+
+                    $response = curl_exec($curl);
+                    $hasil = json_decode($response);
+
+                    curl_close($curl);
                 }
                 redirect('SuperAdmin/Registrasi');
                 //echo "<pre>"; print_r($insert_data);
             } else {
-                echo 'cok';
+                echo 'Gagal';
             }
         }
     }

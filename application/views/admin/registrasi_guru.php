@@ -31,8 +31,6 @@
                                              <th>Nama Guru</th>
                                              <th>No HP</th>
                                              <th>Kode Aktifasi</th>
-                                             <th>Email</th>
-                                             <th>Status Registrasi</th>
                                              <th>Aksi</th>
                                          </tr>
                                      </thead>
@@ -46,22 +44,14 @@
                                                  <td><?= $gr['nama_guru'] ?></td>
                                                  <td><?= $gr['no_hp'] ?></td>
                                                  <td><?= $gr['code'] ?></td>
-                                                 <td><?= $gr['email'] ?></td>
-                                                 <td class="text-center">
-                                                     <?php if ($gr['status_daftar'] == 1) { ?>
-                                                         <div class="badge badge-success badge-shadow w-75">Sudah</div>
-                                                     <?php } else { ?>
-                                                         <div class="badge badge-success badge-shadow w-75">Belum</div>
-                                                     <?php } ?>
 
-                                                 </td>
 
                                                  <td>
                                                      <div class="dropdown">
                                                          <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
                                                          <div class="dropdown-menu">
-                                                             <a onclick="modaleditguru(<?= $gr['id_registerGuru'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                             <a href="" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
+                                                             <a onclick="modaleditguru(<?= $gr['id_user'] ?>)" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
+                                                             <a href="#" onclick="deleteAktivasiGuru(<?= $gr['id_user'] ?>)" class="dropdown-item has-icon"><i class="far fa-trash-alt"></i> Delete</a>
                                                          </div>
                                                      </div>
                                                  </td>
@@ -98,11 +88,10 @@
                      success: function(resultData) {
                          console.log(resultData)
                          $('.txt_csrfname').val(resultData.token);
-                         $('#edit_id_guru').val(resultData.profile.id_registerGuru);
+                         $('#edit_id_guru').val(resultData.profile.id_user);
                          $('#edit_nama').val(resultData.profile.nama_guru);
                          $('#edit_nohp').val(resultData.profile.no_hp);
-                         $('#kode_aktivasi').val(resultData.profile.code);
-                         $('#email_guru').val(resultData.profile.email);
+
 
                      }
 
@@ -116,6 +105,51 @@
 
                  $('#upload_csv_guru').appendTo("body").modal('show');
 
+             }
+
+             function deleteAktivasiGuru(id) {
+                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                 var csrfHash = $('.txt_csrfname').val();
+                 swal({
+                         title: 'Delete Aktivasi',
+                         text: 'Yakin ingin Menghapus Aktivasi User?',
+                         icon: 'warning',
+                         buttons: true,
+                         dangerMode: true,
+                     })
+                     .then((willDelete) => {
+                         if (willDelete) {
+                             $.ajax({
+                                 type: "POST",
+                                 url: "<?php echo site_url('SuperAdmin/Registrasi/deleteAktivasi') ?>",
+                                 data: {
+                                     [csrfName]: csrfHash,
+                                     'id_user': id,
+                                 },
+                                 dataType: "JSON",
+                                 success: function(resultData) {
+                                     $('.txt_csrfname').val(resultData.token);
+                                     console.log(resultData);
+                                     $(document).ajaxStop(function() {
+                                         if (resultData.status == 0) {
+                                             swal('Gagal', 'Gagal Menghapus', 'error');
+
+                                         } else {
+                                             swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                 window.location.reload();
+
+                                             });
+
+                                         }
+                                     });
+
+                                 }
+
+                             });
+                         } else {
+                             swal('Dibatalkan!');
+                         }
+                     });
              }
          </script>
          <div class="modal fade" id="add_regisguru" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -140,9 +174,8 @@
                              <div class="form-group">
                                  <input id="no_wa" placeholder="No Whatssapp" type="text" name="no_wa" class="form-control" required="">
                              </div>
-                             <div class="form-group">
-                                 <input id="email" placeholder="Email" type="text" name="email" class="form-control" required="">
-                             </div>
+
+
 
                              <div align="right">
                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -205,14 +238,7 @@
                              <!-- <div class="form-group">
                                  <input placeholder="Code" type="text" name="code" class="form-control" required="">
                              </div> -->
-                             <div class="form-group">
-                                 <strong><label>Kode Aktivasi</label></strong>
-                                 <input id="kode_aktivasi" placeholder="No Whatssapp" type="text" name="code" class="form-control" required="">
-                             </div>
-                             <div class="form-group">
-                                 <strong><label>Email</label></strong>
-                                 <input id="email_guru" placeholder="Barcode" type="text" name="email" class="form-control" required="">
-                             </div>
+
                              <div align="right">
                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                                  <button type="submit" class="btn btn-primary">Simpan</button>
