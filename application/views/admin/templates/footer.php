@@ -36,7 +36,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        console.log('asu');
         $('.select2cok').select2();
     });
 </script>
