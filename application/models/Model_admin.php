@@ -270,4 +270,13 @@ class Model_admin extends CI_Model
 
         return $this->db->get();
     }
+    public function LogPerpus()
+    {
+        # code...
+        $this->db->select('*');
+        $this->db->from('t_log');
+        $this->db->join('t_user', 't_user.id_user=t_log.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        return $this->db->get();
+    }
 }

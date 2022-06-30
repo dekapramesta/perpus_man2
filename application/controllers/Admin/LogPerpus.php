@@ -40,9 +40,11 @@ class LogPerpus extends CI_Controller
     public function DataLog()
     {
         # code...
+        $data['log_perpus'] = $this->Model_admin->LogPerpus()->result_array();
+
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar');
-        $this->load->view('Admin/data_log');
+        $this->load->view('Admin/data_log', $data);
         $this->load->view('Admin/templates/footer');
     }
     public function PostData()
