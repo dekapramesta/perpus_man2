@@ -30,6 +30,7 @@
                                             <th>Judul Buku</th>
                                             <th>ID Buku</th>
                                             <th>Tanggal Pemngembalian</th>
+                                            <th>Dikerjakan Oleh</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -52,7 +53,7 @@
                                                 <td><?= $lpr['id_buku'] ?></td>
                                                 <td><?= $lpr['tgl_pengembalian'] ?></td>
 
-
+                                                <td><?= $lpr['nama_admin'] ?></td>
 
 
 

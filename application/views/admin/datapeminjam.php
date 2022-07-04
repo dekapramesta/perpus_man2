@@ -33,6 +33,8 @@
                                             <th>Tanggal Peminjaman</th>
                                             <th>Tanggal Pemngembalian Seharusnya</th>
                                             <th>Status Pengembalian</th>
+                                            <th>Dikerjakan Oleh</th>
+
 
                                         </tr>
                                     </thead>
@@ -61,6 +63,7 @@
                                                     } elseif ($lpr['status_pengembalian'] == 0) {
                                                         echo "Belum Dikembalikan";
                                                     } ?></td>
+                                                <td><?= $lpr['nama_admin'] ?></td>
 
 
 

@@ -3,7 +3,7 @@
     <!-- ======= Breadcrumbs ======= -->
     <div class="breadcrumbs" data-aos="fade-in">
         <div class="container text-start">
-            <h2>Tentang</h2>
+            <h2>Profil Perpustakaan</h2>
         </div>
     </div><!-- End Breadcrumbs -->
 

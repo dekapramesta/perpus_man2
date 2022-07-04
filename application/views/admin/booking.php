@@ -363,7 +363,7 @@
                 document.getElementById('card_detail').style.display = "Block";
                 document.getElementById('kode_buku').value = data_pick[i].Kode_Buku;
                 document.getElementById('judul_buku').value = data_pick[i].Judul;
-                document.getElementById('barcode_siswa').value = data_pick[i].Id_user;
+                document.getElementById('barcode_siswa').value = data_pick[i].nisn;
                 document.getElementById('id_booking').value = data_pick[i].Id_booking;
 
 

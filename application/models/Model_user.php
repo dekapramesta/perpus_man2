@@ -48,6 +48,15 @@ class Model_user extends CI_Model
         $this->db->group_by('judul_buku');
         return $this->db->get();
     }
+    public function SearchEbook($keyword)
+    {
+        $this->db->select('*');
+        $this->db->from('t_ebook');
+        $this->db->like('judul_ebook', $keyword);
+        $this->db->or_like('kategori', $keyword);
+        $this->db->group_by('judul_ebook');
+        return $this->db->get();
+    }
     public function SearchKategori($keyword)
     {
         $this->db->select('*');

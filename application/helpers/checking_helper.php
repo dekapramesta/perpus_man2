@@ -51,6 +51,7 @@ function KirimWA()
     date_default_timezone_set('Asia/Jakarta');
     $CI    = &get_instance();
     $CI->load->database();
+    $perpus = $CI->db->get('profile_perpus')->row();
     $data =  $CI->Model_admin->KirimNotif()->result_array();
     $checknotif =  $CI->Model_admin->get_data_onecol('t_notice', 'id_peminjaman')->result_array();
     $notif = array();
@@ -77,7 +78,7 @@ function KirimWA()
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $dt['hp_siswa']),
+                        CURLOPT_POSTFIELDS => array('token' => $perpus->token_wa, 'phone' => $dt['hp_siswa']),
                     ));
 
                     $status_cek = curl_exec($cek_wa);
@@ -95,7 +96,7 @@ function KirimWA()
                         $CI->Model_admin->Tambah_data($data_array, 't_notice');
                     } else {
                         $data = array(
-                            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                            'token' => $perpus->token_wa,
                             'phone' => $dt['hp_siswa'],
                             'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
                         );
@@ -148,7 +149,7 @@ function KirimWA()
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $dt['hp_guru']),
+                        CURLOPT_POSTFIELDS => array('token' => $perpus->token_wa, 'phone' => $dt['hp_guru']),
                     ));
 
                     $status_cek = curl_exec($cek_wa);
@@ -169,7 +170,7 @@ function KirimWA()
                         // echo "kene";
                         // die;
                         $data = array(
-                            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                            'token' => $perpus->token_wa,
                             'phone' => $dt['hp_guru'],
                             'message' => 'Pengingatan Akan Pengembalian Buku dengan ID ' . $dt['id_buku'] . ', Dimana Masa Peminjaman Kurang 1 Hari'
                         );

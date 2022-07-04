@@ -95,27 +95,49 @@ class DataUser extends CI_Controller
     public function getSiswa($id)
     {
         # code...
-        $data['profile'] = $this->db->get_where('t_siswa', array('id_siswa' => $id))->row();
+        $data['profile'] = $this->Model_admin->GetSiswa($id)->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
     public function getAdmin($id)
     {
         # code...
-        $data['profile'] = $this->db->get_where('t_admin', array('id_admin' => $id))->row();
+        $data['profile'] = $this->Model_admin->GetAdmin($id)->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
     public function getGuru($id)
     {
         # code...
-        $data['profile'] = $this->db->get_where('t_guru', array('id_guru' => $id))->row();
+        $data['profile'] = $this->Model_admin->GetGuruId($id)->row();
         $data['token'] = $this->security->get_csrf_hash();
         echo json_encode($data);
     }
     public function UpdateSiswa()
     {
+
+        $original =  $this->Model_admin->GetSiswa($this->input->post('id_siswa'))->row();
+        if ($original->username != $this->input->post('username')) {
+            $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
+            $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
+            if (!$this->form_validation->run()) {
+                $message = substr(strip_tags(validation_errors()), 0, -1);
+                $this->session->set_flashdata(
+                    'siswaDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser');
+            }
+        }
         # code...
+        $datauser = array(
+            'username' => $this->input->post('username')
+        );
+        $whereuser = array(
+            'id_user' => $original->id_user
+        );
+        $this->Model_user->edit_data($whereuser, $datauser, 't_user');
         $data_update = array(
             'nama' => $this->input->post('nama'),
             'email' => $this->input->post('email'),
@@ -127,11 +149,37 @@ class DataUser extends CI_Controller
             'id_siswa' => $this->input->post('id_siswa')
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_siswa');
+        $this->session->set_flashdata(
+            'siswaDU',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+        );
         redirect('SuperAdmin/DataUser');
     }
     public function UpdateGuru()
     {
         # code...
+        $original = $this->Model_admin->GetGuruId($this->input->post('id_guru'))->row();;
+        if ($original->username != $this->input->post('username')) {
+            $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
+            $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
+            if (!$this->form_validation->run()) {
+                $message = substr(strip_tags(validation_errors()), 0, -1);
+                $this->session->set_flashdata(
+                    'guruDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser/DataGuru');
+            }
+        }
+        $datauser = array(
+            'username' => $this->input->post('username')
+        );
+        $whereuser = array(
+            'id_user' => $original->id_user
+        );
+        $this->Model_user->edit_data($whereuser, $datauser, 't_user');
         $data_update = array(
             'nama_guru' => $this->input->post('nama_guru'),
             'email' => $this->input->post('email'),
@@ -142,13 +190,40 @@ class DataUser extends CI_Controller
             'id_guru' => $this->input->post('id_guru')
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
+        $this->session->set_flashdata(
+            'guruDU',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+        );
         redirect('SuperAdmin/DataUser/DataGuru');
     }
     public function UpdateAdmin()
     {
         # code...
+        $original =  $this->Model_admin->GetAdmin($this->input->post('id_admin'))->row();
+        if ($original->username != $this->input->post('username')) {
+            $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
+            $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
+            if (!$this->form_validation->run()) {
+                $message = substr(strip_tags(validation_errors()), 0, -1);
+                $this->session->set_flashdata(
+                    'adminDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser/Admin');
+            }
+        }
+        $datauser = array(
+            'username' => $this->input->post('username')
+        );
+        $whereuser = array(
+            'id_user' => $original->id_user
+        );
+        $this->Model_user->edit_data($whereuser, $datauser, 't_user');
         $data_update = array(
             'nama_admin' => $this->input->post('nama_admin'),
+
 
 
         );
@@ -156,6 +231,11 @@ class DataUser extends CI_Controller
             'id_admin' => $this->input->post('id_admin')
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_admin');
+        $this->session->set_flashdata(
+            'adminDU',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+        );
         redirect('SuperAdmin/DataUser/Admin');
     }
 
@@ -163,6 +243,36 @@ class DataUser extends CI_Controller
     {
         # code...
         $data = $this->db->get_where('t_user', array('id_user' => $this->input->post('id_user')))->row();
+
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+
+        $this->form_validation->set_message('min_length', '{field} Minimal Harus {param} Karakter .');
+        if (!$this->form_validation->run()) {
+            $message = substr(strip_tags(validation_errors()), 0, -1);
+            if ($data->role_id == 1) {
+                $this->session->set_flashdata(
+                    'siswaDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser');
+            } elseif ($data->role_id == 2) {
+                $this->session->set_flashdata(
+                    'guruDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser/DataGuru');
+            } elseif ($data->role_id == 77) {
+                $this->session->set_flashdata(
+                    'adminDU',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                );
+                redirect('SuperAdmin/DataUser/Admin');
+            }
+        }
+
         $data_update = array(
             'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
         );
@@ -171,10 +281,25 @@ class DataUser extends CI_Controller
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_user');
         if ($data->role_id == 1) {
+            $this->session->set_flashdata(
+                'siswaDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+            );
             redirect('SuperAdmin/DataUser');
         } elseif ($data->role_id == 2) {
+            $this->session->set_flashdata(
+                'guruDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+            );
             redirect('SuperAdmin/DataUser/DataGuru');
         } elseif ($data->role_id == 77) {
+            $this->session->set_flashdata(
+                'adminDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Berhasil Dirubah ","success");</script>'
+            );
             redirect('SuperAdmin/DataUser/Admin');
         }
     }

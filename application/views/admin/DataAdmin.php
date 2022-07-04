@@ -1,3 +1,10 @@
+<?php if ($this->session->flashdata('adminDU')) {
+    echo $this->session->flashdata('adminDU');
+    $this->session->set_flashdata(
+        'adminDU',
+        ''
+    );
+} ?>
 <div class="main-content">
     <section class="section">
         <div class="section-body">
@@ -24,6 +31,7 @@
                                             <th class="text-center">
                                                 #
                                             </th>
+                                            <th>Username</th>
                                             <th>Nama Admin</th>
                                             <th>Status User</th>
                                             <th>Aksi</th>
@@ -36,6 +44,7 @@
                                                 <td>
                                                     <?= $no; ?>
                                                 </td>
+                                                <td><?= $gr['username'] ?></td>
                                                 <td><?= $gr['nama_admin'] ?></td>
                                                 <td class="text-center">
                                                     <?php if ($gr['status_block'] == 0) { ?>
@@ -99,8 +108,10 @@
                     success: function(resultData) {
                         console.log(resultData)
                         $('.txt_csrfname').val(resultData.token);
+
                         $('#edit_id_admin').val(resultData.profile.id_admin);
                         $('#edit_nama').val(resultData.profile.nama_admin);
+                        $('#edit_user').val(resultData.profile.username);
 
                     }
 
@@ -190,6 +201,10 @@
                     </div>
                     <div class="modal-body">
                         <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateAdmin') ?>" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <strong><label>Username</label></strong>
+                                <input id="edit_user" type="text" name="username" class="form-control " required="">
+                            </div>
                             <div class="form-group">
                                 <strong><label>Nama</label></strong>
                                 <input hidden id="edit_id_admin" type="text" name="id_admin" class="form-control " required="">

@@ -59,7 +59,7 @@ class Booking extends CI_Controller
             // var_dump($databuku);
             if ($databuku) {
                 foreach ($databuku as $dt) {
-                    $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
+                    $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user'], "nisn" => $dt['nisn']];
                 }
                 $data['buku'] = $dat;
             }

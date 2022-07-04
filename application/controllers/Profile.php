@@ -54,32 +54,77 @@ class Profile extends CI_Controller
     {
         if ($this->session->userdata('id_user') != null) {
             if ($this->session->userdata('role_id') == 1) {
+                $original = $this->Model_user->Profile($this->session->userdata('id_user'))->row();
+                if ($original->username != $this->input->post('username')) {
+                    $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
+                    $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
+                    if (!$this->form_validation->run()) {
+                        $message = substr(strip_tags(validation_errors()), 0, -1);
+                        $this->session->set_flashdata(
+                            'profile_error',
+                            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                        );
+                        redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                    }
+                }
                 $id_siswa = $this->db->get_where('t_siswa', array('id_user' => $this->session->userdata('id_user')))->row()->id_siswa;
-                $data_edit = array(
-                    'nama' => $this->input->post('nama'),
-                    'email' => $this->input->post('email'),
-                    'no_hp' => $this->input->post('no_hp'),
-                    'angkatan' => $this->input->post('angkatan'),
-                    'nisn' => $this->input->post('nisn'),
+
+                $datauser = array(
+                    'username' => $this->input->post('username')
                 );
-                $data_where = array(
-                    'id_siswa' => $id_siswa
+                $whereuser = array(
+                    'id_user' => $this->session->userdata('id_user')
                 );
-                $this->Model_user->edit_data($data_where, $data_edit, 't_siswa');
-                redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                $edit_user = $this->Model_user->edit_data($whereuser, $datauser, 't_user');
+                if ($edit_user) {
+                    $data_edit = array(
+                        'nama' => $this->input->post('nama'),
+                        'email' => $this->input->post('email'),
+                        'no_hp' => $this->input->post('no_hp'),
+                    );
+                    $data_where = array(
+                        'id_siswa' => $id_siswa
+                    );
+                    $this->Model_user->edit_data($data_where, $data_edit, 't_siswa');
+                    redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                }
             } elseif ($this->session->userdata('role_id') == 2) {
+                $original = $this->Model_user->ProfileGuru($this->session->userdata('id_user'))->row();
+                if ($original->username != $this->input->post('username')) {
+                    $this->form_validation->set_rules('username', 'username', 'required|is_unique[t_user.username]');
+                    $this->form_validation->set_message('is_unique', '{field} sudah digunakan!');
+                    if (!$this->form_validation->run()) {
+                        $message = substr(strip_tags(validation_errors()), 0, -1);
+                        $this->session->set_flashdata(
+                            'profile_error',
+                            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+                        );
+                        redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                    }
+                }
                 $id_guru = $this->db->get_where('t_guru', array('id_user' => $this->session->userdata('id_user')))->row()->id_guru;
-                $data_edit = array(
-                    'nama_guru' => $this->input->post('nama'),
-                    'email' => $this->input->post('email'),
-                    'no_hp' => $this->input->post('no_hp'),
-                    'alamat' => $this->input->post('alamat'),
+                $datauser = array(
+                    'username' => $this->input->post('username')
                 );
-                $data_where = array(
-                    'id_guru' => $id_guru
+                $whereuser = array(
+                    'id_user' => $this->session->userdata('id_user')
                 );
-                $this->Model_user->edit_data($data_where, $data_edit, 't_guru');
-                redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                $edit_user = $this->Model_user->edit_data($whereuser, $datauser, 't_user');
+                if ($edit_user) {
+                    $data_edit = array(
+                        'nama_guru' => $this->input->post('nama'),
+                        'email' => $this->input->post('email'),
+                        'no_hp' => $this->input->post('no_hp'),
+                        'alamat' => $this->input->post('alamat'),
+                    );
+                    $data_where = array(
+                        'id_guru' => $id_guru
+                    );
+                    $this->Model_user->edit_data($data_where, $data_edit, 't_guru');
+                    redirect('Profile/DataDiri/' . $this->session->userdata('id_user'));
+                }
             }
         } else {
             redirect("/");

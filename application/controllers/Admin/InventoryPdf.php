@@ -11,6 +11,7 @@ class InventoryPdf extends CI_Controller
         if ($this->session->userdata('role_id') != 77) {
             redirect('');
         }
+        $this->id_admin = $this->db->get_where('t_admin', array('id_user' => $this->session->userdata('id_user')))->row()->id_admin;
     }
 
     /**
@@ -53,6 +54,8 @@ class InventoryPdf extends CI_Controller
                 'deskripsi' => $this->input->post('deskripsi'),
                 'kategori' =>  implode(',', $this->input->post('kategori_pdf', TRUE)),
                 'file_ebook' => $file_ebook,
+                'insert_by' => $this->id_admin
+
             );
             $this->Model_admin->Tambah_data($data, 't_ebook');
             redirect('Admin/InventoryPdf');
@@ -66,8 +69,11 @@ class InventoryPdf extends CI_Controller
     }
     public function DetailPdf($id)
     {
-        $data['ebook'] = $this->db->get_where('t_ebook', array('id_ebook' => $id))->row();
+        $dataebook = $this->db->get_where('t_ebook', array('id_ebook' => $id))->row();
         $data['category_pdf'] = $this->db->get('t_kategori')->result_array();
+        $data['admin']  = $this->db->get_where('t_admin', array('id_admin' => $dataebook->insert_by))->row();
+        $data['ebook'] = $dataebook;
+
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar');
         $this->load->view('Admin/detailpdf', $data);

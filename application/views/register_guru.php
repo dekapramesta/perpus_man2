@@ -33,7 +33,7 @@
                         <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                         <input name="username" type="text" class="form-control mt-2" placeholder="Username" required />
                         <span class="text-danger"><?= form_error('username') ?></span>
-                        <input name="password" type="text" class="form-control mt-2" placeholder="Password" required />
+                        <input name="password" type="password" class="form-control mt-2" placeholder="Password" required />
                         <span class="text-danger"><?= form_error('password') ?></span>
                         <input id="namalengkap" name="nama_lengkap" type="text" class="form-control mt-2" placeholder="Nama Lengkap" required />
                         <span class="text-danger"><?= form_error('nama_lengkap') ?></span>

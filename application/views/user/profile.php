@@ -5,6 +5,14 @@
             ''
         );
     } ?>
+   <?php if ($this->session->flashdata('profile_error')) {
+        echo $this->session->flashdata('profile_error');
+        $this->session->set_flashdata(
+            'profile_error',
+            ''
+        );
+    } ?>
+
    <main id="main">
        <!-- ======= Breadcrumbs ======= -->
        <div class="breadcrumbs" data-aos="fade-in">
@@ -44,6 +52,10 @@
                                                    <div class="col-lg-12">
                                                        <?php if ($role == 1) : ?>
                                                            <div class="course-info d-flex justify-content-between align-items-center">
+                                                               <h5>Username</h5>
+                                                               <p><a href="#"><?= $profile->username ?></a></p>
+                                                           </div>
+                                                           <div class="course-info d-flex justify-content-between align-items-center">
                                                                <h5>Nama</h5>
                                                                <p><a href="#"><?= $profile->nama ?></a></p>
                                                            </div>
@@ -67,6 +79,10 @@
                                                                <p><?= $profile->nisn ?></p>
                                                            </div>
                                                        <?php elseif ($role == 2) : ?>
+                                                           <div class="course-info d-flex justify-content-between align-items-center">
+                                                               <h5>Username</h5>
+                                                               <p><a href="#"><?= $profile->username ?></a></p>
+                                                           </div>
                                                            <div class="course-info d-flex justify-content-between align-items-center">
                                                                <h5>Nama</h5>
                                                                <p><a href="#"><?= $profile->nama_guru ?></a></p>
@@ -209,6 +225,10 @@
                            <?php if ($role == 1) : ?>
                                <div class="form-group ">
                                    <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_siswa ?>" required=""> -->
+                                   <input placeholder="Username" name="username" type="text" class="form-control " value="<?= $profile->username ?>" required="">
+                               </div>
+                               <div class="form-group mt-3">
+                                   <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_siswa ?>" required=""> -->
                                    <input placeholder="Nama" name="nama" type="text" class="form-control " value="<?= $profile->nama ?>" required="">
                                    <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                </div>
@@ -219,14 +239,13 @@
                                <div class="form-group mt-3">
                                    <input placeholder="No HP" name="no_hp" type="text" class="form-control " value="<?= $profile->no_hp ?>" required="">
                                </div>
-                               <div class="form-group mt-3">
-                                   <input hidden placeholder="Angkatan" name="angkatan" type="text" class="form-control " value="<?= $profile->angkatan ?>" required="">
-                               </div>
-                               <div class="form-group mt-3">
-                                   <input placeholder="NISN" type="text" name="nisn" class="form-control " value="<?= $profile->nisn ?>" required="">
-                               </div>
+
                            <?php elseif ($role == 2) : ?>
                                <div class="form-group ">
+                                   <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_siswa ?>" required=""> -->
+                                   <input placeholder="Username" name="username" type="text" class="form-control " value="<?= $profile->username ?>" required="">
+                               </div>
+                               <div class="form-group mt-3">
                                    <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_guru ?>" required=""> -->
                                    <input placeholder="Nama" name="nama" type="text" class="form-control " value="<?= $profile->nama_guru ?>" required="">
                                    <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">

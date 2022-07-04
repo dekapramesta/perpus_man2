@@ -8,10 +8,15 @@
                             <div class="col">
                                 <div class="row ">
                                     <div class="col">
-                                        <h4>Data Guru</h4>
+                                        <h4>Event</h4>
                                     </div>
                                     <div class="col text-right">
                                         <button class="btn btn-primary" onclick="tambah_brg()">Tambah Data</button>
+                                        <?php if ($status->status_fitur == 0) :  ?>
+                                            <a href="#" onclick="EventStatus()" type="button" class="btn btn-primary" href="">Aktifkan</a>
+                                        <?php elseif ($status->status_fitur == 1) : ?>
+                                            <a href="#" onclick="EventStatus()" type="button" class="btn btn-danger" href=""> Non-Aktifkan</a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +50,7 @@
                                                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle">Options</a>
                                                         <div class="dropdown-menu">
                                                             <a onclick="edit_brg('<?= $hdh['id_hadiah'] ?>')" class="dropdown-item has-icon"><i class="far fa-edit"></i> Edit</a>
-                                                            <a class="dropdown-item has-icon"><i class="fas fa-trash"></i>Delete</a>
+                                                            <a class="dropdown-item has-icon" onclick="deleteHadiah('<?= $hdh['id_hadiah'] ?>')"><i class="fas fa-trash"></i>Delete</a>
 
                                                         </div>
                                                     </div>
@@ -64,6 +69,24 @@
 
         </div>
         <script>
+            function EventStatus() {
+                swal({
+                        title: 'Yakin Ingin Merubah Status Event??',
+                        text: 'Jika status dirubah maka coin user akan menjadi 0',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            window.location.href = "<?= base_url('SuperAdmin/Event/ChangeStatus') ?>";
+
+                        } else {
+                            swal('Konfirmasi Status dibatalkan');
+                        }
+                    });
+            }
+
             function edit_brg(data) {
                 var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
                 var csrfHash = $('.txt_csrfname').val();
@@ -94,6 +117,51 @@
             function tambah_brg() {
                 $('#tambah_barang').appendTo("body").modal('show');
 
+            }
+
+            function deleteHadiah(id) {
+                var csrfName = $('.txt_csrfname').attr('name'); // Value specified in $config['csrf_token_name']
+                var csrfHash = $('.txt_csrfname').val();
+                swal({
+                        title: 'Delete Hadiah',
+                        text: 'Yakin ingin Menghapus Hadiah?',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                type: "POST",
+                                url: "<?php echo site_url('SuperAdmin/Event/DeleteHadiah') ?>",
+                                data: {
+                                    [csrfName]: csrfHash,
+                                    'id': id,
+                                },
+                                dataType: "JSON",
+                                success: function(resultData) {
+                                    $('.txt_csrfname').val(resultData.token);
+                                    console.log(resultData);
+                                    $(document).ajaxStop(function() {
+                                        if (resultData.status == 0) {
+                                            swal('Gagal', 'Gagal Menghapus', 'error');
+
+                                        } else {
+                                            swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                window.location.reload();
+
+                                            });
+
+                                        }
+                                    });
+
+                                }
+
+                            });
+                        } else {
+                            swal('Dibatalkan!');
+                        }
+                    });
             }
         </script>
         <div class="modal fade" id="modal_barang" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

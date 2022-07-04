@@ -5,52 +5,52 @@
 </style>
 <section class="my-5">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col text-center">
-                <h2 style="color: black">Register</h2>
-            </div>
-            <div class="row justify-content-center align-items-center">
-                <form class="form-example" id="code_regis" action="<?php echo base_url('Register/checkingcode') ?>" method="post">
-                    <div class="col-xl-">
-                        <div class="card mx-auto col-5  " id="cardcode">
-                            <div class="card-body">
-                                <div class="form-group mb-2">
-                                    <input id="code_reg" type="text" class="form-control" placeholder="Kode" required />
+        <div class="col text-center">
+            <h2 style="color: black">Register</h2>
+        </div>
+        <div align="center">
+            <form class="form-example" id="code_regis" action="<?php echo base_url('Register/checkingcode') ?>" method="post">
+                <div class="col col-md-8 col-lg-6">
+                    <div class="card" id="cardcode">
+                        <div class="card-body">
+                            <div class="form-group mb-2">
+                                <input id="code_reg" type="text" class="form-control" placeholder="Kode" required />
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <div class="col-6 px-2">
+                                    <button type="submit" class="btn btn-outline-light mt-1 w-100" style="background-color: #3ac162;">Masuk</button>
                                 </div>
-                                <div class="row justify-content-center">
-                                    <div class="col-12 d-flex">
-                                        <button type="submit" class="btn btn-outline-light mt-1 w-100" style="background-color: #3ac162;">Masuk</button>
-                                        <a href="<?= base_url('Register/RegisterGuru') ?>" class="btn btn-outline-light mt-1 w-100" style="background-color: #86B88A;">Daftar Guru</a>
-
-                                    </div>
+                                <div class="col-6 px-2">
+                                    <a href="<?= base_url('Register/RegisterGuru') ?>" class="btn btn-outline-light mt-1 w-100" style="background-color: #86B88A;">Daftar Guru</a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
-                </form>
+                </div>
+            </form>
+        </div>
+        <div align="center">
+            <div class="col col-md-8 col-lg-6">
                 <form id="daftar" action="<?php echo base_url('Register/daftar') ?>" method="post" enctype="multipart/form-data">
-                    <div class="card col-5 py-2 mx-auto " style="display: none;" id="cardregist">
-                        <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-                        <input readonly id="nisn" name="nisn" type="text" class="form-control" placeholder="NISN" required />
-                        <span class="text-danger"><?= form_error('nisn') ?></span>
-                        <input name="username" type="text" class="form-control mt-2" placeholder="Username" required />
-                        <span class="text-danger"><?= form_error('username') ?></span>
-                        <input name="password" type="text" class="form-control mt-2" placeholder="Password" required />
-                        <span class="text-danger"><?= form_error('password') ?></span>
-                        <input id="namalengkap" name="nama_lengkap" type="text" class="form-control mt-2" placeholder="Nama Lengkap" required />
-                        <span class="text-danger"><?= form_error('nama_lengkap') ?></span>
-                        <input name="email" type="text" class="form-control mt-2" placeholder="Email" required />
-                        <span class="text-danger"><?= form_error('email') ?></span>
-                        <input id="no_hp" name="no_hp" type="text" class="form-control mt-2" placeholder="No Hp" required />
-                        <span class="text-danger"><?= form_error('no_hp') ?></span>
-                        <input readonly id="angkatan" name="angkatan" type="text" class="form-control mt-2" placeholder="Angkatan" required />
-                        <span class="text-danger"><?= form_error('angkatan') ?></span>
-                        <input type="text" id="id_user" hidden name="id_user">
-                        <div class="row justify-content-center">
-                            <div class="col-xl-6 col-lg-6 col-12">
+                    <div class="card" style="display: none;" id="cardregist">
+                        <div class="card-body">
+                            <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <input readonly id="nisn" name="nisn" type="text" class="form-control" placeholder="NISN" required />
+                            <span class="text-danger"><?= form_error('nisn') ?></span>
+                            <input name="username" type="text" class="form-control mt-2" placeholder="Username" required />
+                            <span class="text-danger"><?= form_error('username') ?></span>
+                            <input name="password" type="password" class="form-control mt-2" placeholder="Password" required />
+                            <span class="text-danger"><?= form_error('password') ?></span>
+                            <input id="namalengkap" name="nama_lengkap" type="text" class="form-control mt-2" placeholder="Nama Lengkap" required />
+                            <span class="text-danger"><?= form_error('nama_lengkap') ?></span>
+                            <input name="email" type="text" class="form-control mt-2" placeholder="Email" required />
+                            <span class="text-danger"><?= form_error('email') ?></span>
+                            <input id="no_hp" name="no_hp" type="text" class="form-control mt-2" placeholder="No Hp" required />
+                            <span class="text-danger"><?= form_error('no_hp') ?></span>
+                            <input readonly id="angkatan" name="angkatan" type="text" class="form-control mt-2" placeholder="Angkatan" required />
+                            <span class="text-danger"><?= form_error('angkatan') ?></span>
+                            <input type="text" id="id_user" hidden name="id_user">
+                            <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-secondary mt-3 w-100">Daftar</button>
                             </div>
                         </div>
@@ -58,7 +58,6 @@
                 </form>
             </div>
         </div>
-    </div>
 </section>
 <?php if (form_error('nisn') || form_error('username') || form_error('password') || form_error('nama_lengkap') || form_error('email') || form_error('no_hp') || form_error('angkatan') || form_error('id_user') != null) {
     $status_page = 1;

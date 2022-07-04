@@ -43,8 +43,10 @@ class Notifikasi extends CI_Controller
     public function KirimNotif()
     {
         # code...
+        $perpus = $this->db->get('profile_perpus')->row();
         $data = $this->db->get_where('t_notice', array('id_notice' => $this->input->post('id')))->row();
         $cek_wa = curl_init();
+
 
         curl_setopt_array($cek_wa, array(
             CURLOPT_URL => 'http://nusagateway.com/api/check-number.php',
@@ -55,7 +57,7 @@ class Notifikasi extends CI_Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $data->no_wa),
+            CURLOPT_POSTFIELDS => array('token' => $perpus->token_wa, 'phone' => $data->no_wa),
         ));
 
         $status_cek = curl_exec($cek_wa);
@@ -64,7 +66,7 @@ class Notifikasi extends CI_Controller
         curl_close($cek_wa);
         if ($hasil_cek->status == "valid") {
             $notice = array(
-                'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                'token' => $perpus->token_wa,
                 'phone' => $data->no_wa,
                 'message' => 'Pemberitahuan Pengembalian Buku Yang Dipinjan'
             );

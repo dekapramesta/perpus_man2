@@ -38,6 +38,7 @@ class Registrasi extends CI_Controller
     }
     public function tambah_regist()
     {
+        $perpus = $this->db->get('profile_perpus')->row();
 
         // $this->form_validation->set_rules('nisn', 'NISN', 'required|is_unique[t_register.nisn]');
         // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|is_unique[t_register.nama]');
@@ -77,7 +78,7 @@ class Registrasi extends CI_Controller
 
         $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
         $data = array(
-            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+            'token' => $perpus->token_wa,
             'phone' => $no_wa,
             'message' => 'Berikut Kode Untuk Pendaftaran ' . $code
         );
@@ -104,6 +105,7 @@ class Registrasi extends CI_Controller
     }
     public function tambah_regist_guru()
     {
+        $perpus = $this->db->get('profile_perpus')->row();
 
         // $this->form_validation->set_rules('email', 'Email', 'required|is_unique[t_registerguru.email]');
         // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
@@ -137,7 +139,7 @@ class Registrasi extends CI_Controller
 
         $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
         $data = array(
-            'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+            'token' => $perpus->token_wa,
             'phone' => $no_wa,
             'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
         );
@@ -246,6 +248,8 @@ class Registrasi extends CI_Controller
     public function csv_guru()
     {
         # code...
+        $perpus = $this->db->get('profile_perpus')->row();
+
         $this->load->library('csvimport');
         // $data['addressbook'] = $this->csv_model->get_addressbook();
         // $data['error'] = '';    //initialize image upload error array to empty
@@ -293,7 +297,7 @@ class Registrasi extends CI_Controller
 
                     $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
                     $data = array(
-                        'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                        'token' => $perpus->token_wa,
                         'phone' => $row['no_hp'],
                         'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
                     );
@@ -325,6 +329,8 @@ class Registrasi extends CI_Controller
     }
     public function csv_regist()
     {
+        $perpus = $this->db->get('profile_perpus')->row();
+
         $this->load->library('csvimport');
         // $data['addressbook'] = $this->csv_model->get_addressbook();
         // $data['error'] = '';    //initialize image upload error array to empty
@@ -374,7 +380,7 @@ class Registrasi extends CI_Controller
 
                     $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
                     $data = array(
-                        'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                        'token' => $perpus->token_wa,
                         'phone' => $row['no_wa'],
                         'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
                     );

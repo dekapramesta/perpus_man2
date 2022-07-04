@@ -1,3 +1,10 @@
+<?php if ($this->session->flashdata('siswaDU')) {
+    echo $this->session->flashdata('siswaDU');
+    $this->session->set_flashdata(
+        'siswaDU',
+        ''
+    );
+} ?>
 <div class="main-content">
     <section class="section">
         <div class="section-body">
@@ -24,6 +31,7 @@
                                             <th class="text-center">
                                                 #
                                             </th>
+                                            <th>Username</th>
                                             <th>Nama Siswa</th>
                                             <th>No HP</th>
                                             <th>Email</th>
@@ -40,6 +48,7 @@
                                                 <td>
                                                     <?= $no; ?>
                                                 </td>
+                                                <td><?= $sw['username'] ?></td>
                                                 <td><?= $sw['nama'] ?></td>
                                                 <td><?= $sw['no_hp'] ?></td>
                                                 <td><?= $sw['email'] ?></td>
@@ -95,6 +104,7 @@
                     success: function(resultData) {
                         console.log(resultData)
                         $('.txt_csrfname').val(resultData.token);
+                        $('#edit_username').val(resultData.profile.username);
                         $('#edit_id_siswa').val(resultData.profile.id_siswa);
                         $('#edit_nama').val(resultData.profile.nama);
                         $('#edit_nohp').val(resultData.profile.no_hp);
@@ -165,8 +175,13 @@
                     <div class="modal-body">
                         <form action="<?php echo base_url('SuperAdmin/DataUser/UpdateSiswa') ?>" method="post" enctype="multipart/form-data">
                             <div class="form-group">
+                                <strong><label>Username</label></strong>
+                                <!-- <input hidden id="edit_id_siswa" type="text" name="id_siswa" class="form-control " required=""> -->
+                                <input id="edit_username" placeholder="Nama Guru" type="text" name="username" class="form-control " required="">
+                            </div>
+                            <div class="form-group">
                                 <strong><label>Nama</label></strong>
-                                <input id="edit_id_siswa" type="text" name="id_siswa" class="form-control " required="">
+                                <input hidden id="edit_id_siswa" type="text" name="id_siswa" class="form-control " required="">
                                 <input id="edit_nama" placeholder="Nama Guru" type="text" name="nama" class="form-control " required="">
                             </div>
                             <div class="form-group">

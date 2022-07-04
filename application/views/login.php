@@ -1,38 +1,38 @@
 <section class="my-5">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col text-center">
-                <h2 style="color: black">Login</h2>
-            </div>
-            <?php if ($this->session->flashdata('pass_forgot')) {
-                echo $this->session->flashdata('pass_forgot');
-                $this->session->set_flashdata(
-                    'pass_forgot',
-                    ''
-                );
-            } ?>
-            <?php echo $this->session->flashdata('pesan') ?>
-            <div class="row justify-content-center">
-                <form action="<?php echo base_url('Login/login_user') ?>" method="post" enctype="multipart/form-data">
-                    <div class="col text-center">
-                        <div class="card col-5  mx-auto ">
-                            <div class="card-body">
-                                <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-                                <input type="text" name="username" class="form-control" placeholder="username" required />
-                                <input type="password" name="password" class="form-control mt-2" placeholder="Password" required />
-                                <div class="col-12 ">
-                                    <button type="submit" class="btn btn-outline-light mt-3 w-100" style="background-color: #3ac162;">Masuk</button>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <button type="button" onclick="LupaPass()" class="btn btn-outline-light btn-sm mt-1  w-50" style="background-color: #5AC347;">Lupas Password</button>
-                                    <a href="<?= base_url('Register') ?>" class=" btn btn-secondary btn-sm mt-1 w-50">Daftar</a>
-                                </div>
-
+        <div class="col text-center">
+            <h2 style="color: black">Login</h2>
+        </div>
+        <?php if ($this->session->flashdata('pass_forgot')) {
+            echo $this->session->flashdata('pass_forgot');
+            $this->session->set_flashdata(
+                'pass_forgot',
+                ''
+            );
+        } ?>
+        <?php echo $this->session->flashdata('pesan') ?>
+        <div class="d-flex justify-content-center">
+            <div class="col col-md-8 col-lg-5">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="<?php echo base_url('Login/login_user') ?>" method="post" enctype="multipart/form-data">
+                            <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                            <input type="text" name="username" class="form-control" placeholder="username" required />
+                            <input type="password" name="password" class="form-control mt-2" placeholder="Password" required />
+                            <div class="col-12 ">
+                                <button type="submit" class="btn btn-outline-light mt-3 w-100" style="background-color: #3ac162;">Masuk</button>
                             </div>
-                        </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <div class="col-6 px-1">
+                                    <button type="button" onclick="LupaPass()" class="btn btn-sm col-12 text-white" style="background-color: #5AC347;">Lupas Password</button>
+                                </div>
+                                <div class="col-6 px-1">
+                                    <a href="<?= base_url('Register') ?>" class=" btn btn-secondary btn-sm col-12">Daftar</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-
-                </form>
+                </div>
             </div>
         </div>
     </div>

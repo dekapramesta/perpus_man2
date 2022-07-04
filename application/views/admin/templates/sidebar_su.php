@@ -20,6 +20,8 @@
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser') ?>">Siswa</a></li>
                     <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser/DataGuru') ?>">Guru</a></li>
+                    <li><a class="nav-link" href="<?= base_url('SuperAdmin/DataUser/Admin') ?>">Admin</a></li>
+
                 </ul>
             </li>
             <li class="dropdown ">

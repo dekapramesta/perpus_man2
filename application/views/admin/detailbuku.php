@@ -103,6 +103,11 @@
                                                                         echo $buku->username;
                                                                     } ?></p>
                                          </div> -->
+                                         <div class="col-md-3 col-6 mt-3">
+                                             <strong>Dimasukan Oleh</strong>
+                                             <br>
+                                             <p class="text-muted"><?= $admin->nama_admin ?></p>
+                                         </div>
                                      </div>
                                      <div class="section-title">Barcode</div>
                                      <img alt="image" src="<?= base_url('Admin/InventoryBuku/Barcode/' . $buku->id_buku) ?>" class=" author-box-picture" height="100" style="width: 200px;">

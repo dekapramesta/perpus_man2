@@ -47,10 +47,13 @@
      function Modaltukar(id, nama) {
          //  alert(nama)
          let sess = <?= json_encode($this->session->userdata('id_user')) ?>;
+         let level = <?= json_encode($this->session->userdata('role_id')) ?>;
          console.log(sess);
          if (!sess) {
              swal('Gagal', 'Login Terlebih Dahulu', 'error')
-         } else {
+         } else if (parseInt(level) != 1) {
+             swal('Gagal', 'Anda Tdak Bisa Mengikuti Event Ini', 'error')
+         } else if ((parseInt(level) == 1) && sess != '') {
              $('#idhadiah').val(id);
              $('#item_name').html(nama);
              $('#ModalTukar').appendTo("body").modal('show');

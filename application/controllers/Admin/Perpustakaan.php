@@ -53,4 +53,67 @@ class Perpustakaan extends CI_Controller
         // run dompdf
         $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);
     }
+    public function Kategori()
+    {
+        # code...
+        $data['kategori'] = $this->db->get('t_kategori')->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar');
+        $this->load->view('Admin/kategori', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function deleteKategori()
+    {
+        # code...
+        $delete = $this->db->delete('t_kategori', array('id_kategori' => $this->input->post('id_kategori')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        }
+    }
+    public function getKategori($id)
+    {
+        # code...
+        $data['token'] = $this->security->get_csrf_hash();
+        $data['kategori'] = $this->db->get_where('t_kategori', array('id_kategori' => $id))->row();
+        echo json_encode($data);
+    }
+    public function UpdateKategori()
+    {
+        # code...
+        $data_update = array(
+            'nama_kategori' => $this->input->post('nama_kategori'),
+        );
+        $whereupdate = array(
+            'id_kategori' => $this->input->post('id_kategori')
+        );
+        $this->Model_admin->edit_data($whereupdate, $data_update, 't_kategori');
+        $this->session->set_flashdata(
+            'kategori',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses DI Update","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/Kategori');
+    }
+    public function TambahKategori()
+    {
+        # code...
+        $data = array(
+            'nama_kategori' => $this->input->post('nama_kategori'),
+
+
+        );
+        $this->Model_admin->Tambah_data($data, 't_kategori');
+        $this->session->set_flashdata(
+            'kategori',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses Ditambah","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/Kategori');
+    }
 }

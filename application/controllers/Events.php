@@ -37,6 +37,7 @@ class Events extends CI_Controller
     }
     public function Tukarhadiah()
     {
+        $perpus = $this->db->get('profile_perpus')->row();
         $id_hadiah = $this->input->post('id_hadiah');
         $id = $this->session->userdata('id_user');
         $data_hadiah = $this->db->get_where('t_hadiah', array('id_hadiah' => $id_hadiah))->row();
@@ -59,7 +60,7 @@ class Events extends CI_Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => array('token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG', 'phone' => $siswa->no_hp),
+                    CURLOPT_POSTFIELDS => array('token' => $perpus->token_wa, 'phone' => $siswa->no_hp),
                 ));
 
                 $status_cek = curl_exec($cek_wa);
@@ -70,7 +71,7 @@ class Events extends CI_Controller
                 // die;
                 if ($hasil_cek->status == "valid") {
                     $data = array(
-                        'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                        'token' => $perpus->token_wa,
                         'phone' => $siswa->no_hp,
                         'message' => 'Selamat Coin Berhasil Ditukarkan, Berikut Kode Penukaran : ' . $kode
                     );

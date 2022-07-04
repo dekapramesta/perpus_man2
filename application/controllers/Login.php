@@ -114,18 +114,20 @@ class Login extends CI_Controller
     public function SendToken()
     {
         # code...
+        $perpus = $this->db->get('profile_perpus')->row();
+
         $data = $this->Model_auth->CekUser($this->input->post('username'))->row();
         if ($data != null) {
             $code = md5($data->username);
             if ($data->role_id == 1) {
                 $pesan = array(
-                    'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                    'token' => $perpus->token_wa,
                     'phone' => $data->hp_siswa,
                     'message' => "Beriku Link Untuk Mengganti Password " . base_url('Login/LupaPassword/' . $code),
                 );
             } else {
                 $pesan = array(
-                    'token' => '4kWunMnyn6SyqVo3K7qx6h7YcOkZQpBw2CuID1m4O6jompSrBG',
+                    'token' => $perpus->token_wa,
                     'phone' => $data->hp_guru,
                     'message' => "Beriku Link Untuk Mengganti Password " . base_url('Login/LupaPassword/' . $code),
                 );

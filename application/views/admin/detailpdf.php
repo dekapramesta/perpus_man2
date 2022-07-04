@@ -44,6 +44,11 @@
                                                  <span class="badge badge-secondary w-100 mt-1"><?= $ktg ?></span>
                                              <?php endforeach; ?>
                                          </div>
+                                         <div class="col-md-3 col-6 b-r ml-2">
+                                             <strong>Dimasukan Oleh</strong>
+                                             <br>
+                                             <p class="text-muted"><?= $admin->nama_admin ?></p>
+                                         </div>
 
 
                                      </div>

@@ -213,9 +213,16 @@
 </main>
 
 <script>
+    let sess = <?= json_encode($this->session->userdata('id_user')); ?>;
+
     function Modaltes(id) {
-        $('#idbooking').val(id);
-        $('#ModalPinjam').appendTo("body").modal('show');
+        if (!sess) {
+            swal('Gagal', 'Login Terlebih Dahulu', 'error')
+        } else {
+            $('#idbooking').val(id);
+            $('#ModalPinjam').appendTo("body").modal('show');
+
+        }
 
 
     }

@@ -18,7 +18,7 @@ class Laporan extends CI_Controller
         $tahun = $this->input->post('tahun');
         $bulan = $this->input->post('bulan');
         $hari = $this->input->post('hari');
-
+        $this->data['admin'] = $this->db->get('t_admin')->result_array();
         $this->load->library('pdfgenerator');
 
         // title dari pdf

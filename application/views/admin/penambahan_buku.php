@@ -237,8 +237,10 @@
                              })
                              .then((willDel) => {
                                  if (willDel) {
-                                     $('#cover_place').html('<input type="file" name"cover" class="form-control"/>');
-                                     $('#src_place').html('<input hidden type="text" name="src_book" class="form-control" value="1"/>');
+                                     $('#cover_place').html('<input type="file" name="cover" class="form-control"/>');
+                                     $('#src_place').html('<input hidden type="text" name="src_book"  class="form-control" value="1"/>');
+                                     $('#category').append('<select name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
+                                     $(".select2").select2();
                                      formscan.style.display = "none";
                                      document.getElementById('form_addBook').style.display = "block";
                                  } else {

@@ -60,7 +60,7 @@
                     <li><a class="<?php echo $this->uri->segment(1) == "Buku" ?  "active" : '' ?>" href="<?= base_url('Buku') ?>">Buku</a></li>
                     <li><a class="<?php echo $this->uri->segment(1) == "Ebook" ?  "active" : '' ?>" href="<?= base_url('Ebook') ?>">E-Book</a></li>
                     <li><a class="<?php echo $this->uri->segment(1) == "Events" ?  "active" : '' ?>" href="<?= base_url('Events') ?>">Events</a></li>
-                    <li><a class="<?php echo $this->uri->segment(1) == "Tentang" ?  "active" : '' ?>" href="<?= base_url('Tentang') ?>">Tentang</a></li>
+                    <li><a class="<?php echo $this->uri->segment(1) == "Tentang" ?  "active" : '' ?>" href="<?= base_url('Tentang') ?>">Profil Perpus</a></li>
                     <li><a href="#" onclick="modalcari()">Cari</a></li>
                     <?php if ($this->session->userdata('id_user') == null) : ?>
 
@@ -76,7 +76,7 @@
                     <?php else : ?>
                         <li class="dropdown"><a href="#"><span>Akun</span> <i class="bi bi-chevron-down"></i></a>
                             <ul>
-                                <li><a href="<?= base_url("Profile/DataDiri/" . $this->session->userdata('id_user')) ?>">Profile</a></li>
+                                <li><a href="<?= base_url("Profile/DataDiri/" . $this->session->userdata('id_user')) ?>">Profil Akun</a></li>
 
                                 <li><a href="<?= base_url('Home/Logout') ?>">Log Out</a></li>
                                 <!-- <li><a href="#">Drop Down 3</a></li>
@@ -90,6 +90,38 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
 
             </nav>
+            <div class="modal fade" id="modal_cari" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class=" modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Cari</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form_caribuku" action="#" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <select id="jenis" class="form-select" aria-label="Default select example" required oninvalid="setCustomValidity('Pilih Salah Satu')" oninput="setCustomValidity('')">
+                                        <option hidden disabled selected value="">Pilih Buku/Buku Elektorinik</option>
+                                        <option value="1">Buku</option>
+                                        <option value="2">Buku Elektronik</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input id="name_buku" name="buku" type="text" class="form-control" required oninvalid="setCustomValidity('Masukan Inputan')" oninput="setCustomValidity('')" />
+
+                                </div>
+                                <input hidden type=" text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+                                <button type="submit" class="btn btn-success mt-2 w-100 ">Cari</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- .navbar -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -98,31 +130,27 @@
                     $('#modal_cari').appendTo("body").modal('show');
                     // console.log('tes')
                 }
+                document.getElementById("form_caribuku").addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    let jenis = $('#jenis').val();
+                    let nama = $('#name_buku').val();
+                    if (parseInt(jenis) == 1) {
+                        window.location.href = "<?= base_url('Buku/SearchBuku/') ?>" + nama;
+
+                    } else {
+                        window.location.href = "<?= base_url('Ebook/SearchEbook/') ?>" + nama;
+
+                    }
+
+
+                });
             </script>
 
         </div>
     </header>
-    <div class="modal fade" id="modal_cari" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class=" modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cari</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="<?= base_url('Buku/SearchBuku') ?>" method="post" enctype="multipart/form-data">
-                        <input name="buku" type="text" class="form-control" />
-                        <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
-                        <button type="submit" class="btn btn-success mt-2 w-100 ">Cari</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+    <script>
 
-                </div>
-            </div>
-        </div>
-    </div>
+    </script>
 
     <!-- End Header -->

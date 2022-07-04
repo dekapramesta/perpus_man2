@@ -182,7 +182,7 @@
                          <form action="<?php echo base_url('SuperAdmin/Registrasi/edit_regist') ?>" method="post" enctype="multipart/form-data">
                              <div class="form-group">
                                  <strong><label>NISN</label></strong>
-                                 <input id="edit_id_register" type="text" name="id_register" class="form-control " required="">
+                                 <input hidden id="edit_id_register" type="text" name="id_register" class="form-control " required="">
                                  <input id="edit_nisn" placeholder="NISN" type="text" name="nisn" class="form-control " required="">
                              </div>
                              <div class="form-group">

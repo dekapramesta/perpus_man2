@@ -138,12 +138,13 @@ class Model_admin extends CI_Model
     }
     public function LaporanPengembalian()
     {
-        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_pengembalian.*,t_buku.*');
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_pengembalian.*,t_buku.*,t_admin.*');
         $this->db->from('t_peminjaman');
         $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
         $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
         $this->db->join('t_pengembalian', 't_pengembalian.id_peminjaman=t_peminjaman.id_peminjaman', 'left');
+        $this->db->join('t_admin', 't_admin.id_admin=t_pengembalian.pengembalian_by', 'left');
         $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
 
         $this->db->where('status_pengembalian=1');
@@ -151,8 +152,9 @@ class Model_admin extends CI_Model
     }
     public function LaporanPeminjamanAll()
     {
-        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_buku.*');
+        $this->db->select('t_user.id_user , t_user.username, t_user.role_id, t_siswa.*,t_guru.*,t_peminjaman.*,t_buku.*,t_admin.*');
         $this->db->from('t_peminjaman');
+        $this->db->join('t_admin', 't_admin.id_admin=t_peminjaman.peminjaman_by', 'left');
         $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
         $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
@@ -199,9 +201,37 @@ class Model_admin extends CI_Model
         $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
         return $this->db->get();
     }
+    public function GetSiswa($id)
+    {
+        # code...
+        $this->db->where('t_siswa.id_siswa', $id);
+        $this->db->select('*');
+        $this->db->from('t_siswa');
+        $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
+        return $this->db->get();
+    }
+    public function GetGuruId($id)
+    {
+        # code..
+        $this->db->where('t_guru.id_guru', $id);
+        $this->db->select('*');
+        $this->db->from('t_guru');
+        $this->db->join('t_user', 't_user.id_user=t_guru.id_user', 'left');
+        return $this->db->get();
+    }
     public function GetAllAdmin()
     {
         # code...
+
+        $this->db->select('*');
+        $this->db->from('t_admin');
+        $this->db->join('t_user', 't_user.id_user=t_admin.id_user', 'left');
+        return $this->db->get();
+    }
+    public function GetAdmin($id)
+    {
+        # code...
+        $this->db->where('t_admin.id_admin', $id);
         $this->db->select('*');
         $this->db->from('t_admin');
         $this->db->join('t_user', 't_user.id_user=t_admin.id_user', 'left');
@@ -270,6 +300,7 @@ class Model_admin extends CI_Model
 
         return $this->db->get();
     }
+
     public function LogPerpus()
     {
         # code...

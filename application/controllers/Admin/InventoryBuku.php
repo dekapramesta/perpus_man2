@@ -11,6 +11,7 @@ class InventoryBuku extends CI_Controller
         if ($this->session->userdata('role_id') != 77) {
             redirect('');
         }
+        $this->id_admin = $this->db->get_where('t_admin', array('id_user' => $this->session->userdata('id_user')))->row()->id_admin;
     }
 
     /**
@@ -47,6 +48,7 @@ class InventoryBuku extends CI_Controller
     }
     public function TambahBuku()
     {
+
         $dup_num = $this->input->post('dup_number');
         if ($dup_num == NULL) {
             $isbn_code = $this->input->post('isbn_code');
@@ -96,7 +98,8 @@ class InventoryBuku extends CI_Controller
                 'cover_buku' => $cover,
                 'status_buku' => 0,
                 'src_book' => $src_book,
-                'barcode_pic' => $code . '.png'
+                'barcode_pic' => $code . '.png',
+                'insert_by' => $this->id_admin
             );
             $this->Model_admin->Tambah_data($data, 't_buku');
             redirect('Admin/InventoryBuku');
@@ -149,7 +152,9 @@ class InventoryBuku extends CI_Controller
                     'cover_buku' => $cover,
                     'status_buku' => 0,
                     'src_book' => $src_book,
-                    'barcode_pic' => $code . '.png'
+                    'barcode_pic' => $code . '.png',
+                    'insert_by' => $this->id_admin
+
                 );
                 $this->Model_admin->Tambah_data($data, 't_buku');
             }
@@ -159,6 +164,7 @@ class InventoryBuku extends CI_Controller
     public function DetailBuku($idbuku)
     {
         $databuku = $this->db->get_where('t_buku', array('id_buku' => $idbuku))->row();
+        $admin = $this->db->get_where('t_admin', array('id_admin' => $databuku->insert_by))->row();
 
         $data['category'] = $this->db->get('t_kategori')->result_array();
         if ($databuku->status_buku == 1) {
@@ -166,6 +172,7 @@ class InventoryBuku extends CI_Controller
         } else {
             $data['buku'] = $databuku;
         }
+        $data['admin'] = $admin;
         // var_dump($data);
         // die;
         $this->load->view('Admin/templates/header');
@@ -388,7 +395,9 @@ class InventoryBuku extends CI_Controller
                 'id_user' => $id_guru,
                 'id_buku' => $id_buku,
                 'tanggal_pinjam' => date('Y-m-d'),
-                'tanggal_pengembalian' => $tgl_pengembalian
+                'tanggal_pengembalian' => $tgl_pengembalian,
+                'peminjaman_by' => $this->id_admin
+
             );
             $this->Model_admin->Tambah_data($data, 't_peminjaman');
 
@@ -428,7 +437,9 @@ class InventoryBuku extends CI_Controller
                 'id_user' => $id_siswa,
                 'id_buku' => $id_buku,
                 'tanggal_pinjam' => date('Y-m-d'),
-                'tanggal_pengembalian' => $tgl_pengembalian
+                'tanggal_pengembalian' => $tgl_pengembalian,
+                'peminjaman_by' => $this->id_admin
+
             );
             $this->Model_admin->Tambah_data($data, 't_peminjaman');
 
@@ -469,6 +480,8 @@ class InventoryBuku extends CI_Controller
         $data = array(
             'id_peminjaman' => $this->input->post('id_peminjaman'),
             'tgl_pengembalian' => date('Y-m-d'),
+            'pengembalian_by' => $this->id_admin
+
         );
         $this->Model_admin->Tambah_data($data, 't_pengembalian');
 

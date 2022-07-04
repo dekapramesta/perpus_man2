@@ -28,18 +28,19 @@ class Event extends CI_Controller
      * map to /index.php/welcome/<method_name>
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
+    // public function index()
+    // {
+    //     $data['siswa'] = $this->db->get('t_siswa')->result_array();
+    //     $data['status'] = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row();
+    //     $this->load->view('Admin/templates/header');
+    //     $this->load->view('Admin/templates/sidebar_su');
+    //     $this->load->view('Admin/event', $data);
+    //     $this->load->view('Admin/templates/footer');
+    // }
     public function index()
     {
-        $data['siswa'] = $this->db->get('t_siswa')->result_array();
-        $data['status'] = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row();
-        $this->load->view('Admin/templates/header');
-        $this->load->view('Admin/templates/sidebar_su');
-        $this->load->view('Admin/event', $data);
-        $this->load->view('Admin/templates/footer');
-    }
-    public function Hadiah()
-    {
         # code...
+        $data['status'] = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row();
         $data['barang'] = $this->Model_admin->get_data_all('t_hadiah')->result_array();
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar_su');
@@ -115,6 +116,20 @@ class Event extends CI_Controller
             $this->db->update('t_siswa', $data_coin);
             $this->db->truncate('t_penukaran');
             redirect('SuperAdmin/Event');
+        }
+    }
+    public function DeleteHadiah()
+    {
+        # code...
+        $delete = $this->db->delete('t_hadiah', array('id_hadiah' => $this->input->post('id')));
+        if ($delete) {
+            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
+        } else {
+            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
+
+            echo json_encode($pesan);
         }
     }
 }
