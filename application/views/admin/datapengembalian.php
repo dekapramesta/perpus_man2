@@ -1,3 +1,10 @@
+<?php if ($this->session->flashdata('admin_pengembalian')) {
+    echo $this->session->flashdata('admin_pengembalian');
+    $this->session->set_flashdata(
+        'admin_pengembalian',
+        ''
+    );
+} ?>
 <div class="main-content">
     <section class="section">
         <div class="section-body">
@@ -11,7 +18,7 @@
                                         <h4>Data Pengembalian</h4>
                                     </div>
                                     <div class="col text-right">
-                                        <a href="<?= base_url('Admin/Perpustakaan/Pengembalian') ?>" class="btn btn-primary">Kembali Buku</a>
+                                        <a href="<?= base_url('Admin/Perpustakaan/Pengembalian') ?>" class="btn btn-primary">Tambah Data</a>
                                     </div>
                                 </div>
                             </div>

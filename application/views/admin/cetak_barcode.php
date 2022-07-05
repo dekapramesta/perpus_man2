@@ -12,7 +12,7 @@
                              <form action="<?= base_url('Admin/InventoryBuku/CetakBarcodeBuku') ?>" method="post" enctype="multipart/form-data">
                                  <div class="section-title">Buku</div>
                                  <div class="form-group">
-                                     <select name="buku[]" class="form-control w-100 select2" multiple="" id="pilih_buku">
+                                     <select name="buku[]" class="form-control w-100 select2" multiple="" required id="pilih_buku">
                                          <?php foreach ($buku as $bk) : ?>
                                              <option value="<?= $bk['judul_buku'] ?>"><?= $bk['judul_buku'] ?></option>
                                          <?php endforeach; ?>

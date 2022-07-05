@@ -1,3 +1,10 @@
+ <?php if ($this->session->flashdata('penambahan_buku')) {
+        echo $this->session->flashdata('penambahan_buku');
+        $this->session->set_flashdata(
+            'penambahan_buku',
+            ''
+        );
+    } ?>
  <div class="main-content">
      <section class="section">
          <div class="section-body">
@@ -59,7 +66,7 @@
                                  </div>
                                  <div class="form-group" id="category">
                                      <label class="form-label">Kategori</label>
-                                     <div class="col" id="kene_cat"></div>
+                                     <div id="kene_cat"></div>
 
                                  </div>
                                  <div class="form-group">
@@ -185,7 +192,7 @@
                                  console.log(writer)
                                  document.getElementById('penulis').value = writer;
                              });
-                             let ctg = $('#category').append('<div class="selectgroup selectgroup-pills"><label class="selectgroup-item" id="ctg_place"></label></div>');
+                             let ctg = $('#kene_cat').append('<div class="selectgroup selectgroup-pills"><label class="selectgroup-item" id="ctg_place"></label></div>');
                              $.each(takdir.categories, function(i, kategori) {
                                  category = kategori
                                  console.log(category)
@@ -214,7 +221,7 @@
                                      if (willDelete) {
                                          $('#cover_place').html('<input type="file" name="cover" class="form-control"/>');
                                          $('#src_place').html('<input hidden type="text" name="src_book"  class="form-control" value="1"/>');
-                                         $('#category').append('<select name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
+                                         $('#kene_cat').append('<select id="ktg_drop" name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
                                          $(".select2").select2();
                                          formscan.style.display = "none";
                                          document.getElementById('form_addBook').style.display = "block";
@@ -239,7 +246,7 @@
                                  if (willDel) {
                                      $('#cover_place').html('<input type="file" name="cover" class="form-control"/>');
                                      $('#src_place').html('<input hidden type="text" name="src_book"  class="form-control" value="1"/>');
-                                     $('#category').append('<select name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
+                                     $('#kene_cat').append('<select id="ktg_drop" name="kategori[]" class="form-control select2" style="width:100%" multiple="" ><?php foreach ($kategori as $ktg) : ?><option value="<?= $ktg['nama_kategori'] ?>"><?= $ktg['nama_kategori'] ?></option><?php endforeach; ?></select>');
                                      $(".select2").select2();
                                      formscan.style.display = "none";
                                      document.getElementById('form_addBook').style.display = "block";
@@ -284,6 +291,7 @@
              $('#togBtn').prop('checked', false);
              $('#ctg_place').remove()
              $('#dup_num').remove()
+             $('#kene_cat').html('')
              $('#cover_place').html('');
              $('#src_place').html('');
 

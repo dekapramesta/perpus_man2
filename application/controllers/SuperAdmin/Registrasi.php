@@ -40,66 +40,84 @@ class Registrasi extends CI_Controller
     {
         $perpus = $this->db->get('profile_perpus')->row();
 
-        // $this->form_validation->set_rules('nisn', 'NISN', 'required|is_unique[t_register.nisn]');
-        // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|is_unique[t_register.nama]');
-        // $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_register.no_wa]');
-        // $this->form_validation->set_rules('barcode', 'Barcode', 'required|is_unique[t_register.barcode]');
 
-        // if ($this->form_validation->run()) {
-        $data_user = array(
-            'username' => 'siswa' . rand(1000, 9999),
-            'password' => password_hash('12345678', PASSWORD_DEFAULT),
-            'role_id' => 1,
-            'status_block' => 1
-        );
-        $this->Model_auth->Tambah_data($data_user, 't_user');
-        $nisn = $this->input->post('nisn');
-        $nama = $this->input->post('nama');
-        $no_wa = $this->input->post('no_hp');
-        $angakatan = $this->input->post('angkatan');
-        $id_user = $this->db->insert_id();
-
-        $data_add = array(
-            'nisn' => $nisn,
-            'id_user' => $id_user,
-            'nama' => $nama,
-            'no_hp' => $no_wa,
-            'angkatan' => $angakatan,
-            'coin' => 0
-        );
-        $this->Model_auth->Tambah_data($data_add, 't_siswa');
-
-        $code = rand(00000, 99999);
-        $data_aktivasi = array(
-            'id_user' => $id_user,
-            'code' => $code
-        );
+        $this->form_validation->set_rules('nisn', 'NISN', 'required|is_unique[t_siswa.nisn]');
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
+        $this->form_validation->set_rules('no_hp', 'No Whatsapp', 'required');
+        $this->form_validation->set_rules('angkatan', 'Angkatan', 'required');
 
 
-        $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
-        $data = array(
-            'token' => $perpus->token_wa,
-            'phone' => $no_wa,
-            'message' => 'Berikut Kode Untuk Pendaftaran ' . $code
-        );
-        $curl = curl_init();
+        $this->form_validation->set_message('is_unique', '{field} Sudah Ada');
+        $this->form_validation->set_message('required', '{field} Kosong');
+        $this->form_validation->set_message('matches', 'Pass Tidak Cocok');
+        $this->form_validation->set_message('min_length', '{field} Minimal Harus {param} Karakter .');
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $data,
-        ));
+        if (!$this->form_validation->run()) {
+            $message = substr(strip_tags(validation_errors()), 0, -1);
 
-        $response = curl_exec($curl);
-        $hasil = json_decode($response);
+            $this->session->set_flashdata(
+                'regis_su',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+            );
+            redirect('SuperAdmin/Registrasi');
+        } else {
+            $data_user = array(
+                'username' => 'siswa' . rand(1000, 9999),
+                'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                'role_id' => 1,
+                'status_block' => 1
+            );
+            $this->Model_auth->Tambah_data($data_user, 't_user');
+            $nisn = $this->input->post('nisn');
+            $nama = $this->input->post('nama');
+            $no_wa = $this->input->post('no_hp');
+            $angakatan = $this->input->post('angkatan');
+            $id_user = $this->db->insert_id();
 
-        curl_close($curl);
+            $data_add = array(
+                'nisn' => $nisn,
+                'id_user' => $id_user,
+                'nama' => $nama,
+                'no_hp' => $no_wa,
+                'angkatan' => $angakatan,
+                'coin' => 0
+            );
+            $this->Model_auth->Tambah_data($data_add, 't_siswa');
+
+            $code = rand(00000, 99999);
+            $data_aktivasi = array(
+                'id_user' => $id_user,
+                'code' => $code
+            );
+
+
+            $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+            $data = array(
+                'token' => $perpus->token_wa,
+                'phone' => $no_wa,
+                'message' => 'Berikut Kode Untuk Pendaftaran ' . $code
+            );
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $data,
+            ));
+
+            $response = curl_exec($curl);
+            $hasil = json_decode($response);
+
+            curl_close($curl);
+        }
+
         redirect('SuperAdmin/Registrasi');
         // }
     }
@@ -107,11 +125,22 @@ class Registrasi extends CI_Controller
     {
         $perpus = $this->db->get('profile_perpus')->row();
 
-        // $this->form_validation->set_rules('email', 'Email', 'required|is_unique[t_registerguru.email]');
-        // $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
-        // $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required|is_unique[t_registerguru.no_hp]');
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
+        $this->form_validation->set_rules('no_wa', 'No Whatsapp', 'required');
+        $this->form_validation->set_message('required', '{field} Kosong');
 
-        // if ($this->form_validation->run()) {
+
+        if (!$this->form_validation->run()) {
+            $message = substr(strip_tags(validation_errors()), 0, -1);
+
+            $this->session->set_flashdata(
+                'regisguru_su',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
+            );
+            redirect('SuperAdmin/Registrasi/RegisterGuru');
+        } else {
+        }
         $data_user = array(
             'username' => 'guru' . rand(1000, 9999),
             'password' => password_hash('12345678', PASSWORD_DEFAULT),
@@ -182,6 +211,7 @@ class Registrasi extends CI_Controller
             'id_user' => $id_register
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
+
         redirect('SuperAdmin/Registrasi/RegisterGuru');
     }
     public function deleteAktivasi()
@@ -215,6 +245,11 @@ class Registrasi extends CI_Controller
             'id_user' => $id_register
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_siswa');
+        $this->session->set_flashdata(
+            'regis_su',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berhasl Berubh","success");</script>'
+        );
         redirect('SuperAdmin/Registrasi');
         // var_dump($data);
         // die;
@@ -330,6 +365,9 @@ class Registrasi extends CI_Controller
     public function csv_regist()
     {
         $perpus = $this->db->get('profile_perpus')->row();
+        $datasiswa = $this->db->get('t_siswa')->result_array();
+        $nisn_array = array_column($datasiswa, 'nisn');
+        $nama = array();
 
         $this->load->library('csvimport');
         // $data['addressbook'] = $this->csv_model->get_addressbook();
@@ -344,7 +382,13 @@ class Registrasi extends CI_Controller
 
         // If upload failed, display error
         if (!$this->upload->do_upload()) {
-            echo 'Empty';
+
+            $this->session->set_flashdata(
+                'regis_su',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal Upload File","error");</script>'
+            );
+            redirect('SuperAdmin/Registrasi');
         } else {
             $file_data = $this->upload->data();
             $file_path =  './uploads/' . $file_data['file_name'];
@@ -354,54 +398,83 @@ class Registrasi extends CI_Controller
                 // var_dump($csv_array);
                 // die;
                 foreach ($csv_array as $row) {
-                    $data_user = array(
-                        'username' => 'siswa' . rand(1000, 9999),
-                        'password' => password_hash('12345678', PASSWORD_DEFAULT),
-                        'role_id' => 1,
-                        'status_block' => 1
+                    if (in_array($row['nisn'], $nisn_array)) {
+                        $nama[] = $row['nama'];
+                        continue;
+                    } else {
+                        if ($row['nama'] == null) {
+                            $nama[] = $row['nama'];
+                            continue;
+                        } elseif ($row['no_wa'] == null) {
+                            $nama[] = $row['nama'];
+                            continue;
+                        } elseif ($row['angkatan'] == null) {
+                            $nama[] = $row['nama'];
+                            continue;
+                        } else {
+                            $data_user = array(
+                                'username' => 'siswa' . rand(1000, 9999),
+                                'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                                'role_id' => 1,
+                                'status_block' => 1
+                            );
+                            $this->Model_auth->Tambah_data($data_user, 't_user');
+                            $id_user = $this->db->insert_id();
+                            $insert_data = array(
+                                'nisn' => $row['nisn'],
+                                'nama' => $row['nama'],
+                                'id_user' => $id_user,
+                                'no_hp' => $row['no_wa'],
+                                'angkatan' => $row['angkatan'],
+                                'coin' => 0
+                            );
+                            $this->Model_auth->Tambah_data($insert_data, 't_siswa');
+                            $code = rand(00000, 99999);
+                            $data_aktivasi = array(
+                                'id_user' => $id_user,
+                                'code' => $code
+                            );
+
+
+                            $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+                            $data = array(
+                                'token' => $perpus->token_wa,
+                                'phone' => $row['no_wa'],
+                                'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                            );
+                            $curl = curl_init();
+
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 0,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                CURLOPT_POSTFIELDS => $data,
+                            ));
+
+                            $response = curl_exec($curl);
+                            $hasil = json_decode($response);
+
+                            curl_close($curl);
+                        }
+                    }
+                }
+                if ($nama != null) {
+                    $this->session->set_flashdata(
+                        'regis_su',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . implode(",", $nama) . ' Gagal Upload","warning");</script>'
                     );
-                    $this->Model_auth->Tambah_data($data_user, 't_user');
-                    $id_user = $this->db->insert_id();
-                    $insert_data = array(
-                        'nisn' => $row['nisn'],
-                        'nama' => $row['nama'],
-                        'id_user' => $id_user,
-                        'no_hp' => $row['no_wa'],
-                        'angkatan' => $row['angkatan'],
-                        'coin' => 0
+                } else {
+                    $this->session->set_flashdata(
+                        'regis_su',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data terupload Semua","success");</script>'
                     );
-                    $this->Model_auth->Tambah_data($insert_data, 't_siswa');
-                    $code = rand(00000, 99999);
-                    $data_aktivasi = array(
-                        'id_user' => $id_user,
-                        'code' => $code
-                    );
-
-
-                    $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
-                    $data = array(
-                        'token' => $perpus->token_wa,
-                        'phone' => $row['no_wa'],
-                        'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
-                    );
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $data,
-                    ));
-
-                    $response = curl_exec($curl);
-                    $hasil = json_decode($response);
-
-                    curl_close($curl);
                 }
                 redirect('SuperAdmin/Registrasi');
                 //echo "<pre>"; print_r($insert_data);

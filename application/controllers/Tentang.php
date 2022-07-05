@@ -21,9 +21,9 @@ class Tentang extends CI_Controller
      */
     public function index()
     {
-
+        $data['perpus'] = $this->db->get('profile_perpus')->row();
         $this->load->view('templates/header');
-        $this->load->view('user/about');
+        $this->load->view('user/about', $data);
         $this->load->view('templates/footer');
     }
 }

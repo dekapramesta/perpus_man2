@@ -1,3 +1,10 @@
+ <?php if ($this->session->flashdata('pdf_edit')) {
+        echo $this->session->flashdata('pdf_edit');
+        $this->session->set_flashdata(
+            'pdf_edit',
+            ''
+        );
+    } ?>
  <div class="main-content">
      <section class="section">
          <div class="section-body">

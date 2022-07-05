@@ -51,6 +51,11 @@ class ProfilePerpus extends CI_Controller
             'id_profile' => 77
         );
         $this->Model_admin->edit_data($where, $data_update, 'profile_perpus');
+        $this->session->set_flashdata(
+            'profile_su',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berubah","success");</script>'
+        );
         redirect('SuperAdmin/ProfilePerpus');
     }
 
@@ -82,6 +87,11 @@ class ProfilePerpus extends CI_Controller
             'id_profile' => 77
         );
         $this->Model_admin->edit_data($where, $data_edit, 'profile_perpus');
+        $this->session->set_flashdata(
+            'profile_su',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berubah","success");</script>'
+        );
         redirect('SuperAdmin/ProfilePerpus');
     }
 }

@@ -1,3 +1,10 @@
+ <?php if ($this->session->flashdata('profile_su')) {
+        echo $this->session->flashdata('profile_su');
+        $this->session->set_flashdata(
+            'profile_su',
+            ''
+        );
+    } ?>
  <div class="main-content">
      <section class="section">
          <div class="section-body">

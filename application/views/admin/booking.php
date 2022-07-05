@@ -284,6 +284,7 @@
                     });
 
                 } else if (sts_val == 0) {
+
                     let idsiswa = document.getElementById('idsiswa').value;
                     $.ajax({
                         type: "POST",

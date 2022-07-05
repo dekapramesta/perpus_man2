@@ -61,6 +61,11 @@ class DataUser extends CI_Controller
             );
             $this->Model_admin->edit_data($whereid, $data_update, 't_user');
         }
+        $this->session->set_flashdata(
+            'siswaDU',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Status Berubah","success");</script>'
+        );
 
         // $this->Model_admin->edit_data($whereid, $data_update, 't_registerguru');
         redirect('SuperAdmin/DataUser');
@@ -83,10 +88,25 @@ class DataUser extends CI_Controller
         $this->Model_admin->edit_data($whereid, $data_update, 't_user');
 
         if ($data->role_id == 1) {
+            $this->session->set_flashdata(
+                'siswaDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Status Berubah","success");</script>'
+            );
             redirect('SuperAdmin/DataUser');
         } elseif ($data->role_id == 2) {
+            $this->session->set_flashdata(
+                'guruDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Status Berubah","success");</script>'
+            );
             redirect('SuperAdmin/DataUser/DataGuru');
         } elseif ($data->role_id == 77) {
+            $this->session->set_flashdata(
+                'adminDU',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Status Berubah","success");</script>'
+            );
             redirect('SuperAdmin/DataUser/Admin');
         }
 
@@ -329,6 +349,11 @@ class DataUser extends CI_Controller
             'nama_admin' => $this->input->post('nama_admin'),
         );
         $this->Model_auth->Tambah_data($data_add, 't_admin');
+        $this->session->set_flashdata(
+            'adminDU',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Bertambah","success");</script>'
+        );
         redirect('SuperAdmin/DataUser/Admin');
     }
 }

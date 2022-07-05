@@ -68,14 +68,14 @@
                                  <div class="form-group">
                                      <label for="">Kode Bar</label>
                                      <input readonly id="barcode_return" placeholder="Barcode Buku" type="text" name="barcode_return" class="form-control " required="">
-                                     <input readonly id="id_peminjaman" placeholder="Barcode Buku" type="text" name="id_peminjaman" class="form-control " required="">
+                                     <input readonly hidden id="id_peminjaman" placeholder="Barcode Buku" type="text" name="id_peminjaman" class="form-control " required="">
                                  </div>
                                  <div class="form-group">
                                      <label for="">Judul Buku</label>
                                      <input readonly id="buku_return" placeholder="Judul Buku" type="text" name="judul_return" class="form-control " required="">
                                  </div>
                                  <div class="form-group">
-                                     <label for="">Id Siswa / Barcode</label>
+                                     <label for="">Username</label>
                                      <input readonly id="siswa_return" placeholder="Barcode Siswa" type="text" name="siswa_return" class="form-control " required="">
                                  </div>
                                  <div class="form-group">

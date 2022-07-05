@@ -44,6 +44,7 @@ class InventoryPdf extends CI_Controller
         $config['upload_path'] = './assets/pdf';
         $config['allowed_types'] = 'pdf';
 
+
         $this->load->library('upload', $config);
         if ($this->upload->do_upload('file_pdf')) {
             $file_ebook = $this->upload->data('file_name');
@@ -58,13 +59,19 @@ class InventoryPdf extends CI_Controller
 
             );
             $this->Model_admin->Tambah_data($data, 't_ebook');
+            $this->session->set_flashdata(
+                'admin_pdf',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+            );
             redirect('Admin/InventoryPdf');
         } else {
-            $linkinto = base_url() . 'Admin/InventoryPdf';
-            echo "<script>
-				alert('Pdf Gagal Upload');
-				window.location.href = '" . $linkinto . "';// your redirect path here
-				</script>";
+            $this->session->set_flashdata(
+                'admin_pdf',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+            );
+            redirect('Admin/InventoryPdf');
         }
     }
     public function DetailPdf($id)
@@ -83,29 +90,53 @@ class InventoryPdf extends CI_Controller
     {
         $config['upload_path'] = './assets/pdf';
         $config['allowed_types'] = 'pdf';
-
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('file_pdf')) {
-            $data_update = array(
-                'judul_ebook' => $this->input->post('judul'),
-                'penulis' => $this->input->post('penulis'),
-                'halaman' => $this->input->post('halaman'),
-                'deskripsi' => $this->input->post('deskripsi'),
-                'kategori' =>  implode(',', $this->input->post('kategori', TRUE)),
-            );
-        } else {
-            $file_ebook = $this->upload->data('file_name');
-            $data_update = array(
-                'judul_ebook' => $this->input->post('judul'),
-                'penulis' => $this->input->post('penulis'),
-                'halaman' => $this->input->post('halaman'),
-                'deskripsi' => $this->input->post('deskripsi'),
-                'kategori' =>  implode(',', $this->input->post('kategori', TRUE)),
-                'file_ebook' => $file_ebook,
+        $file = $_FILES['file_pdf']['name'];
+        if ($file == null) {
+            if (!$this->upload->do_upload('file_pdf')) {
+                $data_update = array(
+                    'judul_ebook' => $this->input->post('judul'),
+                    'penulis' => $this->input->post('penulis'),
+                    'halaman' => $this->input->post('halaman'),
+                    'deskripsi' => $this->input->post('deskripsi'),
+                    'kategori' =>  implode(',', $this->input->post('kategori', TRUE)),
+                );
+            } else {
+                $file_ebook = $this->upload->data('file_name');
+                $data_update = array(
+                    'judul_ebook' => $this->input->post('judul'),
+                    'penulis' => $this->input->post('penulis'),
+                    'halaman' => $this->input->post('halaman'),
+                    'deskripsi' => $this->input->post('deskripsi'),
+                    'kategori' =>  implode(',', $this->input->post('kategori', TRUE)),
+                    'file_ebook' => $file_ebook,
 
-            );
+                );
+            }
+        } else {
+            if (!$this->upload->do_upload('file_pdf')) {
+                $this->session->set_flashdata(
+                    'pdf_edit',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+                );
+                redirect('Admin/InventoryPdf/DetailPdf/' . $idpdf);
+            } else {
+                $file_ebook = $this->upload->data('file_name');
+                $data_update = array(
+                    'judul_ebook' => $this->input->post('judul'),
+                    'penulis' => $this->input->post('penulis'),
+                    'halaman' => $this->input->post('halaman'),
+                    'deskripsi' => $this->input->post('deskripsi'),
+                    'kategori' =>  implode(',', $this->input->post('kategori', TRUE)),
+                    'file_ebook' => $file_ebook,
+
+                );
+            }
         }
+
+
 
 
         $whereid = array(
@@ -114,6 +145,11 @@ class InventoryPdf extends CI_Controller
 
 
         $this->Model_admin->edit_data($whereid, $data_update, 't_ebook');
+        $this->session->set_flashdata(
+            'pdf_edit',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+        );
         redirect('Admin/InventoryPdf/DetailPdf/' . $idpdf);
     }
     public function deletePdf()

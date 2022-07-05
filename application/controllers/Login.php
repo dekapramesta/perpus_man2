@@ -76,13 +76,13 @@ class Login extends CI_Controller
     public function PassChange()
     {
         # code...
-        $this->form_validation->set_rules('password', 'password', 'required');
+        $this->form_validation->set_rules('password', 'password', 'required|min_length[8]');
         $this->form_validation->set_rules('hash', 'hash', 'required');
         $this->form_validation->set_rules('conf_password', 'conf_password', 'required|matches[password]');
 
         $this->form_validation->set_message('required', '{field} Kosong');
-
         $this->form_validation->set_message('matches', 'Pass Tidak Cocok');
+        $this->form_validation->set_message('min_length', '{field} Minimal Harus {param} Karakter .');
 
         if (!$this->form_validation->run()) {
             $pesan = array(

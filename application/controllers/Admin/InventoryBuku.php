@@ -75,6 +75,13 @@ class InventoryBuku extends CI_Controller
                     $this->load->library('upload', $config);
                     if ($this->upload->do_upload('cover')) {
                         $cover = $this->upload->data('file_name');
+                    } else {
+                        $this->session->set_flashdata(
+                            'penambahan_buku',
+                            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+                        );
+                        redirect('Admin/InventoryBuku/PenambahanBuku');
                     }
                 }
             }
@@ -101,8 +108,15 @@ class InventoryBuku extends CI_Controller
                 'barcode_pic' => $code . '.png',
                 'insert_by' => $this->id_admin
             );
+
+
             $this->Model_admin->Tambah_data($data, 't_buku');
-            redirect('Admin/InventoryBuku');
+            $this->session->set_flashdata(
+                'penambahan_buku',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+            );
+            redirect('Admin/InventoryBuku/PenambahanBuku');
         } elseif ($dup_num > 1) {
             for ($x = 0; $x < $dup_num; $x++) {
                 $isbn_code = $this->input->post('isbn_code');
@@ -130,6 +144,13 @@ class InventoryBuku extends CI_Controller
                         $this->load->library('upload', $config);
                         if ($this->upload->do_upload('cover')) {
                             $cover = $this->upload->data('file_name');
+                        } else {
+                            $this->session->set_flashdata(
+                                'penambahan_buku',
+                                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+                            );
+                            redirect('Admin/InventoryBuku/PenambahanBuku');
                         }
                     }
                 }
@@ -158,7 +179,12 @@ class InventoryBuku extends CI_Controller
                 );
                 $this->Model_admin->Tambah_data($data, 't_buku');
             }
-            redirect('Admin/InventoryBuku');
+            $this->session->set_flashdata(
+                'penambahan_buku',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+            );
+            redirect('Admin/InventoryBuku/PenambahanBuku');
         }
     }
     public function DetailBuku($idbuku)
@@ -209,36 +235,61 @@ class InventoryBuku extends CI_Controller
         $config['allowed_types'] = 'gif|jpg|png';
 
         $this->load->library('upload', $config);
+        $file = $_FILES['cover_buku']['name'];
+        if ($file == null) {
+            if (!$this->upload->do_upload('cover_buku')) {
+                $data_update = array(
+                    'judul_buku' => $judul_buku,
+                    'kategori' => $kategori,
+                    'sinopsis' => $sinopsis,
+                    'penulis' => $penulis,
+                    'tahun_terbit' => $tahun_terbit,
+                    'tanggal_masuk' => $tanggal_masuk,
+                    'halaman' => $halaman,
+                    'status_buku' => $status_buku,
 
-        if (!$this->upload->do_upload('cover_buku')) {
-            $data_update = array(
-                'judul_buku' => $judul_buku,
-                'kategori' => $kategori,
-                'kode_buku' => $kode_buku,
-                'sinopsis' => $sinopsis,
-                'penulis' => $penulis,
-                'tahun_terbit' => $tahun_terbit,
-                'tanggal_masuk' => $tanggal_masuk,
-                'halaman' => $halaman,
-                'status_buku' => $status_buku,
+                );
+            } else {
+                $cover = $this->upload->data('file_name');
+                $data_update = array(
+                    'judul_buku' => $judul_buku,
+                    'kategori' => $kategori,
+                    'sinopsis' => $sinopsis,
+                    'penulis' => $penulis,
+                    'tahun_terbit' => $tahun_terbit,
+                    'tanggal_masuk' => $tanggal_masuk,
+                    'halaman' => $halaman,
+                    'status_buku' => $status_buku,
+                    'cover_buku' => $cover
 
-            );
+                );
+            }
         } else {
-            $cover = $this->upload->data('file_name');
-            $data_update = array(
-                'judul_buku' => $judul_buku,
-                'kategori' => $kategori,
-                'kode_buku' => $kode_buku,
-                'sinopsis' => $sinopsis,
-                'penulis' => $penulis,
-                'tahun_terbit' => $tahun_terbit,
-                'tanggal_masuk' => $tanggal_masuk,
-                'halaman' => $halaman,
-                'status_buku' => $status_buku,
-                'cover_buku' => $cover
+            if (!$this->upload->do_upload('cover_buku')) {
+                $this->session->set_flashdata(
+                    'admin_buku',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+                );
+                redirect('Admin/InventoryBuku/DetailBuku/' . $id_buku);
+            } else {
+                $cover = $this->upload->data('file_name');
+                $data_update = array(
+                    'judul_buku' => $judul_buku,
+                    'kategori' => $kategori,
+                    'sinopsis' => $sinopsis,
+                    'penulis' => $penulis,
+                    'tahun_terbit' => $tahun_terbit,
+                    'tanggal_masuk' => $tanggal_masuk,
+                    'halaman' => $halaman,
+                    'status_buku' => $status_buku,
+                    'cover_buku' => $cover
 
-            );
+                );
+            }
         }
+
+
 
         // if ($cover_buku == null) {
         //     $data_update = array(
@@ -278,7 +329,7 @@ class InventoryBuku extends CI_Controller
         //     die;
         // }
         $whereid = array(
-            'id_buku' => $id_buku
+            'kode_buku' => $kode_buku
         );
 
         // $data_update = array(
@@ -294,6 +345,12 @@ class InventoryBuku extends CI_Controller
         //     'id_register' => $id_register
         // );
         $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
+        $this->session->set_flashdata(
+            'admin_buku',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+        );
+
         redirect('Admin/InventoryBuku/DetailBuku/' . $id_buku);
         // var_dump($data);
         // die;
@@ -410,7 +467,14 @@ class InventoryBuku extends CI_Controller
             $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
         } elseif ($id_user != null) {
             $id_siswa = $this->db->get_where('t_siswa', array('nisn' => $id_user))->row()->id_user;
-
+            if ($id_siswa == null) {
+                $this->session->set_flashdata(
+                    'admin_peminjaman',
+                    '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Siswa Tdak Ditemukan","error");</script>'
+                );
+                redirect('Admin/Perpustakaan/Peminjaman');
+            }
             $id_buku = $this->input->post('barcode_buku');
             $lama_pinjam = $this->input->post('lama_pinjam');
             if ($lama_pinjam == 3) {
@@ -451,10 +515,12 @@ class InventoryBuku extends CI_Controller
             );
             $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
         }
-
-
-        redirect('Admin/InventoryBuku');
-
+        $this->session->set_flashdata(
+            'admin_peminjaman',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Peminjaman","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/Peminjaman');
         // var_dump($data);
         // die;
     }
@@ -499,7 +565,12 @@ class InventoryBuku extends CI_Controller
             'id_peminjaman' => $this->input->post('id_peminjaman')
         );
         $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
-        redirect('Admin/InventoryBuku');
+        $this->session->set_flashdata(
+            'admin_pengembalian',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data bertambah","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/DataPengembalian');
     }
     public function getGuru()
     {

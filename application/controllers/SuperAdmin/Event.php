@@ -70,7 +70,12 @@ class Event extends CI_Controller
             'id_hadiah' => $this->input->post('id_hadiah')
         );
         $this->Model_admin->edit_data($where, $data_update, 't_hadiah');
-        redirect('SuperAdmin/Event/Hadiah');
+        $this->session->set_flashdata(
+            'hadiah_su',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berubah","success");</script>'
+        );
+        redirect('SuperAdmin/Event');
     }
     public function TambahBarang()
     {
@@ -82,7 +87,12 @@ class Event extends CI_Controller
             'jumlah' => $this->input->post('jumlah')
         );
         $this->Model_admin->Tambah_data($data_array, 't_hadiah');
-        redirect('SuperAdmin/Event/Hadiah');
+        $this->session->set_flashdata(
+            'hadiah_su',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Bertambah","success");</script>'
+        );
+        redirect('SuperAdmin/Event');
     }
     public function ChangeStatus()
     {
