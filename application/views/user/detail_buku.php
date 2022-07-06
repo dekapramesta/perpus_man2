@@ -214,10 +214,14 @@
 
 <script>
     let sess = <?= json_encode($this->session->userdata('id_user')); ?>;
+    let role = <?= json_encode($this->session->userdata('role_id')); ?>;
 
     function Modaltes(id) {
         if (!sess) {
             swal('Gagal', 'Login Terlebih Dahulu', 'error')
+        } else if (parseInt(role) == 70 || parseInt(role) == 77) {
+            swal('Gagal', 'Level User Tidak Diiizinkan', 'error')
+
         } else {
             $('#idbooking').val(id);
             $('#ModalPinjam').appendTo("body").modal('show');

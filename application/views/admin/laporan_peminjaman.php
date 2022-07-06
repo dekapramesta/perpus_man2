@@ -51,6 +51,8 @@
                     <th>ID Buku</th>
                     <th>Tanggal Peminjaman</th>
                     <th>Tanggal Pengembalian</th>
+                    <th>Peminjaman Oleh</th>
+                    <th>Pengembalian Oleh</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,6 +75,16 @@
                         <td><?= $pjm['id_buku'] ?></td>
                         <td><?= $pjm['tanggal_pinjam'] ?></td>
                         <td><?= $pjm['tgl_pengembalian'] ?></td>
+                        <td><?php foreach ($admin as $adm) : ?>
+                                <?php if ($pjm['peminjaman_by'] == $adm['id_admin']) : ?>
+                                    <?= $adm['nama_admin'] ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?></td>
+                        <td><?php foreach ($admin as $adm) : ?>
+                                <?php if ($pjm['pengembalian_by'] == $adm['id_admin']) : ?>
+                                    <?= $adm['nama_admin'] ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

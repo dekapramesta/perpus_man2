@@ -49,6 +49,7 @@
                     <th>Penulis</th>
                     <th>Tahun Terbot</th>
                     <th>Tanggal Masuk</th>
+                    <th>Dikerjakan Oleh</th>
 
                 </tr>
             </thead>
@@ -62,6 +63,11 @@
                         <td><?= $pjm['penulis'] ?></td>
                         <td><?= $pjm['tahun_terbit'] ?></td>
                         <td><?= $pjm['tanggal_masuk'] ?></td>
+                        <td><?php foreach ($admin as $adm) : ?>
+                                <?php if ($pjm['insert_by'] == $adm['id_admin']) : ?>
+                                    <?= $adm['nama_admin'] ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?></td>
 
                     </tr>
                 <?php endforeach; ?>

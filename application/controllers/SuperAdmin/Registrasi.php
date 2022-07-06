@@ -134,64 +134,70 @@ class Registrasi extends CI_Controller
             $message = substr(strip_tags(validation_errors()), 0, -1);
 
             $this->session->set_flashdata(
-                'regisguru_su',
+                'regisguru_gu',
                 '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script type ="text/JavaScript">swal("Gagal","' . $message . '","error");</script>'
             );
             redirect('SuperAdmin/Registrasi/RegisterGuru');
         } else {
+            $data_user = array(
+                'username' => 'guru' . rand(1000, 9999),
+                'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                'role_id' => 2,
+                'status_block' => 1
+            );
+            $this->Model_auth->Tambah_data($data_user, 't_user');
+            $nama = $this->input->post('nama');
+            $no_wa = $this->input->post('no_wa');
+            $id_user = $this->db->insert_id();
+
+            $data_add = array(
+                'id_user' => $id_user,
+                'nama_guru' => $nama,
+                'no_hp' => $no_wa,
+            );
+            $this->Model_auth->Tambah_data($data_add, 't_guru');
+
+            $code = rand(00000, 99999);
+            $data_aktivasi = array(
+                'id_user' => $id_user,
+                'code' => $code
+            );
+
+
+            $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+            $data = array(
+                'token' => $perpus->token_wa,
+                'phone' => $no_wa,
+                'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+            );
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $data,
+            ));
+
+            $response = curl_exec($curl);
+            $hasil = json_decode($response);
+
+            curl_close($curl);
+            $this->session->set_flashdata(
+                'regis_gu',
+                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berhasl Bertambah","success");</script>'
+            );
+
+            redirect('SuperAdmin/Registrasi/RegisterGuru');
         }
-        $data_user = array(
-            'username' => 'guru' . rand(1000, 9999),
-            'password' => password_hash('12345678', PASSWORD_DEFAULT),
-            'role_id' => 2,
-            'status_block' => 1
-        );
-        $this->Model_auth->Tambah_data($data_user, 't_user');
-        $nama = $this->input->post('nama');
-        $no_wa = $this->input->post('no_wa');
-        $id_user = $this->db->insert_id();
 
-        $data_add = array(
-            'id_user' => $id_user,
-            'nama_guru' => $nama,
-            'no_hp' => $no_wa,
-        );
-        $this->Model_auth->Tambah_data($data_add, 't_guru');
-
-        $code = rand(00000, 99999);
-        $data_aktivasi = array(
-            'id_user' => $id_user,
-            'code' => $code
-        );
-
-
-        $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
-        $data = array(
-            'token' => $perpus->token_wa,
-            'phone' => $no_wa,
-            'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
-        );
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $data,
-        ));
-
-        $response = curl_exec($curl);
-        $hasil = json_decode($response);
-
-        curl_close($curl);
-
-        redirect('SuperAdmin/Registrasi/RegisterGuru');
         // }
     }
     public function edit_guru()
@@ -211,6 +217,11 @@ class Registrasi extends CI_Controller
             'id_user' => $id_register
         );
         $this->Model_admin->edit_data($whereid, $data_update, 't_guru');
+        $this->session->set_flashdata(
+            'regis_gu',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data Berhasl Berubh","success");</script>'
+        );
 
         redirect('SuperAdmin/Registrasi/RegisterGuru');
     }
@@ -284,6 +295,8 @@ class Registrasi extends CI_Controller
     {
         # code...
         $perpus = $this->db->get('profile_perpus')->row();
+        $nama = array();
+
 
         $this->load->library('csvimport');
         // $data['addressbook'] = $this->csv_model->get_addressbook();
@@ -308,52 +321,73 @@ class Registrasi extends CI_Controller
                 // var_dump($csv_array);
                 // die;
                 foreach ($csv_array as $row) {
-                    $data_user = array(
-                        'username' => 'guru' . rand(1000, 9999),
-                        'password' => password_hash('12345678', PASSWORD_DEFAULT),
-                        'role_id' => 2,
-                        'status_block' => 1
+                    if ($row['nama'] == null) {
+                        $nama[] = $row['nama'];
+                        continue;
+                    } elseif ($row['no_hp'] == null) {
+                        $nama[] = $row['nama'];
+                        continue;
+                    } else {
+                        $data_user = array(
+                            'username' => 'guru' . rand(1000, 9999),
+                            'password' => password_hash('12345678', PASSWORD_DEFAULT),
+                            'role_id' => 2,
+                            'status_block' => 1
+                        );
+                        $this->Model_auth->Tambah_data($data_user, 't_user');
+                        $id_user = $this->db->insert_id();
+
+                        $insert_data = array(
+                            'nama_guru' => $row['nama'],
+                            'no_hp' => $row['no_hp'],
+                            'id_user' => $id_user
+                        );
+                        $this->Model_auth->Tambah_data($insert_data, 't_guru');
+                        $code = rand(00000, 99999);
+                        $data_aktivasi = array(
+                            'id_user' => $id_user,
+                            'code' => $code
+                        );
+
+
+                        $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
+                        $data = array(
+                            'token' => $perpus->token_wa,
+                            'phone' => $row['no_hp'],
+                            'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                        );
+                        $curl = curl_init();
+
+                        curl_setopt_array($curl, array(
+                            CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS => $data,
+                        ));
+
+                        $response = curl_exec($curl);
+                        $hasil = json_decode($response);
+
+                        curl_close($curl);
+                    }
+                }
+                if ($nama != null) {
+                    $this->session->set_flashdata(
+                        'regis_gu',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","' . implode(",", $nama) . ' Gagal Upload","warning");</script>'
                     );
-                    $this->Model_auth->Tambah_data($data_user, 't_user');
-                    $id_user = $this->db->insert_id();
-
-                    $insert_data = array(
-                        'nama_guru' => $row['nama'],
-                        'no_hp' => $row['no_hp'],
-                        'id_user' => $id_user
+                } else {
+                    $this->session->set_flashdata(
+                        'regis_gu',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Data terupload Semua","success");</script>'
                     );
-                    $this->Model_auth->Tambah_data($insert_data, 't_guru');
-                    $code = rand(00000, 99999);
-                    $data_aktivasi = array(
-                        'id_user' => $id_user,
-                        'code' => $code
-                    );
-
-
-                    $this->Model_auth->Tambah_data($data_aktivasi, 't_aktivasi');
-                    $data = array(
-                        'token' => $perpus->token_wa,
-                        'phone' => $row['no_hp'],
-                        'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
-                    );
-                    $curl = curl_init();
-
-                    curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => $data,
-                    ));
-
-                    $response = curl_exec($curl);
-                    $hasil = json_decode($response);
-
-                    curl_close($curl);
                 }
                 redirect('SuperAdmin/Registrasi/RegisterGuru');
                 //echo "<pre>"; print_r($insert_data);

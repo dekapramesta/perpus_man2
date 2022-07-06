@@ -62,7 +62,10 @@
                 <a href="<?= base_url('Admin/TukarCoin') ?>" class="nav-link "><i data-feather="gift"></i><span>Tukar Coin</span></a>
                 <!-- <a href="<?= base_url('Admin/TukarCoin') ?>" class="nav-link "><i data-feather="monitor"></i><span>Registrasi Siswa</span></a> -->
             </li>
-
+            <li class="dropdown ">
+                <a href="<?= base_url('Home/Logout') ?>" class="nav-link "><i data-feather="log-out" style="color: red;"></i><span style="color: red;">Log Out</span></a>
+                <!-- <a href="<?= base_url('Admin/Registrasi') ?>" class="nav-link "><i data-feather="monitor"></i><span>Registrasi Siswa</span></a> -->
+            </li>
 
         </ul>
     </aside>

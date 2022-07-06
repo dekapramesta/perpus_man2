@@ -29,7 +29,8 @@ class Laporan extends CI_Controller
         // setting paper
         $paper = 'A4';
         //orientasi paper potrait / landscape
-        $orientation = "portrait";
+        $orientation = "landscape";
+
         if (($tahun != null) && ($bulan != null) && ($hari != null)) {
             $this->data['peminjaman'] = array_chunk($this->Model_admin->LaporanPeminjaman($tahun, $bulan, $hari)->result_array(), 7);
         } elseif (($tahun != null) && ($bulan != null) && ($hari == null)) {
@@ -64,6 +65,7 @@ class Laporan extends CI_Controller
         $bulan = $this->input->post('bulan');
         $hari = $this->input->post('hari');
         $this->load->library('pdfgenerator');
+        $this->data['admin'] = $this->db->get('t_admin')->result_array();
 
         // title dari pdf
         $this->data['title_pdf'] = 'Laporan Buku Masuk Perpustakaan MAN 2 Ngawi';
@@ -73,7 +75,7 @@ class Laporan extends CI_Controller
         // setting paper
         $paper = 'A4';
         //orientasi paper potrait / landscape
-        $orientation = "portrait";
+        $orientation = "landscpe";
         if (($tahun != null) && ($bulan != null) && ($hari != null)) {
             $this->data['buku'] = array_chunk($this->Model_admin->LaporanBuku($tahun, $bulan, $hari)->result_array(), 7);
         } elseif (($tahun != null) && ($bulan != null) && ($hari == null)) {

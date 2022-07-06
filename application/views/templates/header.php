@@ -76,7 +76,9 @@
                     <?php else : ?>
                         <li class="dropdown"><a href="#"><span>Akun</span> <i class="bi bi-chevron-down"></i></a>
                             <ul>
-                                <li><a href="<?= base_url("Profile/DataDiri/" . $this->session->userdata('id_user')) ?>">Profil Akun</a></li>
+                                <?php if ($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 1) : ?>
+                                    <li><a href="<?= base_url("Profile/DataDiri/" . $this->session->userdata('id_user')) ?>">Profil Akun</a></li>
+                                <?php endif; ?>
 
                                 <li><a href="<?= base_url('Home/Logout') ?>">Log Out</a></li>
                                 <!-- <li><a href="#">Drop Down 3</a></li>

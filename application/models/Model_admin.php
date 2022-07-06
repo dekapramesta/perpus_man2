@@ -96,6 +96,8 @@ class Model_admin extends CI_Model
         $this->db->select('t_guru.*,t_user.id_user , t_user.username');
         $this->db->from('t_guru');
         $this->db->join('t_user', 't_user.id_user=t_guru.id_user', 'left');
+        $this->db->where('status_block=0');
+
         return $this->db->get();
     }
     public function LaporanPeminjaman($tahun, $bulan, $hari)

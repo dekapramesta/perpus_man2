@@ -128,11 +128,11 @@
                                 </div>
                             </div>
                         </div>
-                        <form id="form_booking" action="asas" method="post" enctype="multipart/form-data">
+                        <form id="form_booking" action="#" method="post" enctype="multipart/form-data">
                             <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                             <div class="form-group" id="id_place">
 
-                                <input id="idsiswa" placeholder="Kode Buku" type="text" name="idsiswa" class="form-control " required="">
+                                <input id="idsiswa" placeholder="Barcode Siswa" type="text" name="idsiswa" class="form-control " required="">
                             </div>
 
                             <div align="right">
@@ -142,7 +142,7 @@
                         </form>
                     </div>
                     <div class="modal-body" id="card_pilih" style="display: none;">
-                        <form id="form_pilih" action="asas" method="post" enctype="multipart/form-data">
+                        <form id="form_pilih" action="#" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <div class="row justify-content-center mt-2" id="pilih_opsi">
                                 </div>
@@ -151,7 +151,7 @@
 
                             <div align="right">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                <button type="submit" name="import" class="btn btn-primary">Simpan</button>
+                                <button type="submit" name="import" class="btn btn-primary" disabled>Simpan</button>
                             </div>
                         </form>
                     </div>
@@ -227,6 +227,7 @@
                             $('.txt_csrfname').val(resultData.token);
                             $.each(resultData.guru, function(i, guru) {
                                 $('#idguru').append('<option value="' + guru.id_user + '">' + guru.nama_guru + '</option>')
+                                console.log(guru)
                             });
 
 
@@ -241,7 +242,7 @@
                 } else {
                     sts_val = 0;
                     event.target.value = 0
-                    $('#id_place').html('<input id="idsiswa" placeholder="Kode Buku" type="text" name="idsiswa" class="form-control " required="">')
+                    $('#id_place').html('<input id="idsiswa" placeholder="Barcode Siswa" type="text" name="idsiswa" class="form-control " required="">')
 
                 }
             }
@@ -254,7 +255,7 @@
                     console.log(idguru)
                     $.ajax({
                         type: "POST",
-                        url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
+                        url: "<?php echo site_url('Admin/Booking/getBookingGuru') ?>",
                         data: {
                             [csrfName]: csrfHash,
                             'idguru': idguru
@@ -284,11 +285,11 @@
                     });
 
                 } else if (sts_val == 0) {
-
                     let idsiswa = document.getElementById('idsiswa').value;
+
                     $.ajax({
                         type: "POST",
-                        url: "<?php echo site_url('Admin/Booking/getBooking') ?>",
+                        url: "<?php echo site_url('Admin/Booking/getBookingSiswa') ?>",
                         data: {
                             [csrfName]: csrfHash,
                             'idsiswa': idsiswa
@@ -296,6 +297,7 @@
                         },
                         dataType: "JSON",
                         success: function(result) {
+                            console.log(result);
                             $('.txt_csrfname').val(result.token);
                             if (!result.buku) {
                                 swal('Tidak Ditemukan', 'Siswa Tersebut Belum Meakukan Pemesanan', 'error');

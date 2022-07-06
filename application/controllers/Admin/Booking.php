@@ -8,6 +8,7 @@ class Booking extends CI_Controller
 
         parent::__construct();
         time_booking();
+        KirimWA();
         date_default_timezone_set('Asia/Jakarta');
         if ($this->session->userdata('role_id') != 77) {
             redirect('');
@@ -39,24 +40,20 @@ class Booking extends CI_Controller
     }
     public function getBooking()
     {
+    }
+    public function getBookingSiswa()
+    {
+        # code...
         $idsiswa = $this->input->post('idsiswa');
-        $idguru = $this->input->post('idguru');
-        if ($idguru != null) {
-            $data['token'] = $this->security->get_csrf_hash();
-            $databuku = $this->Model_admin->getBookingGuru($idguru)->result_array();
-            // var_dump($databuku);
-            if ($databuku) {
-                foreach ($databuku as $dt) {
-                    $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama_guru'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
-                }
-                $data['buku'] = $dat;
-            }
+        $id_siswa = $this->db->get_where('t_siswa', array('nisn' => $idsiswa))->row();
+        $data['token'] = $this->security->get_csrf_hash();
+        if ($id_siswa == null) {
+
             echo json_encode($data);
-        } elseif ($idsiswa != null) {
-            $id_siswa = $this->db->get_where('t_siswa', array('nisn' => $idsiswa))->row()->id_user;
-            $data['token'] = $this->security->get_csrf_hash();
-            $databuku = $this->Model_admin->getBooking($id_siswa)->result_array();
-            // var_dump($databuku);
+        } else {
+            $databuku = $this->Model_admin->getBooking($id_siswa->id_user)->result_array();
+
+
             if ($databuku) {
                 foreach ($databuku as $dt) {
                     $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user'], "nisn" => $dt['nisn']];
@@ -65,6 +62,22 @@ class Booking extends CI_Controller
             }
             echo json_encode($data);
         }
+    }
+    public function getBookingGuru()
+    {
+        # code...
+        $idguru = $this->input->post('idguru');
+
+        $data['token'] = $this->security->get_csrf_hash();
+        $databuku = $this->Model_admin->getBookingGuru($idguru)->result_array();
+        // var_dump($databuku);
+        if ($databuku) {
+            foreach ($databuku as $dt) {
+                $dat[] = ["Id_booking" => $dt['id_booking'], "Nama" => $dt['nama_guru'], "Judul" => $dt['judul_buku'], "Kode_Buku" => $dt['id_buku'], "Id_user" => $dt['id_user']];
+            }
+            $data['buku'] = $dat;
+        }
+        echo json_encode($data);
     }
     public function TrackingBooking($id)
     {

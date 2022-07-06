@@ -288,7 +288,7 @@
                      console.log(resultData)
                      $('.txt_csrfname').val(resultData.token);
                      $.each(resultData.guru, function(i, guru) {
-                         $('#dropdown_guru').html('<option value="' + guru.id_user + '">' + guru.nama_guru + '</option>')
+                         $('#dropdown_guru').append('<option value="' + guru.id_user + '">' + guru.nama_guru + '</option>')
                      });
 
 

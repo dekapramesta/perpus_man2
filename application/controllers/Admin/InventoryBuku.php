@@ -473,7 +473,7 @@ class InventoryBuku extends CI_Controller
                     '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script type ="text/JavaScript">swal("Gagal","Siswa Tdak Ditemukan","error");</script>'
                 );
-                redirect('Admin/Perpustakaan/Peminjaman');
+                redirect('Admin/Perpustakaan/DataPeminjaman');
             }
             $id_buku = $this->input->post('barcode_buku');
             $lama_pinjam = $this->input->post('lama_pinjam');
@@ -520,7 +520,7 @@ class InventoryBuku extends CI_Controller
             '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <script type ="text/JavaScript">swal("Sukses","Peminjaman","success");</script>'
         );
-        redirect('Admin/Perpustakaan/Peminjaman');
+        redirect('Admin/Perpustakaan/DataPeminjaman');
         // var_dump($data);
         // die;
     }
