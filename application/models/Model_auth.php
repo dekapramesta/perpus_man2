@@ -45,20 +45,25 @@ class Model_auth extends CI_Model
 
         if ($cek->num_rows() > 0) {
             $hasil = $cek->row();
-            if (password_verify($password, $hasil->password)) {
-                if ($hasil->status_block == 0) {
-                    return $hasil;
+            if ($hasil->username === $username) {
+                if (password_verify($password, $hasil->password)) {
+                    if ($hasil->status_block == 0) {
+                        return $hasil;
+                    } else {
+                        $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Username Atau Password Salah!</div>');
+                        redirect('Login');
+                    }
                 } else {
-                    $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Akun Non-Aktif!</div>');
-                    redirect('Login');
+
+                    return array();
                 }
             } else {
-
-                return array();
+                $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Username Atau Password Salah!</div>');
+                redirect('Login');
             }
         } else {
 
-            $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Username tidak ditemukan!</div>');
+            $this->session->set_flashdata('pesan', '<div style="justify-content:center;" class="text-center alert alert-danger alert-dismissible fade show" role="alert">Username Atau Password Salah!</div>');
             redirect('Login');
         }
     }
