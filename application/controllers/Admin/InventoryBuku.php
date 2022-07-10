@@ -652,16 +652,19 @@ class InventoryBuku extends CI_Controller
     public function deleteBook()
     {
         # code...
+        $data = $this->db->get_where('t_buku', array('id_buku' => $this->input->post('id_buku')))->row();
+        $old = './assets/img/Barcode/' . $data->barcode_pic;
+        if (unlink($old)) {
+            $delete = $this->db->delete('t_buku', array('id_buku' => $this->input->post('id_buku')));
+            if ($delete) {
+                $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
 
-        $delete = $this->db->delete('t_buku', array('id_buku' => $this->input->post('id_buku')));
-        if ($delete) {
-            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+                echo json_encode($pesan);
+            } else {
+                $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
 
-            echo json_encode($pesan);
-        } else {
-            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
-
-            echo json_encode($pesan);
+                echo json_encode($pesan);
+            }
         }
     }
     public function BukuPinjamHilang()
