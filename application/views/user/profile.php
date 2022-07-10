@@ -287,15 +287,15 @@
                            <?php if ($role == 1) : ?>
                                <div class="form-group ">
                                    <!-- <input hidden name="id_profile" type="text" class="form-control " value="<?= $profile->id_siswa ?>" required=""> -->
-                                   <input placeholder="Password Lama" name="password" type="text" class="form-control " required="">
+                                   <input placeholder="Password Lama" name="password" type="password" class="form-control " required="">
                                    <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                </div>
 
                                <div class="form-group mt-3">
-                                   <input placeholder="Password Baru" name="new_pass" type="text" class="form-control" required="">
+                                   <input placeholder="Password Baru" name="new_pass" type="password" class="form-control" required="">
                                </div>
                                <div class="form-group mt-3">
-                                   <input placeholder="Konfirmasi Password" name="conf_pass" type="text" class="form-control" required="">
+                                   <input placeholder="Konfirmasi Password" name="conf_pass" type="password" class="form-control" required="">
                                </div>
 
 

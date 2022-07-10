@@ -7,6 +7,8 @@ class Events extends CI_Controller
     {
 
         parent::__construct();
+        error_reporting(0);
+
         date_default_timezone_set('Asia/Jakarta');
         $sts = $this->db->get_where('t_setup', array('id_setup' => 1))->row();
         if ($sts->status_fitur == 0) {

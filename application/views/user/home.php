@@ -5,7 +5,7 @@
           <h1>Perpustakaan,<br />Man 2 Ngawi</h1>
           <!-- <h2>We are team of talented designers making websites with Bootstrap</h2> -->
           <div class="col-lg-3 col-10 col-md-7">
-              <form action="<?= base_url('Buku/SearchBuku') ?>" style="margin-top: 30px;
+              <form action="<?= base_url('Buku/BukuCariHome') ?>" style="margin-top: 30px;
 	background: #fff;
 	padding: 6px 10px;
 	position: relative;

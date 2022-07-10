@@ -116,4 +116,32 @@ class Perpustakaan extends CI_Controller
         );
         redirect('Admin/Perpustakaan/Kategori');
     }
+    public function BukuHilang()
+    {
+        # code...
+        $data['all'] = $this->db->get_where('t_buku', array('status_buku' => 66))->result_array();
+        $data['buku'] = $this->db->get('t_buku')->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar');
+        $this->load->view('Admin/buku_hilang', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function TambahBukuHilang()
+    {
+        # code...
+        $id = $this->input->post('id_buku');
+        $data_update = array(
+            'status_buku' => 66
+        );
+        $whereupdate = array(
+            'id_buku' => $id
+        );
+        $this->Model_admin->edit_data($whereupdate, $data_update, 't_buku');
+        $this->session->set_flashdata(
+            'buku_hilang',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/BukuHilang');
+    }
 }

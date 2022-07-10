@@ -92,6 +92,15 @@ class Buku extends CI_Controller
         $this->Model_user->edit_data($whereid, $data_update, 't_buku');
         redirect('Buku/DetailBuku/' . $isbn);
     }
+    public function BukuCariHome()
+    {
+        $buku = $this->input->post('buku');
+        $data['getAllBook'] = $this->Model_user->SearchBuku($buku)->result_array();
+        $data['kategori'] = $this->db->get('t_kategori')->result_array();
+        $this->load->view('templates/header');
+        $this->load->view('user/buku', $data);
+        $this->load->view('templates/footer');
+    }
     public function SearchBuku($buku)
     {
 

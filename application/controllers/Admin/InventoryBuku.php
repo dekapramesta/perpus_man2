@@ -643,4 +643,52 @@ class InventoryBuku extends CI_Controller
             echo json_encode($pesan);
         }
     }
+    public function BukuPinjamHilang()
+    {
+        # code...
+
+        $id_buku = $this->input->post('id_buku');
+        $data['token'] = $this->security->get_csrf_hash();
+        $databuku = $this->Model_admin->returnBook($id_buku)->result_array();
+        if ($databuku) {
+            $data['buku'] = false;
+            foreach ($databuku as $dt) {
+                if ($dt['status_pengembalian'] == 0) {
+                    if ($dt['status_buku'] == 1) {
+                        $startTimeStamp = strtotime($dt['tanggal_pinjam']);
+                        $endTimeStamp = strtotime($dt['tanggal_pengembalian']);
+
+                        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+                        $numberDays = $timeDiff / 86400;
+                        $lamapinjam = intval($numberDays);
+                        $data['buku'] = array('lamapinjam' => $lamapinjam, 'peminjaman' => $dt);
+                    }
+                }
+            };
+        } else {
+            $data['buku'] = false;
+        }
+        echo json_encode($data);
+    }
+    public function HilangPeminjaman()
+    {
+        # code...
+        $id = $this->input->post('id_buku');
+        $data_update = array(
+            'status_buku' => 66
+        );
+        $whereupdate = array(
+            'id_buku' => $id
+        );
+        $this->Model_admin->edit_data($whereupdate, $data_update, 't_buku');
+        $data_status = array(
+            'status_pengembalian' => 99
+        );
+        $where_status = array(
+            'id_peminjaman' => $this->input->post('id_peminjaman')
+        );
+        $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
+        echo json_encode(1);
+    }
 }

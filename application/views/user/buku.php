@@ -84,7 +84,9 @@
                      </style>
                      <div class="col-lg-12 d-flex justify-content-center mt-3">
 
-                         <?php if ($this->uri->segment(2) != 'SearchBuku') {
+                         <?php if ($this->uri->segment(2) == 'SearchBuku') {
+                            } elseif ($this->uri->segment(2) == 'BukuCariHome') {
+                            } else {
                                 echo $this->pagination->create_links();
                             }
                             ?>

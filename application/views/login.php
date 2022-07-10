@@ -10,7 +10,11 @@
                 ''
             );
         } ?>
-        <?php echo $this->session->flashdata('pesan') ?>
+        <?php echo $this->session->flashdata('pesan');
+        $this->session->set_flashdata(
+            'pesan',
+            ''
+        );  ?>
         <div class="d-flex justify-content-center">
             <div class="col col-md-8 col-lg-5">
                 <div class="card">
