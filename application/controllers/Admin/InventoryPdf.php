@@ -159,16 +159,19 @@ class InventoryPdf extends CI_Controller
     public function deletePdf()
     {
         # code...
+        $data = $this->db->get_where('t_ebook', array('id_ebook' => $this->input->post('id_ebook')))->row();
+        $old = './assets/pdf/' . $data->file_ebook;
+        if (unlink($old)) {
+            $delete = $this->db->delete('t_ebook', array('id_ebook' => $this->input->post('id_ebook')));
+            if ($delete) {
+                $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
 
-        $delete = $this->db->delete('t_ebook', array('id_ebook' => $this->input->post('id_ebook')));
-        if ($delete) {
-            $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
+                echo json_encode($pesan);
+            } else {
+                $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
 
-            echo json_encode($pesan);
-        } else {
-            $pesan = array('status' => 0, 'token' => $this->security->get_csrf_hash());
-
-            echo json_encode($pesan);
+                echo json_encode($pesan);
+            }
         }
     }
 }
