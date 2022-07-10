@@ -103,7 +103,7 @@
                             <form id="form_caribuku" action="#" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <select id="jenis" class="form-select" aria-label="Default select example" required oninvalid="setCustomValidity('Pilih Salah Satu')" oninput="setCustomValidity('')">
-                                        <option hidden disabled selected value="">Pilih Buku/Buku Elektorinik</option>
+                                        <option hidden disabled selected value="">Pilih Buku/Buku Elektronik</option>
                                         <option value="1">Buku</option>
                                         <option value="2">Buku Elektronik</option>
                                     </select>

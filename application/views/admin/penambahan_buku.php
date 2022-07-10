@@ -225,6 +225,8 @@
                                          $(".select2").select2();
                                          formscan.style.display = "none";
                                          document.getElementById('form_addBook').style.display = "block";
+                                         document.getElementById('isbn_code_add').value = NameBook;
+
                                      } else {
                                          swal('Your imaginary file is safe!');
                                      }
@@ -250,6 +252,8 @@
                                      $(".select2").select2();
                                      formscan.style.display = "none";
                                      document.getElementById('form_addBook').style.display = "block";
+                                     document.getElementById('isbn_code_add').value = NameBook;
+
                                  } else {
                                      swal('Your imaginary file is safe!');
                                  }

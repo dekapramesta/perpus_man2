@@ -95,7 +95,7 @@
                              </div>
                              <div class="form-group">
                                  <label for="">Kategori Pdf</label><br>
-                                 <select name="kategori_pdf[]" class="form-control selectric" multiple="">
+                                 <select name="kategori_pdf[]" class="form-control selectric" multiple="" required>
                                      <?php foreach ($category_pdf as $ct) { ?>
                                          <option value="<?= $ct['nama_kategori'] ?>"><?= $ct['nama_kategori'] ?></option>
                                      <?php } ?>

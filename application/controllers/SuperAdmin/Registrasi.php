@@ -96,7 +96,7 @@ class Registrasi extends CI_Controller
             $data = array(
                 'token' => $perpus->token_wa,
                 'phone' => $no_wa,
-                'message' => 'Berikut Kode Untuk Pendaftaran ' . $code
+                'message' => 'Berikut Kode Untuk Pendaftaran ' . $code . ', Dengan nama ' . $nama,
             );
             $curl = curl_init();
 
@@ -169,7 +169,7 @@ class Registrasi extends CI_Controller
             $data = array(
                 'token' => $perpus->token_wa,
                 'phone' => $no_wa,
-                'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                'message' => 'Berikut Kode Pendaftaran ' . $code . ', Dengan Nama' . $nama,
             );
             $curl = curl_init();
 
@@ -354,7 +354,7 @@ class Registrasi extends CI_Controller
                         $data = array(
                             'token' => $perpus->token_wa,
                             'phone' => $row['no_hp'],
-                            'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                            'message' => 'Berikut Kode Pendaftaran ' . $code . ', dengan nama ' . $row['nama'],
                         );
                         $curl = curl_init();
 
@@ -474,7 +474,7 @@ class Registrasi extends CI_Controller
                             $data = array(
                                 'token' => $perpus->token_wa,
                                 'phone' => $row['no_wa'],
-                                'message' => 'Berikut Kode Pendaftaran Anda  ' . $code
+                                'message' => 'Berikut Kode Pendaftaran ' . $code . ', dengan nama ' . $row['nama'],
                             );
                             $curl = curl_init();
 

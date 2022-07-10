@@ -18,6 +18,14 @@ class Model_admin extends CI_Model
     {
         return $this->db->insert($table, $data);
     }
+    public function double_where()
+    {
+        $this->db->select('*');
+        $this->db->from('t_buku');
+        $this->db->where("status_buku", 66)
+            ->or_where("status_buku", 99);
+        return $this->db->get();
+    }
     public function returnBook($idbuku)
     {
         $this->db->where('t_peminjaman.id_buku', $idbuku);
@@ -210,6 +218,16 @@ class Model_admin extends CI_Model
         $this->db->select('*');
         $this->db->from('t_siswa');
         $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
+        return $this->db->get();
+    }
+    public function GetSiswaByNisn($id)
+    {
+        # code...
+        $this->db->where('t_siswa.nisn', $id);
+        $this->db->select('*');
+        $this->db->from('t_siswa');
+        $this->db->join('t_user', 't_user.id_user=t_siswa.id_user', 'left');
+        $this->db->where('t_user.status_block', 0);
         return $this->db->get();
     }
     public function GetGuruId($id)

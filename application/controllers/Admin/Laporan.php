@@ -38,7 +38,7 @@ class Laporan extends CI_Controller
         } elseif (($tahun != null) && ($bulan == null) && ($hari == null)) {
             $this->data['peminjaman'] = array_chunk($this->Model_admin->LaporanPeminjaman($tahun, 0, 0)->result_array(), 7);
         }
-        $html = $this->load->view('admin/laporan_peminjaman', $this->data, true);
+        $html = $this->load->view('Admin/laporan_peminjaman', $this->data, true);
 
         // run dompdf
         $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);
@@ -83,7 +83,7 @@ class Laporan extends CI_Controller
         } elseif (($tahun != null) && ($bulan == null) && ($hari == null)) {
             $this->data['buku'] = array_chunk($this->Model_admin->LaporanBuku($tahun, 0, 0)->result_array(), 7);
         }
-        $html = $this->load->view('admin/laporan_buku', $this->data, true);
+        $html = $this->load->view('Admin/laporan_buku', $this->data, true);
 
         // run dompdf
         $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);

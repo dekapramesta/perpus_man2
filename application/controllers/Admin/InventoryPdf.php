@@ -43,6 +43,7 @@ class InventoryPdf extends CI_Controller
 
         $config['upload_path'] = './assets/pdf';
         $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = TRUE;
 
 
         $this->load->library('upload', $config);
@@ -123,6 +124,9 @@ class InventoryPdf extends CI_Controller
                 );
                 redirect('Admin/InventoryPdf/DetailPdf/' . $idpdf);
             } else {
+                $data = $this->db->get_where('t_ebook', array('id_ebook' => $idpdf))->row();
+                $old = './assets/pdf' . $data->file_ebook;
+                unlink($old);
                 $file_ebook = $this->upload->data('file_name');
                 $data_update = array(
                     'judul_ebook' => $this->input->post('judul'),
@@ -155,6 +159,7 @@ class InventoryPdf extends CI_Controller
     public function deletePdf()
     {
         # code...
+
         $delete = $this->db->delete('t_ebook', array('id_ebook' => $this->input->post('id_ebook')));
         if ($delete) {
             $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());

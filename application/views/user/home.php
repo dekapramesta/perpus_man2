@@ -133,7 +133,7 @@
                     }
                     ?>
               </div>
-              <div class="row" data-aos="zoom-in" data-aos-delay="100">
+              <div class="row">
                   <?php foreach ($kategori as $ktg) : ?>
                       <div onclick="window.location='<?= base_url('Buku/ByKategori/' . str_replace(' ', '-', $ktg['nama_kategori'])) ?>'" class="col-lg-3 col-md-4 mt-2">
                           <div class="icon-box">

@@ -15,7 +15,7 @@
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="briefcase"></i><span>Master Data</span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="<?= base_url('Admin/InventoryBuku') ?>">Buku</a></li>
-                    <li><a class="nav-link" href="<?= base_url('Admin/InventoryPdf') ?>">PDF</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/InventoryPdf') ?>">Ebook</a></li>
 
                     <!-- <li><a class="nav-link" href="blog.html">Buku Masuk</a></li> -->
                 </ul>
@@ -27,6 +27,7 @@
                     <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPeminjaman') ?>">Peminjaman</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPengembalian') ?>">Pengembalian</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/Booking') ?>">Booking</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/BukuHilang') ?>">Buku Hilang</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/InventoryBuku/CetakBarcode') ?>">Cetak Barcode</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/Kategori') ?>">Kategori</a></li>
 

@@ -14,10 +14,10 @@
                          <div class="padding-20">
                              <ul class="nav nav-tabs" id="myTab2" role="tablist">
                                  <li class="nav-item">
-                                     <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about" role="tab" aria-selected="true">About</a>
+                                     <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about" role="tab" aria-selected="true">Detail</a>
                                  </li>
                                  <li class="nav-item">
-                                     <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#settings" role="tab" aria-selected="false">Setting</a>
+                                     <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#settings" role="tab" aria-selected="false">Edit</a>
                                  </li>
                              </ul>
                              <div class="tab-content tab-bordered" id="myTab3Content">
@@ -65,7 +65,7 @@
                                  <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="profile-tab2">
                                      <form method="post" class="needs-validation" action="<?= base_url('Admin/Inventorypdf/EditPdf/' . $ebook->id_ebook) ?>" enctype="multipart/form-data">
                                          <div class="card-header">
-                                             <h4>Edit Profile</h4>
+                                             <h4>Edit Pdf</h4>
                                          </div>
                                          <input hidden type="text" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
@@ -121,7 +121,8 @@
 
                                              <div class="row">
                                                  <div class="form-group col-md-6 col-12">
-                                                     <label>File Pdf</label>
+                                                     <label>File Pdf</label> <br>
+                                                     <span>File Yang Tertaut <?= $ebook->file_ebook ?></span>
                                                      <input type="file" name="file_pdf" class="form-control" />
                                                  </div>
                                              </div>

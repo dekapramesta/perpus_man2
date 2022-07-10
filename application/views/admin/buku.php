@@ -44,7 +44,9 @@
                                       <tbody>
                                           <?php $no = 0;
                                             foreach ($getAllBook as $book) : $no++ ?>
-                                              <tr>
+                                              <tr <?php if (($book['status_buku'] == 66) || ($book['status_buku'] == 99)) {
+                                                        echo "style = 'color : red;'";
+                                                    }  ?>>
                                                   <td>
                                                       <?= $no ?>
                                                   </td>
@@ -55,7 +57,11 @@
                                                             echo "Tersedia";
                                                         } elseif ($book['status_buku'] == 7) {
                                                             echo "Dipesan";
-                                                        } else {
+                                                        } elseif ($book['status_buku'] == 66) {
+                                                            echo "Buku Hilang";
+                                                        } elseif ($book['status_buku'] == 99) {
+                                                            echo "Buku Hilang";
+                                                        } elseif ($book['status_buku'] == 1) {
                                                             echo "Dipinjam";
                                                         }  ?></td>
 
@@ -540,6 +546,7 @@
                                               $('#category').append('<select name="kategori" class="form-control"><option value="Fiksi"> Fiksi</option><option >Option 2</option><option>Option 3 < /option></select>');
                                               formscan.style.display = "none";
                                               document.getElementById('form_addBook').style.display = "block";
+
                                           } else {
                                               swal('Your imaginary file is safe!');
                                           }

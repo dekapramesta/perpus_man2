@@ -95,7 +95,7 @@ class InventoryBuku extends CI_Controller
                 'id_buku' => trim(preg_replace('/\\s+/', ' ', $Primary_Barcode)),
                 'judul_buku' => $judul,
                 'kategori' => $kategori,
-                'kode_buku' => $isbn_code,
+                'kode_buku' => str_replace(' ', '', $isbn_code),
                 'sinopsis' => $desc,
                 'penulis' => $penulis,
                 'tahun_terbit' => $tahun_terbit,
@@ -105,7 +105,7 @@ class InventoryBuku extends CI_Controller
                 'cover_buku' => $cover,
                 'status_buku' => 0,
                 'src_book' => $src_book,
-                'barcode_pic' => $code . '.png',
+                'barcode_pic' => str_replace(' ', '', $code) . '.png',
                 'insert_by' => $this->id_admin
             );
 
@@ -118,6 +118,23 @@ class InventoryBuku extends CI_Controller
             );
             redirect('Admin/InventoryBuku/PenambahanBuku');
         } elseif ($dup_num > 1) {
+            $cover = $_FILES['cover']['name'];
+            if ($cover != null) {
+                $config['upload_path'] = './assets/img/CoverBuku/';
+                $config['allowed_types'] = 'jpg|png|jpeg|gif';
+
+                $this->load->library('upload', $config);
+                if ($this->upload->do_upload('cover')) {
+                    $cover = $this->upload->data('file_name');
+                } else {
+                    $this->session->set_flashdata(
+                        'penambahan_buku',
+                        '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
+                    );
+                    redirect('Admin/InventoryBuku/PenambahanBuku');
+                }
+            }
             for ($x = 0; $x < $dup_num; $x++) {
                 $isbn_code = $this->input->post('isbn_code');
                 $desc = $this->input->post('desc');
@@ -135,24 +152,6 @@ class InventoryBuku extends CI_Controller
                     $kategori = implode(',', $this->input->post('kategori', TRUE));
                 } else {
                     $kategori = implode(',', $this->input->post('kategori', TRUE));
-
-                    $cover = $_FILES['cover']['name'];
-                    if ($cover != null) {
-                        $config['upload_path'] = './assets/img/CoverBuku/';
-                        $config['allowed_types'] = 'jpg|png|jpeg|gif';
-
-                        $this->load->library('upload', $config);
-                        if ($this->upload->do_upload('cover')) {
-                            $cover = $this->upload->data('file_name');
-                        } else {
-                            $this->session->set_flashdata(
-                                'penambahan_buku',
-                                '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                    <script type ="text/JavaScript">swal("Gagal","Gagal","error");</script>'
-                            );
-                            redirect('Admin/InventoryBuku/PenambahanBuku');
-                        }
-                    }
                 }
                 $this->load->library('zend');
                 $this->zend->load('Zend/Barcode');
@@ -163,7 +162,7 @@ class InventoryBuku extends CI_Controller
                     'id_buku' => trim(preg_replace('/\\s+/', ' ', $Primary_Barcode)),
                     'judul_buku' => $judul,
                     'kategori' => $kategori,
-                    'kode_buku' => $isbn_code,
+                    'kode_buku' => str_replace(' ', '', $isbn_code),
                     'sinopsis' => $desc,
                     'penulis' => $penulis,
                     'tahun_terbit' => $tahun_terbit,
@@ -234,6 +233,7 @@ class InventoryBuku extends CI_Controller
         $config['upload_path'] = './assets/img/CoverBuku/';
         $config['allowed_types'] = 'gif|jpg|png';
 
+
         $this->load->library('upload', $config);
         $file = $_FILES['cover_buku']['name'];
         if ($file == null) {
@@ -246,7 +246,6 @@ class InventoryBuku extends CI_Controller
                     'tahun_terbit' => $tahun_terbit,
                     'tanggal_masuk' => $tanggal_masuk,
                     'halaman' => $halaman,
-                    'status_buku' => $status_buku,
 
                 );
             } else {
@@ -259,7 +258,6 @@ class InventoryBuku extends CI_Controller
                     'tahun_terbit' => $tahun_terbit,
                     'tanggal_masuk' => $tanggal_masuk,
                     'halaman' => $halaman,
-                    'status_buku' => $status_buku,
                     'cover_buku' => $cover
 
                 );
@@ -273,6 +271,9 @@ class InventoryBuku extends CI_Controller
                 );
                 redirect('Admin/InventoryBuku/DetailBuku/' . $id_buku);
             } else {
+                $data = $this->db->get_where('t_buku', array('kode_buku' => $kode_buku))->row();
+                $old = './assets/img/CoverBuku/' . $data->cover_buku;
+                unlink($old);
                 $cover = $this->upload->data('file_name');
                 $data_update = array(
                     'judul_buku' => $judul_buku,
@@ -282,7 +283,6 @@ class InventoryBuku extends CI_Controller
                     'tahun_terbit' => $tahun_terbit,
                     'tanggal_masuk' => $tanggal_masuk,
                     'halaman' => $halaman,
-                    'status_buku' => $status_buku,
                     'cover_buku' => $cover
 
                 );
@@ -385,6 +385,26 @@ class InventoryBuku extends CI_Controller
             foreach ($databuku as $dt) {
                 if ($dt['status_pengembalian'] == 0) {
                     if ($dt['status_buku'] == 1) {
+                        $startTimeStamp = strtotime($dt['tanggal_pinjam']);
+                        $endTimeStamp = strtotime($dt['tanggal_pengembalian']);
+
+                        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+                        $numberDays = $timeDiff / 86400;
+                        $lamapinjam = intval($numberDays);
+                        $data['buku'] = array('lamapinjam' => $lamapinjam, 'peminjaman' => $dt);
+                    }
+                } elseif ($dt['status_pengembalian'] == 99) {
+                    if ($dt['status_buku'] == 66) {
+                        $startTimeStamp = strtotime($dt['tanggal_pinjam']);
+                        $endTimeStamp = strtotime($dt['tanggal_pengembalian']);
+
+                        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+
+                        $numberDays = $timeDiff / 86400;
+                        $lamapinjam = intval($numberDays);
+                        $data['buku'] = array('lamapinjam' => $lamapinjam, 'peminjaman' => $dt);
+                    } elseif ($dt['status_buku'] == 99) {
                         $startTimeStamp = strtotime($dt['tanggal_pinjam']);
                         $endTimeStamp = strtotime($dt['tanggal_pengembalian']);
 
@@ -616,7 +636,7 @@ class InventoryBuku extends CI_Controller
         //orientasi paper potrait / landscape
         $orientation = "portrait";
 
-        $html = $this->load->view('admin/barcode_buku', $this->data, true);
+        $html = $this->load->view('Admin/barcode_buku', $this->data, true);
 
         // run dompdf
         $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);
@@ -632,6 +652,7 @@ class InventoryBuku extends CI_Controller
     public function deleteBook()
     {
         # code...
+
         $delete = $this->db->delete('t_buku', array('id_buku' => $this->input->post('id_buku')));
         if ($delete) {
             $pesan = array('status' => 1, 'token' => $this->security->get_csrf_hash());
@@ -676,7 +697,7 @@ class InventoryBuku extends CI_Controller
         # code...
         $id = $this->input->post('id_buku');
         $data_update = array(
-            'status_buku' => 66
+            'status_buku' => 99
         );
         $whereupdate = array(
             'id_buku' => $id
@@ -689,6 +710,19 @@ class InventoryBuku extends CI_Controller
             'id_peminjaman' => $this->input->post('id_peminjaman')
         );
         $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
+        echo json_encode(1);
+    }
+    public function BukuKetemu()
+    {
+        # code...
+        $id = $this->input->post('id_buku');
+        $data_update = array(
+            'status_buku' => 0
+        );
+        $whereupdate = array(
+            'id_buku' => $id
+        );
+        $this->Model_admin->edit_data($whereupdate, $data_update, 't_buku');
         echo json_encode(1);
     }
 }

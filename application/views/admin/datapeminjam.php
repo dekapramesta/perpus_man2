@@ -48,7 +48,11 @@
                                     <tbody>
                                         <?php $no = 0;
                                         foreach ($laporan as $lpr) : $no++; ?>
-                                            <tr>
+                                            <tr <?php if ($lpr['status_pengembalian'] == 99) {
+                                                    echo "style = 'color : red;'";
+                                                } elseif ((strtotime($lpr['tanggal_pengembalian']) < strtotime(date('Y-m-d'))) && ($lpr['status_pengembalian'] == 0)) {
+                                                    echo "style = 'color : orange;'";
+                                                } ?>>
                                                 <td><?= $no; ?></td>
                                                 <td><?php if ($lpr['id_siswa'] != null) {
                                                         echo $lpr['nama'];
@@ -69,6 +73,8 @@
                                                         echo "Sudah Dikembalikan";
                                                     } elseif ($lpr['status_pengembalian'] == 0) {
                                                         echo "Belum Dikembalikan";
+                                                    } elseif ($lpr['status_pengembalian'] == 99) {
+                                                        echo "Buku Hilang";
                                                     } ?></td>
                                                 <td><?= $lpr['nama_admin'] ?></td>
 

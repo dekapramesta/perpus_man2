@@ -51,7 +51,7 @@ class LogPerpus extends CI_Controller
     {
         # code...
         $code = $this->input->post('code');
-        $data = $this->db->get_where('t_siswa', array('nisn' => $code))->row();
+        $data = $this->Model_admin->GetSiswaByNisn($code)->row();
         if ($data != null) {
             $data_post = array(
                 'id_user' => $data->id_user,

@@ -48,7 +48,7 @@ class Perpustakaan extends CI_Controller
         //orientasi paper potrait / landscape
         $orientation = "portrait";
         $this->data['peminjaman'] = $this->Model_admin->LaporanPeminjaman()->result_array();
-        $html = $this->load->view('admin/laporan_peminjaman', $this->data, true);
+        $html = $this->load->view('Admin/laporan_peminjaman', $this->data, true);
 
         // run dompdf
         $this->pdfgenerator->generate($html, $file_pdf, $paper, $orientation);
@@ -119,7 +119,7 @@ class Perpustakaan extends CI_Controller
     public function BukuHilang()
     {
         # code...
-        $data['all'] = $this->db->get_where('t_buku', array('status_buku' => 66))->result_array();
+        $data['all'] = $this->Model_admin->double_where()->result_array();
         $data['buku'] = $this->db->get('t_buku')->result_array();
         $this->load->view('Admin/templates/header');
         $this->load->view('Admin/templates/sidebar');

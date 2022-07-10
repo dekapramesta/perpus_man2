@@ -47,7 +47,7 @@
                                              console.log(result)
                                              if (result.buku == "unavailable") {
                                                  $('.txt_csrfname').val(result.token);
-                                                 swal('Tidak Tersedia', 'Buku Masih Dipinjam', 'error');
+                                                 swal('Tidak Tersedia', 'Buku Tidak Tersedia', 'error');
                                              } else if (result.buku == "booking") {
                                                  $('.txt_csrfname').val(result.token);
                                                  swal('Tidak Tersedia', 'Buku Telah Dipesan', 'error');

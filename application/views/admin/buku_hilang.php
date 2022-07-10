@@ -48,7 +48,7 @@
                                                  <td><?= $al['id_buku'] ?></td>
                                                  <td><?= $al['judul_buku'] ?></td>
                                                  <td><?= $al['kode_buku'] ?></td>
-                                                 <td class="text-center"><button class="btn btn-primary">Buku Ketemu</button></td>
+                                                 <td onclick="BukuKetemu('<?= $al['id_buku'] ?>','<?= $al['status_buku'] ?>')" class="text-center"><button class="btn btn-primary">Buku Ketemu</button></td>
                                              </tr>
                                          <?php endforeach ?>
                                      </tbody>
@@ -85,7 +85,9 @@
                                      <option value="" disabled selected hidden>Pilih Buku</option>
 
                                      <?php foreach ($buku as $bk) : ?>
-                                         <?php if ($bk['status_buku'] != 66) : ?>
+                                         <?php if ($bk['status_buku'] == 66) : ?>
+                                         <?php elseif ($bk['status_buku'] == 99) : ?>
+                                         <?php else : ?>
                                              <option value="<?= $bk['id_buku'] ?>"><?= $bk['judul_buku'] . "-" . $bk['id_buku'] ?></option>
                                          <?php endif; ?>
                                      <?php endforeach; ?>
@@ -121,13 +123,27 @@
                      success: function(resultData) {
                          $('.txt_csrfname').val(resultData.token);
                          if (!resultData.buku) {
-                             document.getElementById("form_hilang").submit();
+
+                             swal({
+                                     title: 'Buku Hilang ?',
+                                     text: 'Apakah Anda Yakin Bahwa Buku Hilang?',
+                                     icon: 'warning',
+                                     buttons: true,
+                                     dangerMode: true,
+                                 })
+                                 .then((willDelete) => {
+                                     if (willDelete) {
+                                         document.getElementById("form_hilang").submit();
+
+
+                                     }
+                                 });
 
                          } else {
 
                              swal({
                                      title: 'Buku Hilang Saat Peminjaman?',
-                                     text: 'Hilang Saat Dibawa ' + resultData.buku.peminjaman.id_peminjaman,
+                                     text: 'Hilang Saat Dibawa ' + resultData.buku.peminjaman.username,
                                      icon: 'warning',
                                      buttons: true,
                                      dangerMode: true,
@@ -149,7 +165,7 @@
                                              success: function(status) {
                                                  $(document).ajaxStop(function() {
                                                      if (status == 1) {
-                                                         swal('Success', 'Sukses Menghapus', 'success').then((ok) => {
+                                                         swal('Success', 'Sukses', 'success').then((ok) => {
                                                              window.location.reload();
 
                                                          });
@@ -170,4 +186,50 @@
 
                  });
              })
+
+             function BukuKetemu(id, sts) {
+                 if (sts == 99) {
+                     swal('Warning', 'Jika Buku Hilang Saat Peminjaman, Lakukan Saja di Menu Pengembalian', 'warning');
+                 } else if (sts == 66) {
+
+                     swal({
+                             title: 'Buku Ketemu',
+                             text: 'Yakin Buku Telah Ditemukan',
+                             icon: 'warning',
+                             buttons: true,
+                             dangerMode: true,
+                         })
+                         .then((willDelete) => {
+                             if (willDelete) {
+                                 let csrfName_sec = $('.txt_csrfname').attr('name');
+                                 let csrfHash_sec = $('.txt_csrfname').val();
+                                 $.ajax({
+
+                                     type: "POST",
+                                     url: "<?php echo site_url('Admin/InventoryBuku/BukuKetemu') ?>",
+                                     data: {
+                                         [csrfName_sec]: csrfHash_sec,
+                                         'id_buku': id,
+
+                                     },
+                                     dataType: "JSON",
+                                     success: function(status) {
+                                         $(document).ajaxStop(function() {
+                                             if (status == 1) {
+                                                 swal('Success', 'Sukses', 'success').then((ok) => {
+                                                     window.location.reload();
+
+                                                 });
+                                             }
+
+                                         });
+
+                                     }
+
+                                 });
+
+                             }
+                         });
+                 }
+             }
          </script>
