@@ -110,7 +110,16 @@ class Events extends CI_Controller
                             $data_update = array(
                                 'coin' => $coin - $hadiah
                             );
-                            $this->Model_user->Edit_data($where, $data_update, 't_siswa');
+                            $add = $this->Model_user->Edit_data($where, $data_update, 't_siswa');
+                            if ($add) {
+                                $where = array(
+                                    'id_hadiah' => $id_hadiah
+                                );
+                                $data_update = array(
+                                    'jumlah' => $data_hadiah->jumlah - 1
+                                );
+                                $add = $this->Model_user->Edit_data($where, $data_update, 't_hadiah');
+                            }
                         }
                     } else {
                         $this->session->set_flashdata(

@@ -3,6 +3,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Perpustakaan extends CI_Controller
 {
+    public function __construct()
+    {
+
+        parent::__construct();
+        date_default_timezone_set('Asia/Jakarta');
+        if ($this->session->userdata('role_id') != 77) {
+            redirect('');
+        }
+        $this->id_admin = $this->db->get_where('t_admin', array('id_user' => $this->session->userdata('id_user')))->row()->id_admin;
+    }
     public function DataPeminjaman()
     {
         $data['laporan'] = $this->Model_admin->LaporanPeminjamanAll()->result_array();
@@ -143,5 +153,235 @@ class Perpustakaan extends CI_Controller
                     <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
         );
         redirect('Admin/Perpustakaan/BukuHilang');
+    }
+    public function PeminjamanBuku()
+    {
+        # code...
+        $data['guru'] =  $this->Model_admin->getGuru()->result_array();
+        $this->load->view('Admin/templates/header');
+        $this->load->view('Admin/templates/sidebar');
+        $this->load->view('Admin/peminjamanperpus', $data);
+        $this->load->view('Admin/templates/footer');
+    }
+    public function getSiswa()
+    {
+        # code...
+        $code = $this->input->post('code');
+        $data = $this->Model_admin->GetSiswaByNisn($code)->row();
+        if ($data != null) {
+            $message = array(
+                'status' => true,
+                'data' => $data,
+                'token' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $message = array(
+                'status' => false,
+                'data' => "Siswa Tidak Ditemukan",
+                'token' => $this->security->get_csrf_hash()
+
+            );
+        }
+        echo json_encode($message);
+    }
+    public function getGuru()
+    {
+        # code...
+        $code = $this->input->post('id_user');
+        $data = $this->Model_admin->GetGuruId($code)->row();
+        if ($data != null) {
+            $message = array(
+                'status' => true,
+                'data' => $data,
+                'token' => $this->security->get_csrf_hash()
+            );
+        } else {
+            $message = array(
+                'status' => false,
+                'data' => "Guru Tidak Ditemukan",
+                'token' => $this->security->get_csrf_hash()
+
+            );
+        }
+        echo json_encode($message);
+    }
+    public function getBuku()
+    {
+        # code...
+        $code = $this->input->post('idbuku');
+        $token = $this->security->get_csrf_hash();
+        $data = $this->db->get_where('t_buku', array('id_buku' => $code))->row();
+        if ($data != null) {
+            $data_array = array(
+                'status' => true,
+                'message' => $data,
+                'token' => $token
+            );
+        } else {
+            $data_array = array(
+                'status' => false,
+                'message' => "Kosong",
+                'token' => $token
+            );
+        }
+        echo json_encode($data_array);
+    }
+    public function BukuPinjam()
+    {
+        # code...
+        $lama_pinjam = $this->input->post('lama_pinjam');
+        $id_user = $this->input->post('id_user');
+        $data = array();
+        $buku = $this->input->post('buku');
+        foreach ($buku as $bk) {
+            $code = explode("-", $bk);
+            $data[] = $code[0];
+        }
+        if ($lama_pinjam == 3) {
+            $tgl_pengembalian = date('Y-m-d', strtotime('+3 days'));
+        } elseif ($lama_pinjam == 5) {
+            $tgl_pengembalian = date('Y-m-d', strtotime('+5 days'));
+        } elseif ($lama_pinjam == 7) {
+            $tgl_pengembalian = date('Y-m-d', strtotime('+7 days'));
+        } else {
+            echo "error";
+        }
+
+        foreach ($data as $dt) {
+            $data = array(
+                'id_user' => $id_user,
+                'id_buku' => $dt,
+                'tanggal_pinjam' => date('Y-m-d'),
+                'tanggal_pengembalian' => $tgl_pengembalian,
+                'peminjaman_by' => $this->id_admin
+
+            );
+            $this->Model_admin->Tambah_data($data, 't_peminjaman');
+
+            $data_update = array(
+                'status_buku' => 1,
+            );
+            $whereid = array(
+                'id_buku' => $dt
+            );
+            $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
+        }
+        $this->session->set_flashdata(
+            'peminjaman_buku',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/PeminjamanBuku');
+    }
+    public function getPeminjaman()
+    {
+        # code...
+        $id = $this->input->post('id');
+        $token = $this->security->get_csrf_hash();
+        $datapinjam = $this->Model_admin->getPeminjaman($id)->result_array();
+        $data = array(
+            'peminjaman' => $datapinjam,
+            'token' => $token
+        );
+        echo json_encode($data);
+    }
+    public function KembaliBuku()
+    {
+        # code...
+        $data_peminjaman = $this->db->get_where('t_peminjaman', array('id_peminjaman' => $this->input->post('id_peminjaman')))->row();
+        $aktifasi = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row()->status_fitur;
+        if ($aktifasi == 1) {
+            $id_user = $this->db->get_where('t_peminjaman', array('id_peminjaman' => $this->input->post('id_peminjaman')))->row()->id_user;
+            $role_id = $this->db->get_where('t_user', array('id_user' => $id_user))->row()->role_id;
+            if ($role_id == 1) {
+                $siswa = $this->db->get_where('t_siswa', array('id_user' => $id_user))->row();
+                $data_coin = array(
+                    "coin" => $siswa->coin + 2
+                );
+                $data_where = array(
+                    'id_siswa' => $siswa->id_siswa
+                );
+                $this->Model_admin->edit_data($data_where, $data_coin, 't_siswa');
+            }
+        }
+        $data = array(
+            'id_peminjaman' => $this->input->post('id_peminjaman'),
+            'tgl_pengembalian' => date('Y-m-d'),
+            'pengembalian_by' => $this->id_admin
+
+        );
+        $this->Model_admin->Tambah_data($data, 't_pengembalian');
+
+        $data_update = array(
+            'status_buku' => 0,
+        );
+        $whereid = array(
+            'id_buku' => $data_peminjaman->id_buku
+        );
+        $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
+        $data_status = array(
+            'status_pengembalian' => 1
+        );
+        $where_status = array(
+            'id_peminjaman' => $this->input->post('id_peminjaman')
+        );
+        $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
+
+        $data_send = array(
+            'status' => true,
+            'token' => $this->security->get_csrf_hash(),
+        );
+        echo json_encode($data_send);
+    }
+    public function KembalikanSemuaBuku()
+    {
+        # code...
+        $idpeminjaman = $this->input->post('id_peminjaman');
+        foreach ($idpeminjaman as $pjm) {
+            $data_peminjaman = $this->db->get_where('t_peminjaman', array('id_peminjaman' => $pjm))->row();
+            $aktifasi = $this->db->get_where('t_setup', array('nama_fitur' => 'coin'))->row()->status_fitur;
+            if ($aktifasi == 1) {
+                $id_user = $this->db->get_where('t_peminjaman', array('id_peminjaman' => $pjm))->row()->id_user;
+                $role_id = $this->db->get_where('t_user', array('id_user' => $id_user))->row()->role_id;
+                if ($role_id == 1) {
+                    $siswa = $this->db->get_where('t_siswa', array('id_user' => $id_user))->row();
+                    $data_coin = array(
+                        "coin" => $siswa->coin + 2
+                    );
+                    $data_where = array(
+                        'id_siswa' => $siswa->id_siswa
+                    );
+                    $this->Model_admin->edit_data($data_where, $data_coin, 't_siswa');
+                }
+            }
+            $data = array(
+                'id_peminjaman' => $pjm,
+                'tgl_pengembalian' => date('Y-m-d'),
+                'pengembalian_by' => $this->id_admin
+
+            );
+            $this->Model_admin->Tambah_data($data, 't_pengembalian');
+
+            $data_update = array(
+                'status_buku' => 0,
+            );
+            $whereid = array(
+                'id_buku' => $data_peminjaman->id_buku
+            );
+            $this->Model_admin->edit_data($whereid, $data_update, 't_buku');
+            $data_status = array(
+                'status_pengembalian' => 1
+            );
+            $where_status = array(
+                'id_peminjaman' => $pjm
+            );
+            $this->Model_admin->edit_data($where_status, $data_status, 't_peminjaman');
+        }
+        $this->session->set_flashdata(
+            'peminjaman_buku',
+            '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script type ="text/JavaScript">swal("Sukses","Sukses","success");</script>'
+        );
+        redirect('Admin/Perpustakaan/PeminjamanBuku');
     }
 }

@@ -118,25 +118,32 @@ class Login extends CI_Controller
 
         $data = $this->Model_auth->CekUser($this->input->post('username'))->row();
         if ($data != null) {
-            $code = md5($data->username);
+            $code = md5(rand(10000, 99999));
             if ($data->role_id == 1) {
+                $cekhp = array(
+                    'token' => $perpus->token_wa,
+                    'phone' => $data->hp_siswa,
+                );
                 $pesan = array(
                     'token' => $perpus->token_wa,
                     'phone' => $data->hp_siswa,
                     'message' => "Beriku Link Untuk Mengganti Password " . base_url('Login/LupaPassword/' . $code),
                 );
             } else {
+                $cekhp = array(
+                    'token' => $perpus->token_wa,
+                    'phone' => $data->hp_guru,
+                );
                 $pesan = array(
                     'token' => $perpus->token_wa,
                     'phone' => $data->hp_guru,
                     'message' => "Beriku Link Untuk Mengganti Password " . base_url('Login/LupaPassword/' . $code),
                 );
             }
+            $cek_wa = curl_init();
 
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+            curl_setopt_array($cek_wa, array(
+                CURLOPT_URL => 'http://nusagateway.com/api/check-number.php',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -144,42 +151,65 @@ class Login extends CI_Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $pesan,
+                CURLOPT_POSTFIELDS => $cekhp,
             ));
 
-            $response = curl_exec($curl);
-            $hasil = json_decode($response);
+            $status_cek = curl_exec($cek_wa);
+            $hasil_cek = json_decode($status_cek);
 
-            curl_close($curl);
-            if ($hasil->result == true) {
-                $data_token = array(
-                    'id_tokenpass' => $code,
-                    'id_user' => $data->main_user,
-                );
-                $this->Model_admin->Tambah_data($data_token, 't_tokenpass');
-                $response = array(
-                    'status' => 1,
-                    'token' => $this->security->get_csrf_hash(),
-                    'data' => $data
-                );
-            } else {
+            curl_close($cek_wa);
+            if ($hasil_cek->status == "invalid") {
                 $response = array(
                     'status' => 0,
                     'token' => $this->security->get_csrf_hash(),
                     'data' => "error"
                 );
+            } elseif ($hasil_cek->status == "valid") {
+                $data_token = array(
+                    'id_tokenpass' => $code,
+                    'id_user' => $data->main_user,
+                );
+                $this->Model_admin->Tambah_data($data_token, 't_tokenpass');
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'http://nusagateway.com/api/send-message.php',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $pesan,
+                ));
+
+                $response = curl_exec($curl);
+                $hasil = json_decode($response);
+
+                curl_close($curl);
+                if ($hasil->result == true) {
+
+                    $response = array(
+                        'status' => 1,
+                        'token' => $this->security->get_csrf_hash(),
+                        'data' => $data
+                    );
+                } else {
+                    $response = array(
+                        'status' => 0,
+                        'token' => $this->security->get_csrf_hash(),
+                        'data' => "error"
+                    );
+                }
             }
-
-
-
-            echo json_encode($response);
         } else {
             $response = array(
                 'status' => 0,
                 'data' => "Data Tidak Ada",
                 'token' => $this->security->get_csrf_hash(),
             );
-            echo json_encode($response);
         }
+        echo json_encode($response);
     }
 }

@@ -330,4 +330,16 @@ class Model_admin extends CI_Model
         $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
         return $this->db->get();
     }
+    public function getPeminjaman($idsiswa)
+    {
+        $this->db->where('t_peminjaman.id_user', $idsiswa);
+        $this->db->select('t_peminjaman.*,t_peminjaman.id_user as user_id,t_buku.* ,t_user.id_user , t_user.username, t_siswa.*,t_guru.*');
+        $this->db->from('t_peminjaman');
+        $this->db->join('t_buku', 't_buku.id_buku=t_peminjaman.id_buku', 'left');
+        $this->db->join('t_user', 't_user.id_user=t_peminjaman.id_user', 'left');
+        $this->db->join('t_siswa', 't_siswa.id_user=t_user.id_user', 'left');
+        $this->db->join('t_guru', 't_guru.id_user=t_user.id_user', 'left');
+        $this->db->where('status_pengembalian=0');
+        return $this->db->get();
+    }
 }

@@ -78,6 +78,14 @@
                                                                <h5>NISN</h5>
                                                                <p><?= $profile->nisn ?></p>
                                                            </div>
+                                                           <?php $sts = $this->db->get_where('t_setup', array('id_setup' => 1))->row();
+                                                            if ($sts->status_fitur == 1) : ?>
+                                                               <div class="course-info d-flex justify-content-between align-items-center">
+                                                                   <h5>Coin</h5>
+                                                                   <p><?= $profile->coin ?></p>
+                                                               </div>
+                                                           <?php endif; ?>
+                                                           <?php ?>
                                                        <?php elseif ($role == 2) : ?>
                                                            <div class="course-info d-flex justify-content-between align-items-center">
                                                                <h5>Username</h5>

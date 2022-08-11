@@ -78,7 +78,7 @@
                                 resultData.data,
                                 'error'
                             )
-                        } else {
+                        } else if (resultData.status == 1) {
                             if (resultData.data.role_id == 1) {
                                 Swal.fire(
                                     'Succes',

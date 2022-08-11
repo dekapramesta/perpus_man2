@@ -37,8 +37,42 @@
 <?php foreach ($buku as $pnj) : ?>
 
     <body>
-        <div style="text-align:center">
+        <!-- <div style="text-align:center">
             <h3><?= $title_pdf ?></h3>
+        </div> -->
+        <?php
+        $path = base_url('/assets/img/man2ngawi.jpeg');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        ?>
+        <!-- <img src="<?php echo base_url() ?>/assets/img/man2ngawi.jpeg" alt="" style="width:9%; position: absolute; margin-left: 10px;"> -->
+        <img src="<?= $base64 ?>" alt="" style="width:9%; position: absolute; margin-left: 10px;">
+        <!-- <img src="<?php echo base_url() ?>/assets/img/man2ngawi.jpeg" alt="" style="width:2.5cm; position: absolute;"> -->
+        <div style="text-align: center;">
+            <div style="margin-bottom: 3px;">
+                <span style="font-size: 16pt;">
+                    KEMENTRIAN AGAMA
+                </span>
+            </div>
+            <div style="margin-bottom: 3px;">
+                <span style="font-size: 16pt;">
+                    <b>MADRASAH ALIYAH NEGERI 2 NGAWI</b>
+                </span>
+            </div>
+            <div style="margin-bottom: 3px;">
+                <small>Jl. Raya Paron No.2, Kenaiban, Paron, Kec. Paron, Kabupaten Ngawi</small>
+            </div>
+            <div style="margin-bottom: 3px;">
+                <small>Kode Pos: 63253 Telepon (0351) 749772</small>
+            </div>
+            <div style="height: 4px; background-color: #000000; margin-bottom: 2px; margin-top: 8px;"></div>
+            <div style="height: 1.5px; background-color: #000000; margin-bottom: 15px;"></div>
+            <div style="margin-bottom: 20px;">
+                <span style="font-size: 18px;">
+                    <b>LAPORAN BUKU MASUK</b>
+                </span>
+            </div>
         </div>
         <table id="table">
             <thead>

@@ -24,8 +24,7 @@
             <li class="dropdown">
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="book"></i><span>Perpustakaan</span></a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPeminjaman') ?>">Peminjaman</a></li>
-                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/DataPengembalian') ?>">Pengembalian</a></li>
+                    <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/PeminjamanBuku') ?>">Sirkulasi</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/Booking') ?>">Booking</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/Perpustakaan/BukuHilang') ?>">Buku Hilang</a></li>
                     <li><a class="nav-link" href="<?= base_url('Admin/InventoryBuku/CetakBarcode') ?>">Cetak Barcode</a></li>
